@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { searchFoods, getFoodDetails } from '../services/usdaApi';
+import { createRecipe as saveRecipeToApi } from '../services/api'; // Uncommented and renamed
+
 // import { createRecipe as saveRecipeToApi } from '../services/api'; // Will uncomment later
 // import { searchLocalIngredients } from '../services/api'; // Need this later
 
@@ -52,6 +54,21 @@ function convertToGrams(quantity, unit) {
   return null; 
 }
 
+// --- Placeholder list of common units --- 
+// This should eventually come from your database or a config file
+const commonUnits = [
+  "g", "kg", "oz", "lb", 
+  "ml", "L", 
+  "tsp", "tbsp", 
+  "cup", "cups", 
+  "piece", "pieces", 
+  "slice", "slices",
+  "clove", "cloves",
+  "pinch",
+  "unit", "units", // Added unit/units
+  // Add more as needed based on your database
+];
+
 // --- Component --- 
 
 function CreateRecipe() {
@@ -74,7 +91,7 @@ function CreateRecipe() {
   const [selectedUsdaFood, setSelectedUsdaFood] = useState(null);
   const [customIngredientName, setCustomIngredientName] = useState('');
   const [ingredientQuantity, setIngredientQuantity] = useState('');
-  const [ingredientUnit, setIngredientUnit] = useState('');
+  const [ingredientUnit, setIngredientUnit] = useState(''); // Selected unit from dropdown
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
 
   // --- USDA/Local Search Logic --- 
@@ -127,8 +144,9 @@ function CreateRecipe() {
     setCustomIngredientName('');
     setLocalSearchResults([]);
     setUsdaSearchResults([]);
-    // Pre-fill unit if available
-    setIngredientUnit(ingredient.defaultUnit || ''); 
+    // Pre-fill unit if available and it's in our common list
+    const defaultUnit = ingredient.defaultUnit || '';
+    setIngredientUnit(commonUnits.includes(defaultUnit) ? defaultUnit : ''); 
   };
 
   const handleSelectUsdaFood = (food) => {
@@ -138,7 +156,7 @@ function CreateRecipe() {
     setCustomIngredientName('');
     setLocalSearchResults([]);
     setUsdaSearchResults([]);
-    setIngredientUnit(''); // Clear unit, user needs to specify
+    setIngredientUnit(''); // Clear unit, user needs to select from dropdown
   };
 
   const handleAddIngredient = async () => {
@@ -147,22 +165,20 @@ function CreateRecipe() {
       alert("Please enter a valid quantity for the ingredient.");
       return;
     }
-    if (!ingredientUnit.trim()) {
-      alert("Please enter a unit for the ingredient.");
+    if (!ingredientUnit) { // Check if a unit was selected from dropdown
+      alert("Please select a unit for the ingredient.");
       return;
     }
 
     let ingredientToAdd = {
       name: '',
       quantity: ingredientQuantity, // Store original string for display
-      unit: ingredientUnit.trim(),
+      unit: ingredientUnit, // Unit selected from dropdown
       // --- Fields matching DB schema --- 
       ingredient_id: null, // Reference to our ingredients collection
       fdcId: null,         // USDA Food Data Central ID
       caloriesPer100g: null, // Standard kcal/100g from USDA
       calculatedKcal: null,  // Kcal for the specific quantity entered
-      // is_vegan: null,      // Backend determines this
-      // is_gluten_free: null // Backend determines this
     };
 
     let nameToUse = '';
@@ -172,13 +188,12 @@ function CreateRecipe() {
     if (selectedLocalIngredient) {
       nameToUse = selectedLocalIngredient.name;
       localIdToUse = selectedLocalIngredient.id;
-      fdcIdToUse = selectedLocalIngredient.fdcId; // Use FDC ID from local if available
+      fdcIdToUse = selectedLocalIngredient.fdcId; 
     } else if (selectedUsdaFood) {
       nameToUse = selectedUsdaFood.description;
       fdcIdToUse = selectedUsdaFood.fdcId;
     } else if (customIngredientName.trim()) {
       nameToUse = customIngredientName.trim();
-      // This is a new custom ingredient, needs adding to local DB later
     } else {
       alert("Please select or enter an ingredient name.");
       return;
@@ -192,11 +207,11 @@ function CreateRecipe() {
     if (fdcIdToUse) {
       try {
         const details = await getFoodDetails(fdcIdToUse);
-        if (details?.calories) {
-          ingredientToAdd.caloriesPer100g = details.calories;
+        if (details?.caloriesPer100g) { // Use the correct field name from refined usdaApi.js
+          ingredientToAdd.caloriesPer100g = details.caloriesPer100g;
           const quantityInGrams = convertToGrams(quantity, ingredientToAdd.unit);
           if (quantityInGrams !== null) {
-            ingredientToAdd.calculatedKcal = Math.round((details.calories / 100) * quantityInGrams);
+            ingredientToAdd.calculatedKcal = Math.round((details.caloriesPer100g / 100) * quantityInGrams);
           }
         }
       } catch (error) {
@@ -214,7 +229,7 @@ function CreateRecipe() {
     setSelectedUsdaFood(null);
     setCustomIngredientName('');
     setIngredientQuantity('');
-    setIngredientUnit('');
+    setIngredientUnit(''); // Reset unit dropdown
   };
 
   const handleRemoveIngredient = (indexToRemove) => {
@@ -267,23 +282,20 @@ function CreateRecipe() {
     const newRecipeData = {
       name: recipeName,
       description,
-      instructions: instructions.map(instr => ({ step: instr.step, text: instr.text.trim() })), // Ensure instructions match schema
-      prep_time: parsedPrepTime, // Matches schema field
+      instructions: instructions.map(instr => ({ step: instr.step, text: instr.text.trim() })), 
+      prep_time: parsedPrepTime, 
       servings: parsedServings,
-      category: category, // Matches schema field
-      cycle_tags: phase ? [phase] : [], // Matches schema field (assuming phase maps to cycle_tags)
-      image_url: imageUrl.trim() || null, // Matches schema field
+      category: category, 
+      cycle_tags: phase ? [phase] : [], 
+      image_url: imageUrl.trim() || null, 
       ingredients: ingredients.map(ing => ({
-          // Map frontend state to backend schema for recipe's ingredient list
-          ingredient_id: ing.ingredient_id, // ID from our ingredients collection
-          name: ing.name,                 // Name used in recipe
-          quantity: ing.quantity,         // Original quantity string
-          unit: ing.unit,                 // Unit used
-          fdcId: ing.fdcId,               // Store FDC ID if available
-          calculatedKcal: ing.calculatedKcal // Store calculated kcal if available
+          ingredient_id: ing.ingredient_id, 
+          name: ing.name,                 
+          quantity: ing.quantity,         
+          unit: ing.unit,                 
+          fdcId: ing.fdcId,               
+          calculatedKcal: ing.calculatedKcal 
       })),
-      // is_vegan, is_gluten_free determined by backend
-      // total_calories calculated by backend
       created_at: new Date(), 
       updated_at: new Date()
     };
@@ -292,9 +304,33 @@ function CreateRecipe() {
 
     try {
       // Later: Call the function to save the recipe to Firebase
-      // await saveRecipeToApi(newRecipeData);
-      alert("Recipe data prepared! (Logged to console for now)");
-      // Optionally clear form
+// Inside handleSubmit function, within the try block
+
+console.log("Submitting New Recipe Data (to be sent to backend):", newRecipeData);
+
+// Replace the old alert:
+// alert("Recipe data prepared! (Logged to console for now)");
+
+// Add this line to call the API:
+const createdRecipe = await saveRecipeToApi(newRecipeData);
+
+alert(`Recipe "${createdRecipe.name}" created successfully with ID: ${createdRecipe.id}!`);
+
+// Optionally clear the form after successful submission
+setRecipeName("");
+setDescription("");
+setInstructions([{ step: 1, text: "" }]);
+setPrepTime("");
+setServings("");
+setCategory("");
+setPhase("");
+setImageUrl("");
+setIngredients([]);
+// Clear ingredient input fields as well if needed
+setIngredientSearchTerm("");
+setIngredientQuantity("");
+setIngredientUnit("");
+
     } catch (error) {
       console.error("Failed to save recipe:", error);
       alert("Error saving recipe. Please try again.");
@@ -343,7 +379,7 @@ function CreateRecipe() {
             <select className="form-select" id="category" value={category} onChange={(e) => setCategory(e.target.value)} required>
               <option value="">Select Category...</option>
               <option value="Breakfast">Breakfast</option>
-              <option value="entree">Entrée</option> {/* Updated Label/Value */}
+              <option value="entree">Entrée</option> 
               <option value="Snack">Snack</option>
               <option value="Dessert">Dessert</option>
               <option value="Side Dish">Side Dish</option>
@@ -403,6 +439,7 @@ function CreateRecipe() {
             <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
               <span>
                 {ing.quantity} {ing.unit} {ing.name}
+                {/* Fixed Kcal Display Logic */}
                 {ing.calculatedKcal !== null && 
                   <small className="text-muted ms-2"> (~{ing.calculatedKcal} kcal)</small>
                 }
@@ -480,8 +517,19 @@ function CreateRecipe() {
             </div>
             <div className="col-sm-6">
               <label htmlFor="ingredientUnit" className="form-label">Unit</label>
-              {/* TODO: Replace with dropdown of common/alternative units later */}
-              <input type="text" className="form-control" id="ingredientUnit" value={ingredientUnit} onChange={(e) => setIngredientUnit(e.target.value)} placeholder="e.g., cups, grams, tbsp, piece"/>
+              {/* --- Unit Dropdown (Removed 'required' attribute) --- */}
+              <select 
+                className="form-select" 
+                id="ingredientUnit" 
+                value={ingredientUnit} 
+                onChange={(e) => setIngredientUnit(e.target.value)}
+                // removed required attribute here
+              >
+                <option value="">Select Unit...</option>
+                {commonUnits.map(unit => (
+                  <option key={unit} value={unit}>{unit}</option>
+                ))}
+              </select>
             </div>
           </div>
 

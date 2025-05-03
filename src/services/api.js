@@ -70,3 +70,21 @@ export const getRecipes = async (filters = {}) => {
 
 // Export the configured Axios instance if needed elsewhere
 // export default apiClient;
+
+
+
+// Function to create a new recipe via the backend API
+export const createRecipe = async (recipeData) => {
+  try {
+    // Make a POST request to the /recipes endpoint
+    const response = await apiClient.post("/recipes", recipeData);
+    // Return the data from the backend (which should include the new recipe ID)
+    return response.data;
+  } catch (error) {
+    console.error("Error creating recipe via API:", error.response?.data || error.message);
+    // Re-throw the error so the component can handle it (e.g., show an error message)
+    throw error;
+  }
+};
+
+// Keep the existing code (getBaseUrl, apiClient) in the file as well
