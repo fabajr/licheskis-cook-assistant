@@ -1,68 +1,138 @@
-const functions = require("firebase-functions");
+// functions/index.js
+
+const functions = require("firebase-functions/v1");
 const admin = require("firebase-admin");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const express = require("express");
 const cors = require("cors");
 
-// Initialize Firebase Admin SDK
+// Init
 admin.initializeApp();
+const db = getFirestore();
 
-// Get Firestore instance
-const db = admin.firestore();
-
-// Create Express app
+// App & middleware
 const app = express();
-
-// Automatically allow cross-origin requests (important for development)
 app.use(cors({ origin: true }));
-
-// Middleware to parse JSON request bodies
 app.use(express.json());
 
-// --- API Routes --- 
+// Router
+const router = express.Router();
 
-// Test Route
-app.get("/"), (req, res) => {
-  res.status(200).send("Lich. Cook Assistant API is running!");
+// Health check
+router.get("/", (req, res) => {
+  res.status(200).send("Licheskis Cook Assistant API is running!");
 });
 
-// POST /recipes - Create a new recipe
-app.post("/recipes", async (req, res) => {
+// --- RECIPES --- 
+
+// GET /recipes - Fetch all recipes
+router.get("/recipes", async (req, res) => {
   try {
-    const recipeData = req.body; // Get data from the frontend
-
-    // Basic validation (can be expanded)
-    if (!recipeData || !recipeData.name || !recipeData.ingredients || recipeData.ingredients.length === 0) {
-      return res.status(400).send({ error: "Missing required recipe data (name, ingredients)." });
-    }
-
-    // TODO: Add more validation based on schema
-    // TODO: Process ingredients (e.g., check/add to ingredients collection)
-    // TODO: Calculate total_calories, is_vegan, is_gluten_free
-
-    // Add timestamps
-    const now = admin.firestore.FieldValue.serverTimestamp();
-    recipeData.created_at = now;
-    recipeData.updated_at = now;
-
-    // Add the recipe to the 'recipes' collection in Firestore
-    const recipeRef = await db.collection("recipes").add(recipeData);
-
-    console.log("Recipe created with ID:", recipeRef.id);
-    // Return the created recipe data along with its new ID
-    res.status(201).send({ id: recipeRef.id, ...recipeData }); 
-
-  } catch (error) {
-    console.error("Error creating recipe:", error);
-    res.status(500).send({ error: "Failed to create recipe.", details: error.message });
+    const snap = await db.collection("recipes").get();
+    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return res.json(data);
+  } catch (e) {
+    console.error("Error fetching recipes:", e);
+    return res.status(500).json({ error: "Failed to fetch recipes.", details: e.message });
   }
 });
 
-// GET /recipes - Get all recipes (add later)
-// GET /recipes/:id - Get a specific recipe (add later)
-// PUT /recipes/:id - Update a recipe (add later)
-// DELETE /recipes/:id - Delete a recipe (add later)
+// GET /recipes/:id - Fetch a single recipe by ID
+router.get("/recipes/:id", async (req, res) => {
+  try {
+    const recipeId = req.params.id;
+    if (!recipeId) {
+      return res.status(400).json({ error: "Recipe ID is required." });
+    }
+    const docRef = db.collection("recipes").doc(recipeId);
+    const doc = await docRef.get();
 
-// --- Export the Express API as a Cloud Function --- 
-// The name 'api' here matches the rewrite rule in firebase.json
-exports.api = functions.https.onRequest(app) ;
+    if (!doc.exists) {
+      return res.status(404).json({ error: "Recipe not found." });
+    }
+
+    return res.json({ id: doc.id, ...doc.data() });
+
+  } catch (e) {
+    console.error(`Error fetching recipe ${req.params.id}:`, e);
+    return res.status(500).json({ error: "Failed to fetch recipe.", details: e.message });
+  }
+});
+
+// POST /recipes - Create a new recipe
+router.post("/recipes", async (req, res) => {
+  try {
+    // Basic validation (can be expanded)
+    const recipeData = req.body;
+    if (!recipeData || !recipeData.name || !Array.isArray(recipeData.ingredients) || recipeData.ingredients.length === 0) {
+      return res.status(400).json({ error: "Missing required recipe data (name, ingredients)." });
+    }
+
+    // Add server-side timestamps
+    const now = FieldValue.serverTimestamp();
+    recipeData.created_at = now;
+    recipeData.updated_at = now;
+
+    // Save to Firestore
+    const ref = await db.collection("recipes").add(recipeData);
+    const doc = await ref.get(); // Fetch the created doc to get timestamps
+    console.log("Recipe created with ID:", ref.id);
+    return res.status(201).json({ id: doc.id, ...doc.data() });
+  } catch (e) {
+    console.error("Error creating recipe:", e);
+    return res.status(500).json({ error: "Failed to create recipe.", details: e.message });
+  }
+});
+
+// --- INGREDIENTS --- (Keep existing ingredient routes)
+router.get("/ingredients", async (req, res) => {
+  try {
+    const snap = await db.collection("ingredients").get();
+    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return res.json(data);
+  } catch (e) {
+    console.error("Error fetching ingredients:", e);
+    return res.status(500).json({ error: "Failed to fetch ingredients.", details: e.message });
+  }
+});
+router.post("/ingredients", async (req, res) => {
+  try {
+    const payload = { ...req.body, createdAt: FieldValue.serverTimestamp() };
+    const ref = await db.collection("ingredients").add(payload);
+    const doc = await ref.get();
+    return res.status(201).json({ id: doc.id, ...doc.data() });
+  } catch (e) {
+    console.error("Error creating ingredient:", e);
+    return res.status(500).json({ error: "Failed to create ingredient.", details: e.message });
+  }
+});
+
+// --- RECIPE_INGREDIENTS --- (Keep existing recipe_ingredients routes)
+router.get("/recipe_ingredients", async (req, res) => {
+  try {
+    const snap = await db.collection("recipe_ingredients").get();
+    const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    return res.json(data);
+  } catch (e) {
+    console.error("Error fetching recipe ingredients:", e);
+    return res.status(500).json({ error: "Failed to fetch recipe ingredients.", details: e.message });
+  }
+});
+router.post("/recipe_ingredients", async (req, res) => {
+  try {
+    const payload = { ...req.body, createdAt: FieldValue.serverTimestamp() };
+    const ref = await db.collection("recipe_ingredients").add(payload);
+    const doc = await ref.get();
+    return res.status(201).json({ id: doc.id, ...doc.data() });
+  } catch (e) {
+    console.error("Error creating recipe ingredient:", e);
+    return res.status(500).json({ error: "Failed to create recipe ingredient.", details: e.message });
+  }
+});
+
+// Mount under /api
+app.use("/api", router);
+
+// Export
+exports.api = functions.https.onRequest(app);
 

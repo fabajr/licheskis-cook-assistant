@@ -2,25 +2,22 @@ import axios from 'axios';
 
 // Determine API base URL based on environment
 const getBaseUrl = () => {
-  // Check if running in production (like on Firebase Hosting)
-  const isProduction = process.env.NODE_ENV === 'production';
-
+  const isProduction = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
   if (isProduction) {
     // In production, use a relative path that Firebase Hosting will rewrite
-    return '/api';
+    return '/api'; // <-- Make sure this line is exactly '/api'
   } else {
-    // In development, point to the Firebase emulated function URL
-    // Replace 'your-firebase-project-id' with your actual Firebase project ID
-    // You can find this ID in your Firebase project settings or .firebaserc file
-    const projectId = 'licheskis-cook-assintant'; // <-- Replace if different!
-    const region = 'us-central1'; // Or your function's region
+    // In development...
+    const projectId = 'licheskis-cook-assintant'; 
+    const region = 'us-central1'; 
     return `http://localhost:5001/${projectId}/${region}/api`;
   }
 };
 
+
 // Create an Axios instance with the base URL
 const apiClient = axios.create({
-  baseURL: getBaseUrl() ,
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -48,7 +45,7 @@ apiClient.interceptors.response.use(
 
 // --- Define API functions here --- 
 
-// Example: Function to get all recipes
+// Function to get all recipes
 export const getRecipes = async (filters = {}) => {
   try {
     // Use the apiClient to make the request
@@ -61,19 +58,7 @@ export const getRecipes = async (filters = {}) => {
   }
 };
 
-// Add other functions for getting recipe by ID, creating recipes, etc.
-// export const getRecipeById = async (id) => { ... };
-// export const createRecipe = async (recipeData) => { ... };
-// export const updateRecipe = async (id, recipeData) => { ... };
-// export const getIngredients = async () => { ... };
-// export const addIngredient = async (ingredientData) => { ... };
-
-// Export the configured Axios instance if needed elsewhere
-// export default apiClient;
-
-
-
-// Function to create a new recipe via the backend API
+// Function to create a new recipe
 export const createRecipe = async (recipeData) => {
   try {
     // Make a POST request to the /recipes endpoint
@@ -87,4 +72,13 @@ export const createRecipe = async (recipeData) => {
   }
 };
 
-// Keep the existing code (getBaseUrl, apiClient) in the file as well
+
+// Add other functions for getting recipe by ID, updating recipes, etc.
+// export const getRecipeById = async (id) => { ... };
+// export const updateRecipe = async (id, recipeData) => { ... };
+// export const getIngredients = async () => { ... };
+// export const addIngredient = async (ingredientData) => { ... };
+
+// Export the configured Axios instance if needed elsewhere
+// export default apiClient;
+
