@@ -19,14 +19,14 @@ app.use(express.json());
 const router = express.Router();
 
 // Health check
-router.get("/", (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).send("Licheskis Cook Assistant API is running!");
 });
 
 // --- RECIPES --- 
 
 // GET /recipes - Fetch all recipes
-router.get("/recipes", async (req, res) => {
+app.get("/recipes", async (req, res) => {
   try {
     const snap = await db.collection("recipes").get();
     const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -38,7 +38,7 @@ router.get("/recipes", async (req, res) => {
 });
 
 // GET /recipes/:id - Fetch a single recipe by ID
-router.get("/recipes/:id", async (req, res) => {
+app.get("/recipes/:id", async (req, res) => {
   try {
     const recipeId = req.params.id;
     if (!recipeId) {
@@ -60,7 +60,7 @@ router.get("/recipes/:id", async (req, res) => {
 });
 
 // POST /recipes - Create a new recipe
-router.post("/recipes", async (req, res) => {
+app.post("/recipes", async (req, res) => {
   try {
     // Basic validation (can be expanded)
     const recipeData = req.body;
@@ -85,7 +85,7 @@ router.post("/recipes", async (req, res) => {
 });
 
 // --- INGREDIENTS --- (Keep existing ingredient routes)
-router.get("/ingredients", async (req, res) => {
+app.get("/ingredients", async (req, res) => {
   try {
     const snap = await db.collection("ingredients").get();
     const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -95,7 +95,7 @@ router.get("/ingredients", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch ingredients.", details: e.message });
   }
 });
-router.post("/ingredients", async (req, res) => {
+app.post("/ingredients", async (req, res) => {
   try {
     const payload = { ...req.body, createdAt: FieldValue.serverTimestamp() };
     const ref = await db.collection("ingredients").add(payload);
@@ -108,7 +108,7 @@ router.post("/ingredients", async (req, res) => {
 });
 
 // --- RECIPE_INGREDIENTS --- (Keep existing recipe_ingredients routes)
-router.get("/recipe_ingredients", async (req, res) => {
+app.get("/recipe_ingredients", async (req, res) => {
   try {
     const snap = await db.collection("recipe_ingredients").get();
     const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -118,7 +118,7 @@ router.get("/recipe_ingredients", async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch recipe ingredients.", details: e.message });
   }
 });
-router.post("/recipe_ingredients", async (req, res) => {
+app.post("/recipe_ingredients", async (req, res) => {
   try {
     const payload = { ...req.body, createdAt: FieldValue.serverTimestamp() };
     const ref = await db.collection("recipe_ingredients").add(payload);
@@ -130,8 +130,7 @@ router.post("/recipe_ingredients", async (req, res) => {
   }
 });
 
-// Mount under /api
-app.use("/api", router);
+
 
 // Export
 exports.api = functions.https.onRequest(app);
