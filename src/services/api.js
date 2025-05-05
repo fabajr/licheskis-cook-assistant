@@ -5,12 +5,13 @@ const getBaseUrl = () => {
   const isProduction = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
   if (isProduction) {
     // In production, use a relative path that Firebase Hosting will rewrite
-    return '/api'; // <-- Make sure this line is exactly '/api'
+    return '/api'; 
   } else {
     // In development...
     const projectId = 'licheskis-cook-assintant'; 
     const region = 'us-central1'; 
-    return `http://localhost:5001/${projectId}/${region}/api`;
+    // Ensure /api is included for emulator consistency
+    return `http://localhost:5001/${projectId}/${region}/api`; 
   }
 };
 
@@ -48,12 +49,24 @@ apiClient.interceptors.response.use(
 // Function to get all recipes
 export const getRecipes = async (filters = {}) => {
   try {
-    // Use the apiClient to make the request
     const response = await apiClient.get('/recipes', { params: filters });
-    return response.data; // Return the data from the response
+    return response.data; 
   } catch (error) {
-    // Log the error and re-throw it or handle it as needed
     console.error('Error in getRecipes:', error);
+    throw error;
+  }
+};
+
+// Function to get a single recipe by ID
+export const getRecipeById = async (id) => {
+  if (!id) {
+    throw new Error("Recipe ID is required to fetch details.");
+  }
+  try {
+    const response = await apiClient.get(`/recipes/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching recipe with ID ${id}:`, error);
     throw error;
   }
 };
@@ -61,20 +74,16 @@ export const getRecipes = async (filters = {}) => {
 // Function to create a new recipe
 export const createRecipe = async (recipeData) => {
   try {
-    // Make a POST request to the /recipes endpoint
     const response = await apiClient.post("/recipes", recipeData);
-    // Return the data from the backend (which should include the new recipe ID)
     return response.data;
   } catch (error) {
     console.error("Error creating recipe via API:", error.response?.data || error.message);
-    // Re-throw the error so the component can handle it (e.g., show an error message)
     throw error;
   }
 };
 
 
-// Add other functions for getting recipe by ID, updating recipes, etc.
-// export const getRecipeById = async (id) => { ... };
+// Add other functions for updating recipes, ingredients, etc.
 // export const updateRecipe = async (id, recipeData) => { ... };
 // export const getIngredients = async () => { ... };
 // export const addIngredient = async (ingredientData) => { ... };

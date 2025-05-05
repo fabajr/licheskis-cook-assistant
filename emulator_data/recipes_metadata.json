@@ -1,0 +1,1729 @@
+[
+  {
+    "id": "11f08afe-ec1f-453e-80b6-026cab31fa21",
+    "name": "Avocado Toast",
+    "category": "Breakfast",
+    "cycle_tags": [
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "Place the bread in the toaster to your preferred toast setting;"
+      },
+      {
+        "step": 2,
+        "text": "Cook the eggs to you preferred method and temperature"
+      },
+      {
+        "step": 3,
+        "text": "Spread the guacamole on your toast and top with the eggs, sprinkle some salt pepper and paprika if desired."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.046086",
+    "updatedAt": "2025-04-19T00:53:25.046086"
+  },
+  {
+    "id": "b8e1b138-d9f6-4933-aad4-b55af7d4fbaf",
+    "name": "Overnight Oats",
+    "category": "Breakfast",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Mix the oats, chia seeds, peanut butter, syrup and milk until combined."
+      },
+      {
+        "step": 2,
+        "text": "2. Dice the apples and chop the pecans"
+      },
+      {
+        "step": 3,
+        "text": "3. Add all ingredients to the mix, except for the granola and mix well."
+      },
+      {
+        "step": 4,
+        "text": "4. Cover it with a lid or saran wrap and put it on the fridge overnight."
+      },
+      {
+        "step": 5,
+        "text": "5. In the morning add the granola nad enjoy."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.047413",
+    "updatedAt": "2025-04-19T00:53:25.047413"
+  },
+  {
+    "id": "3c40fdfc-4746-4582-8be8-de5ecf6e4e35",
+    "name": "Greek Yogurt Granola",
+    "category": "Breakfast",
+    "cycle_tags": [
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Open the yogurt."
+      },
+      {
+        "step": 2,
+        "text": "2. Add the granola and enjoy."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.047683",
+    "updatedAt": "2025-04-19T00:53:25.047683"
+  },
+  {
+    "id": "81e1086f-9c83-49b6-8b96-b1f215426c10",
+    "name": "Protein Pancakes",
+    "category": "Breakfast",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Heat up a pan over medium-low heat until hot and season it with avocado oil;"
+      },
+      {
+        "step": 2,
+        "text": "2. Mix all ingredients until fully combined;"
+      },
+      {
+        "step": 3,
+        "text": "3. Pour batter to make 4\" pancakes, flip them and pile them in a plate."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.048072",
+    "updatedAt": "2025-04-19T00:53:25.048072"
+  },
+  {
+    "id": "47dc2e68-59eb-405d-8dbc-d48a434406ca",
+    "name": "Salmon Lox Bagel",
+    "category": "Breakfast",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Toast the bagel halves"
+      },
+      {
+        "step": 2,
+        "text": "2. Thinly slice the cucumber into ribbons;"
+      },
+      {
+        "step": 3,
+        "text": "3. Cook the egg to preferred method and temperature"
+      },
+      {
+        "step": 4,
+        "text": "4. Spread the cream cheese on the bagel"
+      },
+      {
+        "step": 5,
+        "text": "5. Layer all ingredients and enjoy."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.048738",
+    "updatedAt": "2025-04-19T00:53:25.048738"
+  },
+  {
+    "id": "9d0a4812-7902-40a1-af66-d68a4881b3ba",
+    "name": "Mushroom Omelette",
+    "category": "Breakfast",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Slice the onions, mushrooms and peppers."
+      },
+      {
+        "step": 2,
+        "text": "2. Melt the butter in a pan and sautee the onions and bell peppers until the onions are translucid and reserve."
+      },
+      {
+        "step": 3,
+        "text": "3. In the same pan, sautee the mushrooms until cooked and golden brown, then season them with salt, pepper and garlic powder. Reserve."
+      },
+      {
+        "step": 4,
+        "text": "4. Keep the pan hot over low heat."
+      },
+      {
+        "step": 5,
+        "text": "5. Crack all eggs in a bowl and whisk them well with salt and pepper"
+      },
+      {
+        "step": 6,
+        "text": "6. Pour the eggs in the pan and scatter the veggies over it"
+      },
+      {
+        "step": 7,
+        "text": "7. Sprinkle the cheese over the omelette and cover until cooked"
+      },
+      {
+        "step": 8,
+        "text": "8. Remove from heat, fold and place into plate."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.050065",
+    "updatedAt": "2025-04-19T00:53:25.050065"
+  },
+  {
+    "id": "33fbd1f7-1e86-45cb-a2ee-ce8f0f7716d6",
+    "name": "Balsamic Berry Summer Salad",
+    "category": "Soups&Salads",
+    "cycle_tags": [
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 8,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Wash all produce and pat dry with paper towels."
+      },
+      {
+        "step": 2,
+        "text": "2. Cut strawberries into bite size."
+      },
+      {
+        "step": 3,
+        "text": "3. In a bowl layer the leafy greens, berries, crumbled feta and pecans until all ingredients are gone."
+      },
+      {
+        "step": 4,
+        "text": "4. Finish with a good drizzle of balsamic glaze once served in a dish."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.101443",
+    "updatedAt": "2025-04-19T00:53:25.101443"
+  },
+  {
+    "id": "c8d30665-915d-4690-9047-a656704278ab",
+    "name": "Watermelon Salad",
+    "category": "Soups&Salads",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 8,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Wash all produce and pat dry with paper towels."
+      },
+      {
+        "step": 2,
+        "text": "2. Dice the watermelon, red onion and feta cheese."
+      },
+      {
+        "step": 3,
+        "text": "3. Chop the mint and combine all ingredients in a bowl."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.102681",
+    "updatedAt": "2025-04-19T00:53:25.102681"
+  },
+  {
+    "id": "74385648-294e-4c03-90d0-d08c3c7b5030",
+    "name": "Mozzarella Salad",
+    "category": "Soups&Salads",
+    "cycle_tags": [
+      "F",
+      "O"
+    ],
+    "servings": 6,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Heat up a small frying pan over medium heat, add half the olive oil and flash fry the capers and let them dry on paper towels."
+      },
+      {
+        "step": 2,
+        "text": "2. Grate the zucchini and the squash on the coarse disc of the food processor, then place it in a clean kitchen towel and wring out all excess liquid out and place the dry shreds in a serving bowl."
+      },
+      {
+        "step": 3,
+        "text": "3. Zest and juice the lemons in the bowl."
+      },
+      {
+        "step": 4,
+        "text": "4. Finely chop the peppers and add into the mix."
+      },
+      {
+        "step": 5,
+        "text": "5. Drizzle the salad with the olive oil left and season with salt and pepper, then toss well together."
+      },
+      {
+        "step": 6,
+        "text": "6. Finish it by shredding the bufallo mozzarella over the salad and the crispy capers"
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.104026",
+    "updatedAt": "2025-04-19T00:53:25.104026"
+  },
+  {
+    "id": "e79d1649-a0a2-4fc1-be1f-4e7bf73bf5cb",
+    "name": "Naked Salad Tunisienne",
+    "category": "Soups&Salads",
+    "cycle_tags": [
+      "ML",
+      "LL"
+    ],
+    "servings": 8,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Finely dice all ingredients and combine into a bowl."
+      },
+      {
+        "step": 2,
+        "text": "2. Dress it with olive oil, red wine vinegar, salt and pepper."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.104940",
+    "updatedAt": "2025-04-19T00:53:25.104940"
+  },
+  {
+    "id": "7a489c1e-b580-443c-8c5c-292cb38dac4e",
+    "name": "Green Godess Salad",
+    "category": "Soups&Salads",
+    "cycle_tags": [
+      "M",
+      "F",
+      "LL"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Dice the bell pepper, cucumber and red onion, cut the tomatoes in halves and peel and slice the avocados."
+      },
+      {
+        "step": 2,
+        "text": "2. Add all dressing ingredients (after greek yogurt) to the blender and blend it until smooth."
+      },
+      {
+        "step": 3,
+        "text": "3. Toss the salad with the dressing until well coated."
+      },
+      {
+        "step": 4,
+        "text": "4. Top the salad with the avocado slices."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.106947",
+    "updatedAt": "2025-04-19T00:53:25.106947"
+  },
+  {
+    "id": "38f9ed8a-03b2-418a-845c-ead894c5d446",
+    "name": "Aloha Chicken Casserole",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "ML",
+      "LL"
+    ],
+    "servings": 16,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Pre-heat the oven to 425ºF"
+      },
+      {
+        "step": 2,
+        "text": "2. Dice up the chicken, red onion, red bell pepper and pineapple and place them into a casserole dish along with the rice."
+      },
+      {
+        "step": 3,
+        "text": "3. Finely chop the garlic"
+      },
+      {
+        "step": 4,
+        "text": "4. Mix the honey, Coconut Aminos, broth and garlic together and toss all ingredients in the sauce until evenly coated."
+      },
+      {
+        "step": 5,
+        "text": "5. Bake it covered with tin foil for 50 minutes, then another 10 minutes uncovered"
+      },
+      {
+        "step": 6,
+        "text": "6. Let it rest for 5 minutes before serving"
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.318612",
+    "updatedAt": "2025-04-19T00:53:25.318612"
+  },
+  {
+    "id": "06c0f746-52e7-4ea5-b9ee-b537b34ba0a1",
+    "name": "Balsamic Chicken Sweet Potato & Veggies Cassarole",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "LL"
+    ],
+    "servings": 16,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Dice the chicken, ham, sweet potatoes, turnips, bell peppers and red onions dividing them equally between 4 large Ziplock bags;"
+      },
+      {
+        "step": 2,
+        "text": "2. Half the brussel sprouts;"
+      },
+      {
+        "step": 3,
+        "text": "3. Peel and cut the carrots in thick slices;"
+      },
+      {
+        "step": 4,
+        "text": "4. Mince the garlic;"
+      },
+      {
+        "step": 5,
+        "text": "5. In a bowl, combine the dijon mustard, balsamic glaze, olive oil, garlic, salt and pepper until combined."
+      },
+      {
+        "step": 6,
+        "text": "6. Divide all ingredients equally between 4 large Ziplock bags"
+      },
+      {
+        "step": 7,
+        "text": "7. Remove as much air as possible while closing and sealing the bags;"
+      },
+      {
+        "step": 8,
+        "text": "8. Massage all ingredients to be coated by the marinade"
+      },
+      {
+        "step": 9,
+        "text": "9. Freeze or bake at 400ºF for 50 minutes."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.320156",
+    "updatedAt": "2025-04-19T00:53:25.320156"
+  },
+  {
+    "id": "bd1df342-8bb2-4752-9b42-846fc5f9998a",
+    "name": "Brazil Nut Crusted Seabass",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "LL"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Peel and dice the potatoes in large cubes, cook them in water until soft with the thyme and 5 garlic cloves;"
+      },
+      {
+        "step": 2,
+        "text": "2. Zest the lemon and slice it in thin wheels and chop the brazil nuts coarsely"
+      },
+      {
+        "step": 3,
+        "text": "3. Pre-heat the oven to 425ºF"
+      },
+      {
+        "step": 4,
+        "text": "4. Combine 1 butter stick, lemon zest, nuts, salt, peppers, minced garlic and dried parsley well"
+      },
+      {
+        "step": 5,
+        "text": "5. Pat dry all Seabass Fillets, line a baking dish with parchment paper and arrange the fillets in the baking dish"
+      },
+      {
+        "step": 6,
+        "text": "6. Cover all fillets with a generous layer of the brazil nut butter compound"
+      },
+      {
+        "step": 7,
+        "text": "7. Bake it for 20 minutes or until the thikest part of the fillets flake easily."
+      },
+      {
+        "step": 8,
+        "text": "8. Mash the potatoes adding the softened butter and milk."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.321692",
+    "updatedAt": "2025-04-19T00:53:25.321692"
+  },
+  {
+    "id": "2d9ec5ea-ffeb-4dc3-a2a9-5386ffa582bf",
+    "name": "Chicken & Deep Greens Bowl",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 4,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Dice the chicken, onion and bell pepper;"
+      },
+      {
+        "step": 2,
+        "text": "2. Combine the coconut aminos, honey, brown sugar, stock, ginger and garlic powders and red pepper flakes into a sauce;"
+      },
+      {
+        "step": 3,
+        "text": "3. In the food processor small chop the leafy greens;"
+      },
+      {
+        "step": 4,
+        "text": "4. In a large pan add half the oils and sear the chicken cubes, reserve;"
+      },
+      {
+        "step": 5,
+        "text": "5. In the same pan add the rest of the oils and sautee the onions until transparent;"
+      },
+      {
+        "step": 6,
+        "text": "6. Add the bell peppers and sautee for a couple minutes and then return the chicken to the pan;"
+      },
+      {
+        "step": 7,
+        "text": "7. Add the sauce into the pan and let it reduce until desired consistency;"
+      },
+      {
+        "step": 8,
+        "text": "8. In individual bowls Add the bed of kale and spinach first and then the chicken and sauteed veggies with the sauce."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.323562",
+    "updatedAt": "2025-04-19T00:53:25.323562"
+  },
+  {
+    "id": "55562864-0070-44e2-8fb0-b89c711046a3",
+    "name": "Chicken thigh with pesto whole wheat pasta",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F"
+    ],
+    "servings": 4,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Marinate the chicken in the lemon juice mixed with the garlic, onion powder, coriander, dried parsley, black pepper and 1 TSP of salt for at least half an hour;"
+      },
+      {
+        "step": 2,
+        "text": "2. Cut the tomatoes in half and chop the walnuts;"
+      },
+      {
+        "step": 3,
+        "text": "3. Pre-heat the oven to 375ºF"
+      },
+      {
+        "step": 4,
+        "text": "4. Place the chicken in a cassarole dish and roast covered for about 30 minutes;"
+      },
+      {
+        "step": 5,
+        "text": "5. Uncover the chicken thighs and drain the excess liquid from the pan"
+      },
+      {
+        "step": 6,
+        "text": "6. Cook the pasta in boiling water with the rest of the salt until al dente;"
+      },
+      {
+        "step": 7,
+        "text": "7. Drain the pasta and mix in the pesto sauce until evenly covered;"
+      },
+      {
+        "step": 8,
+        "text": "8. Take the chicken out of the oven and let it rest for 5 minutes;"
+      },
+      {
+        "step": 9,
+        "text": "9. When serving, add a portion of the pasta with tomatoes and walnuts and chicken to each plate."
+      },
+      {
+        "step": 10,
+        "text": "10. Sprinkle parmesan cheese over pasta if desired."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.325177",
+    "updatedAt": "2025-04-19T00:53:25.325177"
+  },
+  {
+    "id": "18043c05-06b2-4d0d-b0b1-50bead0cf3b5",
+    "name": "Citrus Chicken and Sweet Potatoes",
+    "category": "Entrees",
+    "cycle_tags": [
+      "F",
+      "LL"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Zest and juice the limes and mince the garlic and grate the ginger"
+      },
+      {
+        "step": 2,
+        "text": "2. Mix the orange juice, honey, Avocado Oil, ginger, garlic, salt, pepper, hot paprika and lime zest and juice together with a whisk until emulsified"
+      },
+      {
+        "step": 3,
+        "text": "3. Pour the marinade into a gallon ziploc bag along with the Chicken Tights and place into the fridge for an hour or over night"
+      },
+      {
+        "step": 4,
+        "text": "4. Pre-heat the oven to 400ºF"
+      },
+      {
+        "step": 5,
+        "text": "5. Wash and peel the sweet potatoes."
+      },
+      {
+        "step": 6,
+        "text": "6. Cut them in thick wheels, about an inch thick, and arrange them in a single layer in the casserole dish or sheet pan."
+      },
+      {
+        "step": 7,
+        "text": "7. Sprinkle the salt, pepper and smoked paprika on the sweet potatoes then drizzle some olive oil over them and place the rosemary on top."
+      },
+      {
+        "step": 8,
+        "text": "8. Bake the potatoes for about 20 minutes."
+      },
+      {
+        "step": 9,
+        "text": "9. Take the Chicken Tights out of the marinade saving the liquid for later. Pat dry all the Chicken Tights and pull the skin covering as much of the meat as possible and arrange them in the casserole dish"
+      },
+      {
+        "step": 10,
+        "text": "10. Cut the onion in half and place them in the casserole with the Chicken Tights seasoning them with salt, pepper and hot paprika, put the rosemary over everything and cover with tin foil"
+      },
+      {
+        "step": 11,
+        "text": "11. Place it in the oven and roast covered for about 30 minutes"
+      },
+      {
+        "step": 12,
+        "text": "12. Flip the potatoes and roast for another 20 minutes"
+      },
+      {
+        "step": 13,
+        "text": "13. While its roasting, pour the marinade into a saucepan and bring it to medium heat to make a reduction"
+      },
+      {
+        "step": 14,
+        "text": "14. After the 30 minutes take the tin foil away, brush the Chicken Tights with the reduction and roast for another 15 minutes until the skin is golden and crispy"
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.326720",
+    "updatedAt": "2025-04-19T00:53:25.326720"
+  },
+  {
+    "id": "69d42739-8e8b-42cb-b215-d81cf5a4093a",
+    "name": "Coq Au Vin",
+    "category": "Entrees",
+    "cycle_tags": [
+      "F",
+      "O"
+    ],
+    "servings": 8,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Clean all produce and dice the bacon, onion and Carrots, slice the mushrooms and peel the pearl onions"
+      },
+      {
+        "step": 2,
+        "text": "2. Heat a large pot over medium heat and once hot add the bacon and cook until crisp"
+      },
+      {
+        "step": 3,
+        "text": "3. Reserve the bacon bits over a paper towel and start browning the chicken pieces over high heat on all sides in batches adding more oil in between batches as needed and reserving them with the bacon"
+      },
+      {
+        "step": 4,
+        "text": "4. Pre-heat the oven to 350ºF"
+      },
+      {
+        "step": 5,
+        "text": "5. Melt some of the butter on the same pot and add the onions and Carrots, cook until soft and stir the garlic in for another minute to release the aroma"
+      },
+      {
+        "step": 6,
+        "text": "6. Add the tomato paste and stir for a minute and then do the same with flour"
+      },
+      {
+        "step": 7,
+        "text": "7. Pour all the wine in and add the thyme and Bay Leaves scraping all the browned bits. Cook until the wine reduces by half skimming the foam that rises"
+      },
+      {
+        "step": 8,
+        "text": "8. Add the chicken stock and season with salt and pepper"
+      },
+      {
+        "step": 9,
+        "text": "9. When boiling, return all the chicken pieces and bacon to the pot"
+      },
+      {
+        "step": 10,
+        "text": "10. Cover and transfer the pot into the oven and cook for 45 minutes"
+      },
+      {
+        "step": 11,
+        "text": "11. Sautee the pearl onions in butter until browned, reserve and then sautee the mushrooms too, adding salt and pepper only after browned"
+      },
+      {
+        "step": 12,
+        "text": "12. Take the pot out of the oven and combine the pearl onions and mushrooms into the coq au vin."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.328469",
+    "updatedAt": "2025-04-19T00:53:25.328469"
+  },
+  {
+    "id": "af6c55bb-d764-47e8-9e1e-512daa195cc2",
+    "name": "Greek Chicken Gyro",
+    "category": "Entrees",
+    "cycle_tags": [
+      "F",
+      "O"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Juice the lemon and mince the garlic"
+      },
+      {
+        "step": 2,
+        "text": "2. Combine them along with the yogurt, olive oil, salt, pepper, oregano and cumin in a bowl"
+      },
+      {
+        "step": 3,
+        "text": "3. Marinade the chicken overnight in a ziploc bag"
+      },
+      {
+        "step": 4,
+        "text": "4. Pre-heat the oven to 400ºF"
+      },
+      {
+        "step": 5,
+        "text": "5. Use the onion as a support to the skewer in a large skillet lined with foil and start layering each piece of chicken in a tower in the skewer rotating each piece a bit, they should be tight together"
+      },
+      {
+        "step": 6,
+        "text": "6. Roast for 1.5 hours and after taking it out of the oven let it rest for 10 minutes before carving."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.329572",
+    "updatedAt": "2025-04-19T00:53:25.329572"
+  },
+  {
+    "id": "a9948c15-7d60-4f18-933b-e06287e79db7",
+    "name": "Mediterranean Spaghetti Squash",
+    "category": "Entrees",
+    "cycle_tags": [
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 5,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Preheat your oven to 425F."
+      },
+      {
+        "step": 2,
+        "text": "2. Cut squash in half lengthwise and scoop out seeds and string. Rub avocado oil over the inside of each of the squash halves and then place them on a baking tray. Sprinkle with salt and pepper."
+      },
+      {
+        "step": 3,
+        "text": "3. Bake in the oven for approximately 35-45 minutes or until the centre of the squash is tender. Remove the squash from the oven and using a fork, scrape out of the inside of the squash horizontally to get noodle strands. Allow to fully cool."
+      },
+      {
+        "step": 4,
+        "text": "4. Heat a large skillet over medium heat. Add garlic and sauté for a couple minutes."
+      },
+      {
+        "step": 5,
+        "text": "5. Add bell peppers, tomatoes, and olives. Sauté for around 10 minutes or until veggies are tender, seasoning with salt and pepper to taste."
+      },
+      {
+        "step": 6,
+        "text": "6. Stir in mackerel and heat through."
+      },
+      {
+        "step": 7,
+        "text": "7. Add spaghetti squash to the pan of veggies and cook and toss for until fully incorporated. Remove pan from heat."
+      },
+      {
+        "step": 8,
+        "text": "8. Serve in pasta bowls, topped with fresh basil, lemon widgets, and any additional garnishes you enjoy."
+      },
+      {
+        "step": 9,
+        "text": "9. Season with flaky sea salt and freshly ground black pepper to taste. Serve hot."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.330935",
+    "updatedAt": "2025-04-19T00:53:25.330935"
+  },
+  {
+    "id": "6d556deb-2395-45f7-8861-3fe9dd4d3364",
+    "name": "Mommy's Vinaigrette Baked Salmon",
+    "category": "Entrees",
+    "cycle_tags": [
+      "LL"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Cut the onion, bell peppers and tomatoes in bruoise of about 1/2cm and mince the garlic, setting aside 2 cloves."
+      },
+      {
+        "step": 2,
+        "text": "2. Combine all the veggies with the lime juice, half the salt and pepper"
+      },
+      {
+        "step": 3,
+        "text": "3. Pat dry the salmon filet and place it in the casserole dish and cover it with the vinaigrette, place the rosemary on top and cover it with tin foil"
+      },
+      {
+        "step": 4,
+        "text": "4. Pre-heat the oven to 375ºF and bake the salmon for 40 minutes"
+      },
+      {
+        "step": 5,
+        "text": "5. Peel and dice the carrot,"
+      },
+      {
+        "step": 6,
+        "text": "6. Sautee the rest of the garlic and the carrots, add the salt, pepper and turmeric and cook the rice with it all."
+      },
+      {
+        "step": 7,
+        "text": "7. Take the foil away and bake for another 20 minutes, until the fish os golden"
+      },
+      {
+        "step": 8,
+        "text": "8. Take it out of the oven and let it rest for 5 minutes before serving."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.332395",
+    "updatedAt": "2025-04-19T00:53:25.332395"
+  },
+  {
+    "id": "5dce0faf-591c-4b80-a068-82a4991aa0d2",
+    "name": "Mustard Chicken",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 12,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Cut all the chicken breasts in fillets and mince the garlic"
+      },
+      {
+        "step": 2,
+        "text": "2. Emulsify the Avocado Oil with the vinegar, salt, black pepper, parsley and garlic then dress all the chicken with the emulsion and let it sit for 30 minutes"
+      },
+      {
+        "step": 3,
+        "text": "3. Heat a skillet over medium heat until hot and start searing the chicken fillets and reserving them in a separate dish"
+      },
+      {
+        "step": 4,
+        "text": "4. Lower the heat and let the pan cool a bit before adding the butter"
+      },
+      {
+        "step": 5,
+        "text": "5. Add the flour and combine with the butter until foamy"
+      },
+      {
+        "step": 6,
+        "text": "6. Add the mustards and combine it into the roux"
+      },
+      {
+        "step": 7,
+        "text": "7. Add the milk and mix it vigorously with a whisk until smooth and thick"
+      },
+      {
+        "step": 8,
+        "text": "8. Season with salt and pepper"
+      },
+      {
+        "step": 9,
+        "text": "9. Pour the sauce over the chicken."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.333567",
+    "updatedAt": "2025-04-19T00:53:25.333567"
+  },
+  {
+    "id": "33c127b9-429f-4377-90a5-9e92f41fee35",
+    "name": "Pan Seared Sworfish Steak",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Zest the lemon and mince the garlic"
+      },
+      {
+        "step": 2,
+        "text": "2. Combine them into the butter along with half of the salt and pepper, roll it and put it in the fridge for 30 minutes, then slice it according to the number of steaks"
+      },
+      {
+        "step": 3,
+        "text": "3. Pat dry the steaks and season on both sides wit the remaining of the salt and pepper"
+      },
+      {
+        "step": 4,
+        "text": "4. Heat a large skillet over medium heat, add a drizzle of Avocado Oil and start searing the steaks with the slices of butter, basting continually, on both sides and add more Avocado Oil in between batches as needed."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.334196",
+    "updatedAt": "2025-04-19T00:53:25.334196"
+  },
+  {
+    "id": "9331e852-8c42-485b-a1b0-957d7206ae81",
+    "name": "Quinoua Kibbeh",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Soak the quinoua and lentils for at least 3 hours before cooking, changing the water every hour."
+      },
+      {
+        "step": 2,
+        "text": "2. Cook the chicken breast with a couple of bay leaves until fully cooked, then shred the chicken breast in the stand-up mixer or by hand."
+      },
+      {
+        "step": 3,
+        "text": "3. Dice the onions, parsley, mint. Mince the garlic and slice the leeks."
+      },
+      {
+        "step": 4,
+        "text": "4. Pre-heat the oven to 400°F"
+      },
+      {
+        "step": 5,
+        "text": "5. Mix the red onions, parsley, mint, cinnamon and the rinsed and drained quinoua into the beef in a bowl."
+      },
+      {
+        "step": 6,
+        "text": "6. Add half of: the garlic, black pepper, cumin and coriander into the mix."
+      },
+      {
+        "step": 7,
+        "text": "7. Add 2 TSP of salt and mix everything well and place it into a casserole dish, bake it covered with foil for half an hour"
+      },
+      {
+        "step": 8,
+        "text": "8. Heat up a pot and add half the oil, sautee the half the yellow onions until transparent, then add 2/3 of the leftover garlic."
+      },
+      {
+        "step": 9,
+        "text": "9. Add the shredded chicken and sautee it, then add the 1.5 TBSP of salt,"
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.336052",
+    "updatedAt": "2025-04-19T00:53:25.336052"
+  },
+  {
+    "id": "60a76617-32e3-4ebe-9236-4e40dfdce25b",
+    "name": "Salmon Bowl",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 4,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Soak the quinoua for at least 4 hours, changing the water at least once"
+      },
+      {
+        "step": 2,
+        "text": "2. Hydrate the chia seeds for 30 minutes"
+      },
+      {
+        "step": 3,
+        "text": "3. Cut the salmon in 2cm cubes, season with salt and pepper"
+      },
+      {
+        "step": 4,
+        "text": "4. Cut the broccoli in small florettes and steam it with the edamame for 5 minutes"
+      },
+      {
+        "step": 5,
+        "text": "5. Cut the bell peppers and onion in julienne and mince the garlic"
+      },
+      {
+        "step": 6,
+        "text": "6. Combine the hydrated chia with the honey, grated ginger, Coconut Aminos, red pepper flakes, turmeric, salt and pepper to taste, until fully combined into a dressing"
+      },
+      {
+        "step": 7,
+        "text": "7. Cook the quinoua in a small pot for 10 minutes"
+      },
+      {
+        "step": 8,
+        "text": "8. Heat up a skillet in low heat until the pan is completely hot, add the Avocado Oil and coat the bottom of the pan and sear the salmon cubes (don't overcrowd the pan ot they'll stick)"
+      },
+      {
+        "step": 9,
+        "text": "9. Remove the salmon from the skillet and set aside"
+      },
+      {
+        "step": 10,
+        "text": "10. Sautee the onions until transluscent, then add the garlic for a minute, before adding the rest of the veggies and sautte it all together"
+      },
+      {
+        "step": 11,
+        "text": "11. In a bowl layer the quinoua, then veggies and then the salmon, cover with 3 TBSP of the dressing and toss until coated with the dressing."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.337470",
+    "updatedAt": "2025-04-19T00:53:25.337470"
+  },
+  {
+    "id": "658684b5-d9df-4dcc-a6b9-382ec0c680fd",
+    "name": "Sheppard's pie",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "LL"
+    ],
+    "servings": 12,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "Preheat oven to 375℉."
+      },
+      {
+        "step": 2,
+        "text": "In a pot with boiling water add diced sweet potatoes to a steamer basket and cook until tender, about 15 minutes. Alternatively, bake the sweet potatoes until fork tender, 45 to 60 minutes (see our directions for perfect baked sweet potatoes)."
+      },
+      {
+        "step": 3,
+        "text": "In a medium skillet over medium-high heat, sauté the ground beef, chopped carrots, green pepper,  onion, mushrooms, and garlic. Continue cooking until the carrots are soft, about 12-15 minutes. Begin making the sweet potato topping while the filling cooks."
+      },
+      {
+        "step": 4,
+        "text": "To make the topping: Place the peeled and baked/steamed sweet potato with all of the topping ingredients in a food processor (or blender) and process until smooth. NOTE: If using white potatoes, we recommend mashing them by hand rather than blending to prevent them from getting pasty."
+      },
+      {
+        "step": 5,
+        "text": "Back to the filling: Once the carrots are soft, stir in tomato paste, chili powder, rosemary, salt, black pepper, and water."
+      },
+      {
+        "step": 6,
+        "text": "Final step: Top the meat filling with the sweet potato mash. If you’re not using an oven-safe 10-inch cast-iron skillet, transfer the meat filling to a casserole dish or 9×9 inch baking dish and top the meat filling with the sweet potato mash. Sprinkle the top with a little sea salt and chili powder."
+      },
+      {
+        "step": 7,
+        "text": "Bake for 10 minutes. Remove from oven and serve."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.338616",
+    "updatedAt": "2025-04-19T00:53:25.338616"
+  },
+  {
+    "id": "9527b79a-52f4-4364-ac5b-b14d02cb0b0b",
+    "name": "Steak dinner with baked potatoes and steamed broccoli",
+    "category": "Entrees",
+    "cycle_tags": [],
+    "servings": 12,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Heat oven to 450°F."
+      },
+      {
+        "step": 2,
+        "text": "2. Wash and dry the potatoes, then poke them with a fork and place them over cooling racks in a sheet pan. Bake for 25 minutes."
+      },
+      {
+        "step": 3,
+        "text": "3. Mince the garlic."
+      },
+      {
+        "step": 4,
+        "text": "4. Brush the potatoes with melted butter, flip them and repeat. Sprinkle salt and pepper over them and bake them for another 20 minutes until golden and crisp."
+      },
+      {
+        "step": 5,
+        "text": "5. Season the steaks with salt, pepper and the minced garlic."
+      },
+      {
+        "step": 6,
+        "text": "6. Cook the steaks to you preference (pan seared, air fryer or grilled)."
+      },
+      {
+        "step": 7,
+        "text": "7. Steam the broccoli"
+      },
+      {
+        "step": 8,
+        "text": "8. Cut an opening on the potatoes, fluff the inside and season. Stuff with a little of cream cheese and chives."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.339862",
+    "updatedAt": "2025-04-19T00:53:25.339862"
+  },
+  {
+    "id": "43c7ba61-cbcc-45d1-aba7-9db843dfa88a",
+    "name": "Strogonoff",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "LL"
+    ],
+    "servings": 10,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Cut the steaks into strips, transfer to a bowl and keep at room temperature."
+      },
+      {
+        "step": 2,
+        "text": "2. On a cutting board, cut the button mushrooms into 3 slices and set aside."
+      },
+      {
+        "step": 3,
+        "text": "3. Peel and finely chop the onion and garlic."
+      },
+      {
+        "step": 4,
+        "text": "4. Bring a medium saucepan over medium heat. When hot, drizzle with 1 tablespoon of olive oil and brown the meat strips in batches. Turn with tongs to brown evenly. Set aside."
+      },
+      {
+        "step": 5,
+        "text": "5. Reduce the heat of the pan to low and drizzle with another tablespoon of olive oil. Add the onion and sauté until wilted, about 3 minutes, scraping the bottom of the pan well."
+      },
+      {
+        "step": 6,
+        "text": "6. Add the garlic and stir for just 1 minute to release the aroma."
+      },
+      {
+        "step": 7,
+        "text": "7. Add the tomato paste, ketchup, and stir well."
+      },
+      {
+        "step": 8,
+        "text": "8. Return the browned meat to the pan, add the Worcestershire sauce and cognac."
+      },
+      {
+        "step": 9,
+        "text": "9. Add the mushrooms and mix gently."
+      },
+      {
+        "step": 10,
+        "text": "10. Pour in the heavy cream, season with salt and pepper to taste. Mix well and let it cook over medium heat. After it starts to boil, let it cook for another 15 minutes, stirring occasionally, until the sauce thickens."
+      },
+      {
+        "step": 11,
+        "text": "11. Cook rice."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.341346",
+    "updatedAt": "2025-04-19T00:53:25.341346"
+  },
+  {
+    "id": "406f969e-8ca2-4380-9681-076b1720b7dc",
+    "name": "Sumac-Rubbed Lamb with Minty Artichokes",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "LL"
+    ],
+    "servings": 8,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Place a rack in middle of oven; preheat to 275°. If lamb is tied or trussed, remove any twine or netting."
+      },
+      {
+        "step": 2,
+        "text": "2. Sprinkle lamb all over with sumac, salt, and pepper."
+      },
+      {
+        "step": 3,
+        "text": "3. Cut garlic in halves, drain artichoke hearts and cut halved lengthwise;"
+      },
+      {
+        "step": 4,
+        "text": "4. Quarter the radishes and thinly slice shallots;"
+      },
+      {
+        "step": 5,
+        "text": "5. Reroll lamb so the fattier side is on top (it doesn’t have to be tight; you can just close it back up like a bit). Using 3–4 pieces of kitchen twine, tie lamb in 2\" intervals to close."
+      },
+      {
+        "step": 6,
+        "text": "6. Place bottom halves of both garlic heads, cut side up, in the center of a casserole and set lamb, fat side up, on top. Scatter cloves from remaining top halves of garlic heads around lamb, then tuck artichokes and sprigs of oregano around."
+      },
+      {
+        "step": 7,
+        "text": "7. Pour in wine and oil; season vegetables with salt and pepper. Roast lamb and artichokes for 2–2½ hours."
+      },
+      {
+        "step": 8,
+        "text": "8. Remove lamb and artichokes from oven and increase temperature to 500°. Once oven temperature is at 500°, slide baking dish back into oven and roast until fat on lamb is golden brown and artichokes are sizzling and starting to crisp around the edges, 10–12 minutes."
+      },
+      {
+        "step": 9,
+        "text": "9. Carefully transfer lamb to a cutting board and let rest at least 20 minutes."
+      },
+      {
+        "step": 10,
+        "text": "10. Meanwhile, scatter half of mint leaves over artichokes and toss well to coat."
+      },
+      {
+        "step": 11,
+        "text": "11. Toss radishes, shallot, and vinegar in a small bowl to combine; season radish salad with salt and pepper."
+      },
+      {
+        "step": 12,
+        "text": "12. Thinly slice lamb and arrange on a platter or serve directly on cutting board and spoon some of the artichoke mixture and any pan juices over."
+      },
+      {
+        "step": 13,
+        "text": "13. Scatter sesame seeds, oregano leaves, more sumac, and remaining mint on top."
+      },
+      {
+        "step": 14,
+        "text": "14. Spoon some greek yogurt into a bowl and serve lamb with radish salad, and remaining artichoke mixture alongside."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.343516",
+    "updatedAt": "2025-04-19T00:53:25.343516"
+  },
+  {
+    "id": "71c4cd60-256c-4c2d-a441-19a06e671f5d",
+    "name": "Teryaki Beef Stir-Fry with Bell Peppers, Bok Choy, and Rice",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "F",
+      "LL"
+    ],
+    "servings": 12,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Slice the meat and peppers, chop the bok choy, mince the garlic and grate the ginger."
+      },
+      {
+        "step": 2,
+        "text": "2. In a small bowl, whisk together the coconut aminos, honey, rice vinegar, 2 Tbsp sesame oil, 1 Tbsp grated ginger, and 1 garlic clove minced."
+      },
+      {
+        "step": 3,
+        "text": "3. In a separate small bowl, whisk together the cornstarch and veggie stock"
+      },
+      {
+        "step": 4,
+        "text": "4. Heat up a pan and add some sesame oil, sear the beef strips and set aside."
+      },
+      {
+        "step": 5,
+        "text": "5. Cook the rice."
+      },
+      {
+        "step": 6,
+        "text": "6. Add the bell peppers, garlic, and ginger to the skillet and sauté for 3-5 minutes, until the peppers are tender-crisp."
+      },
+      {
+        "step": 7,
+        "text": "7. Add the chopped bok choy and cook for another 2-3 minutes, until wilted but still slightly crisp."
+      },
+      {
+        "step": 8,
+        "text": "8. Add the cooked beef back to the skillet."
+      },
+      {
+        "step": 9,
+        "text": "9. Pour the teriyaki sauce over the beef and vegetables."
+      },
+      {
+        "step": 10,
+        "text": "10. Stir in the cornstarch slurry and cook for 1-2 minutes, until the sauce thickens."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.344898",
+    "updatedAt": "2025-04-19T00:53:25.344898"
+  },
+  {
+    "id": "38ac1a1f-2ee1-418e-8d1e-711164a940b9",
+    "name": "Turkey and Mushroom Stir Fry with Peanut Sauce",
+    "category": "Entrees",
+    "cycle_tags": [
+      "F",
+      "O",
+      "ML"
+    ],
+    "servings": 8,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Prepare the Turkey: Slice the turkey breast into thin strips or julienne cuts"
+      },
+      {
+        "step": 2,
+        "text": "2. Prepare the Vegetables: Julienne the Carrots, slice the bell peppers, onions, and shiitake mushrooms. Mince the garlic and grate the ginger"
+      },
+      {
+        "step": 3,
+        "text": "3. Cook the Turkey: Heat 2 tablespoons of sesame oil in a very large skillet, wok, or Dutch oven over medium-high heat. Cook the turkey in batches, and set aside"
+      },
+      {
+        "step": 4,
+        "text": "4. Sauté the Vegetables: Add the sliced onions, bell peppers, Carrots, and shiitake mushrooms to the skillet. Cook vegetables until tender-crisp. Add garlic and ginger, cook until fragrant"
+      },
+      {
+        "step": 5,
+        "text": "5. Combine the Stir-Fry: Add all the cooked turkey back to the skillet. Add soy sauce, rice vinegar, red pepper flakes, and sesame seeds. Stir."
+      },
+      {
+        "step": 6,
+        "text": "6. Prepare the Peanut Sauce: Whisk together peanut butter, soy sauce, rice vinegar, honey or maple syrup, lime juice, sriracha, and warm water or broth"
+      },
+      {
+        "step": 7,
+        "text": "7. Combine and Simmer: Pour the peanut sauce over the turkey and vegetable mixture. Simmer until the sauce thickens."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.346767",
+    "updatedAt": "2025-04-19T00:53:25.346767"
+  },
+  {
+    "id": "3c568d99-e97d-4cda-8c53-64e47c72c042",
+    "name": "Roasted Ham & Pineapple Chutney",
+    "category": "Entrees",
+    "cycle_tags": [
+      "M",
+      "ML",
+      "LL"
+    ],
+    "servings": 20,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Cut the pineapple, apple and onion in brunoise of about 1/2cm, coat the apples in lime juice."
+      },
+      {
+        "step": 2,
+        "text": "2. Finely chop the fresno pepper, grate the ginger and mince the garlic."
+      },
+      {
+        "step": 3,
+        "text": "3. Heat up a pan and melt the butter over low heat."
+      },
+      {
+        "step": 4,
+        "text": "4. Sautee the onions until transparent, add the fresno pepper, ginger and garlic sautee it for one minute."
+      },
+      {
+        "step": 5,
+        "text": "5. Add the curry powder, salt and pepper and combine everything."
+      },
+      {
+        "step": 6,
+        "text": "6. Add the pineapple and apple to the pan and cook it for 5 minutes, allowing the fruit to leak all juices."
+      },
+      {
+        "step": 7,
+        "text": "7. Add the brown sugar and raisins and cook it in slow heat for 30 minutes up to an hour stirring occasionally."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.348166",
+    "updatedAt": "2025-04-19T00:53:25.348166"
+  },
+  {
+    "id": "79bf8049-2137-4f1f-aae2-8d8be1347744",
+    "name": "Apple with peanut butter and dark chocolate",
+    "category": "Snacks",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Slice apples and chop chocolate"
+      },
+      {
+        "step": 2,
+        "text": "2. Drizzle peanut butter"
+      },
+      {
+        "step": 3,
+        "text": "3. Sprinkle the chocolate all over it"
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.359091",
+    "updatedAt": "2025-04-19T00:53:25.359091"
+  },
+  {
+    "id": "8a2d4b88-7543-4daa-ae8e-59972f4b1451",
+    "name": "Greek Yogurt",
+    "category": "Snacks",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "Peel open and enjoy!"
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.359305",
+    "updatedAt": "2025-04-19T00:53:25.359305"
+  },
+  {
+    "id": "5267932b-f9d9-42f4-a69d-7ae69ca7e946",
+    "name": "Trail Mix",
+    "category": "Snacks",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Place all ingredients in a snack ziplock."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.359893",
+    "updatedAt": "2025-04-19T00:53:25.359893"
+  },
+  {
+    "id": "e8e04ce1-e283-44ff-8523-bbb7888db7f1",
+    "name": "Hummus & Veggie Sticks",
+    "category": "Snacks",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Peel and cut the carrot, cucumber and celery into sticks"
+      },
+      {
+        "step": 2,
+        "text": "2. Dip into the hummus and enjoy."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.360601",
+    "updatedAt": "2025-04-19T00:53:25.360601"
+  },
+  {
+    "id": "54744b7a-5c10-4f6a-84d1-f5553525c453",
+    "name": "Guacamole",
+    "category": "Snacks",
+    "cycle_tags": [
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 7,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Halve and dice the avocados off of the peel;"
+      },
+      {
+        "step": 2,
+        "text": "2. In a food processor, blend the avocados, lime juice, salt and pepper;"
+      },
+      {
+        "step": 3,
+        "text": "3. Dice the peppers and onion, mix it into the avocado."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.361603",
+    "updatedAt": "2025-04-19T00:53:25.361603"
+  },
+  {
+    "id": "e8078a5b-6e94-4153-8bec-449e75359ced",
+    "name": "Fruit Salad",
+    "category": "Desserts",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 15,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Dice up all the larger fruit, cut the strawberries and grapes in half;"
+      },
+      {
+        "step": 2,
+        "text": "2. Mix the cinnamon into the orange juice and dress the fruit salad with it."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.411788",
+    "updatedAt": "2025-04-19T00:53:25.411788"
+  },
+  {
+    "id": "17ea9720-36b3-4ccc-9184-6a27ff571646",
+    "name": "Greek Yogurt Popsicles",
+    "category": "Desserts",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Mix the vanilla and syrup with the yogurt;"
+      },
+      {
+        "step": 2,
+        "text": "2. Layer the yogurt and the jam on popsicles molds;"
+      },
+      {
+        "step": 3,
+        "text": "3. Using a utensil to swirl the greek yogurt and jam a little"
+      },
+      {
+        "step": 4,
+        "text": "4. Close the mold and place it in the freezer until completely frozen."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.412309",
+    "updatedAt": "2025-04-19T00:53:25.412309"
+  },
+  {
+    "id": "098e469f-6a55-45c1-817d-04e7f37a329b",
+    "name": "Chia Pudding",
+    "category": "Desserts",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "1. Mix the coconut milk, chia seeds, syrup and vanilla and let it sit overnight;"
+      },
+      {
+        "step": 2,
+        "text": "2. Top it with the jam and enjoy."
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.412832",
+    "updatedAt": "2025-04-19T00:53:25.412832"
+  },
+  {
+    "id": "8a869dd2-17ac-45a5-81fb-a118899364c1",
+    "name": "Dark Chocolate",
+    "category": "Desserts",
+    "cycle_tags": [
+      "M",
+      "F",
+      "O",
+      "ML",
+      "LL"
+    ],
+    "servings": 1,
+    "prep_time": 0,
+    "instructions": [
+      {
+        "step": 1,
+        "text": "Just enjoy!"
+      }
+    ],
+    "image_url": "",
+    "createdAt": "2025-04-19T00:53:25.413066",
+    "updatedAt": "2025-04-19T00:53:25.413066"
+  }
+]
