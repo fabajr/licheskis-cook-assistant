@@ -10,7 +10,7 @@ const getBaseUrl = () => {
     // In development...
     const projectId = 'licheskis-cook-assintant'; 
     const region = 'us-central1'; 
-    return `http://localhost:5001/${projectId}/${region}`;
+    return `http://localhost:5001/${projectId}/${region}/api`;
   }
 };
 
