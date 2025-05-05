@@ -1,93 +1,82 @@
 import axios from 'axios';
 
-// Determine API base URL based on environment
+// Determina a base URL conforme ambiente
 const getBaseUrl = () => {
-  const isProduction = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
+  const isProduction =
+    window.location.hostname !== 'localhost' &&
+    !window.location.hostname.includes('127.0.0.1');
+
   if (isProduction) {
-    // In production, use a relative path that Firebase Hosting will rewrite
-    return '/api'; 
+    // Produção: Firebase Hosting cuida do rewrite /api → função
+    return '/api';
   } else {
-    // In development...
-    const projectId = 'licheskis-cook-assintant'; 
-    const region = 'us-central1'; 
-    // Ensure /api is included for emulator consistency
-    return `http://localhost:5001/${projectId}/${region}/api`; 
+    // Desenvolvimento: Functions emulator no localhost
+    const projectId = 'licheskis-cook-assintant';
+    const region    = 'us-central1';
+    return `http://localhost:5001/${projectId}/${region}/api`;
   }
 };
 
-
-// Create an Axios instance with the base URL
+// Cria instância Axios
 const apiClient = axios.create({
   baseURL: getBaseUrl(),
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Optional: Add interceptors for logging or error handling
-apiClient.interceptors.request.use(
-  (config) => {
-    console.log(`Sending request to: ${config.baseURL}${config.url}`);
-    return config;
-  },
-  (error) => {
-    console.error('Request Error:', error);
-    return Promise.reject(error);
-  }
-);
-
+// Log de requisições/respostas (opcional)
+apiClient.interceptors.request.use(cfg => {
+  console.log(`→ ${cfg.method.toUpperCase()} ${cfg.baseURL}${cfg.url}`);
+  return cfg;
+});
 apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    console.error('Response Error:', error.response || error.message);
-    return Promise.reject(error);
+  res => res,
+  err => {
+    console.error('← Response Error:', err.response?.status, err.response?.data || err.message);
+    return Promise.reject(err);
   }
 );
 
-// --- Define API functions here --- 
+// ————— RECEITAS —————
 
-// Function to get all recipes
+// GET /recipes
 export const getRecipes = async (filters = {}) => {
-  try {
-    const response = await apiClient.get('/recipes', { params: filters });
-    return response.data; 
-  } catch (error) {
-    console.error('Error in getRecipes:', error);
-    throw error;
-  }
+  const res = await apiClient.get('/recipes', { params: filters });
+  return res.data;
 };
 
-// Function to get a single recipe by ID
-export const getRecipeById = async (id) => {
-  if (!id) {
-    throw new Error("Recipe ID is required to fetch details.");
-  }
-  try {
-    const response = await apiClient.get(`/recipes/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching recipe with ID ${id}:`, error);
-    throw error;
-  }
+// GET /recipes/:id
+export const getRecipeById = async id => {
+  const res = await apiClient.get(`/recipes/${id}`);
+  return res.data;
 };
 
-// Function to create a new recipe
-export const createRecipe = async (recipeData) => {
-  try {
-    const response = await apiClient.post("/recipes", recipeData);
-    return response.data;
-  } catch (error) {
-    console.error("Error creating recipe via API:", error.response?.data || error.message);
-    throw error;
-  }
+// POST /recipes
+export const createRecipe = async recipeData => {
+  const res = await apiClient.post('/recipes', recipeData);
+  return res.data;
 };
 
+// ————— INGREDIENTS LOCAL —————
 
-// Add other functions for updating recipes, ingredients, etc.
-// export const updateRecipe = async (id, recipeData) => { ... };
-// export const getIngredients = async () => { ... };
-// export const addIngredient = async (ingredientData) => { ... };
+// GET /ingredients?search=termo
+// Se o backend não filtra por search, retorna todos e filtra no client
+export const searchLocalIngredients = async term => {
+  const res = await apiClient.get('/ingredients', {
+    params: term ? { search: term } : {}
+  });
+  let list = res.data || [];
+  if (term) {
+    const lower = term.trim().toLowerCase();
+    list = list.filter(i => i.name.toLowerCase().includes(lower));
+  }
+  return list;
+};
 
-// Export the configured Axios instance if needed elsewhere
-// export default apiClient;
+// POST /ingredients
+export const createIngredient = async payload => {
+  const res = await apiClient.post('/ingredients', payload);
+  return res.data;
+};
 
+// ————— EXPORTA instância caso precise —————
+export default apiClient;
