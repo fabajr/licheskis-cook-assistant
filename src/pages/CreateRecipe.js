@@ -2,12 +2,14 @@
 
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 // Ensure correct import for createRecipe (used as saveRecipeToApi)
-import {
-  createRecipe as saveRecipeToApi,
-  searchLocalIngredients,
-  createIngredient as createIngredientInApi,
-} from '../services/api';
 
+import { 
+          createRecipe as saveRecipeToApi,
+          getRecipeById,
+          getRecipes,
+}from '../services/api/recipes';
+
+import { ingredients_db } from '../services/api/ingredients';
 
 // Helpers mínimos para quantidade e unidades
 const commonUnits = ['GRAMS','CUP','TBSP','TSP','OZ','ML','L','UNIT','SCOOP','PINCH','LBS','KG'];
@@ -154,7 +156,7 @@ function CreateRecipe() {
 
     setIsLoadingSearch(true);
     try {
-      const localResults = await searchLocalIngredients(term);
+      const localResults = await ingredients_db.search(term);
       setLocalSearchResults(localResults || []);
       // Show form only if search term is valid AND no results found
       setShowNewIngredientForm(term.trim().length >= 2 && (!localResults || localResults.length === 0));

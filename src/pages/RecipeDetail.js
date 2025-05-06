@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getRecipeById } from '../services/api'; // Adjust path if needed
+import { getRecipeById } from '../services/api/recipes'; // Adjust path if needed
 
 function RecipeDetail() {
   const { id } = useParams(); // Get the recipe ID from the URL parameter

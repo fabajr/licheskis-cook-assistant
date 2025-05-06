@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getRecipes } from '../services/api'; // adjust path if needed
+import { getRecipes } from '../services/api/recipes'; // adjust path if needed
 
 function Home() {
   const [recipes, setRecipes] = useState([]);
