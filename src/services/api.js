@@ -58,19 +58,39 @@ export const createRecipe = async recipeData => {
 
 // ————— INGREDIENTS LOCAL —————
 
-// GET /ingredients?search=termo
-// Se o backend não filtra por search, retorna todos e filtra no client
+const searchCache = new Map(); // um cache simples em memória
+
+/**
+ * Busca ingredientes localmente no backend e faz cache dos resultados
+ * para evitar hits repetidos ao longo do dia.
+ */
 export const searchLocalIngredients = async term => {
-  const res = await apiClient.get('/ingredients', {
-    params: term ? { search: term } : {}
-  });
-  let list = res.data || [];
-  if (term) {
-    const lower = term.trim().toLowerCase();
-    list = list.filter(i => i.name.toLowerCase().includes(lower));
+  const key = term.trim().toLowerCase();
+  if (key.length < 2) {
+    // devolve vazio sem nem bater no backend quando o termo for curto
+    return [];
   }
+
+  // se já tiver no cache, devolve imediatamente
+  if (searchCache.has(key)) {
+    return searchCache.get(key);
+  }
+
+  // senão, faz a chamada original
+  const res = await apiClient.get('/ingredients', { params: { search: term } });
+  let list = res.data || [];
+
+  // opcional: filtro extra no front, se precisar
+  list = list.filter(i => i.name.toLowerCase().includes(key));
+
+  // guarda no cache e retorna
+  searchCache.set(key, list);
   return list;
 };
+
+
+
+
 
 // POST /ingredients
 export const createIngredient = async payload => {
