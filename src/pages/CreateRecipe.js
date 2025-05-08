@@ -15,7 +15,6 @@ import  {
   recipeCategoryOptions, 
   newIngredientCategoryOptions,
   cyclePhaseOptions ,
-  unitOptionsMap, 
   getUnitOptions, 
   parseQuantity,
 } from '../services/utils/utils';
