@@ -1,13 +1,13 @@
 // src/pages/Home.js
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getRecipes } from '../services/api/recipes'; // adjust path if needed
+import { Link }                        from 'react-router-dom';
+import { getRecipes }                  from '../services/api/recipes';
 
 function Home() {
-  const [recipes, setRecipes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);  // ← fixed here
+  const [recipes, setRecipes]   = useState([]);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -80,9 +80,13 @@ function Home() {
                           : recipe.description
                         : 'No description available.'}
                     </p>
-                    <button className="btn btn-secondary mt-auto" disabled>
-                      View Details (Coming Soon)
-                    </button>
+                    {/* View Details now navigates to /recipes/:id */}
+                    <Link
+                      to={`/recipes/${recipe.id}`}
+                      className="btn btn-secondary mt-auto"
+                    >
+                      View Details
+                    </Link>
                   </div>
                 </div>
               </div>

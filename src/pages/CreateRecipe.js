@@ -4,91 +4,21 @@ import React, { useRef, useState, useEffect, useCallback } from 'react';
 // Ensure correct import for createRecipe (used as saveRecipeToApi)
 
 import { 
-          createRecipe as saveRecipeToApi,
-          getRecipeById,
-          getRecipes,
+  createRecipe as saveRecipeToApi,
+  getRecipeById,
+  getRecipes,
 }from '../services/api/recipes';
 
 import { ingredients_db } from '../services/api/ingredients';
 
-// Helpers mínimos para quantidade e unidades
-const commonUnits = ['GRAMS','CUP','TBSP','TSP','OZ','ML','L','UNIT','SCOOP','PINCH','LBS','KG'];
-
-
-const categoryOptions = [
-  'Breakfast',
-  'Soups&Salads',
-  'Entrees',
-  'Snacks',
-  'Desserts',
-];
-
-const newIngredientCategoryOptions = [
-  "Baking",
-  "Beverages",
-  "Canned & Jarred Goods",
-  "Condiments & Sauces",
-  "Dairy",
-  "Herbs",
-  "Meat & Seafood",
-  "Nuts & Seeds",
-  "Oils & Vinegars",
-  "Pantry",
-  "Produce",
-  "Spices"
-];
-
-// mapeamento categoria → lista de unidades
-const unitOptionsMap = {
-  Baking:                   ["CUP","TBSP","TSP","G","KG"],
-  Beverages:                ["FL OZ","CUP","L","ML","BOTTLE"],
-  "Canned & Jarred Goods":  ["CAN","OZ","G","KG"],
-  "Condiments & Sauces":    ["TBSP","TSP","FL OZ"],
-  Dairy:                    ["CUP","PT","QT","OZ"],
-  Herbs:                    ["BUNCH","STEAMS","TBSP","TSP"],
-  "Meat & Seafood":         ["LB","OZ","G","KG"],
-  "Nuts & Seeds":           ["CUP","OZ","G","KG"],
-  "Oils & Vinegars":        ["TBSP","FL OZ","ML"],
-  Pantry:                   ["CUP","OZ","G","KG"],
-  Produce:                  ["UNIT","LB","OZ","KG"],
-  Spices:                   ["TSP","PINCH","TBSP"]
-};
-
-// normalize map para lookup case-insensitive
-const unitOptionsMapNormalized = Object.fromEntries(
-  Object.entries(unitOptionsMap).map(([k,v]) => [k.toLowerCase(), v])
-);
-
-const getUnitOptions = category => {
-  if (!category) return [];
-  return unitOptionsMapNormalized[category.toLowerCase()] || [];
-};
-
-// Opções de fase do ciclo menstrual
-// (para tags de receita)
-const cyclePhaseOptions = [
-  { label: 'Menstruation', value: 'M' },
-  { label: 'Late Follicular', value: 'L' },
-  { label: 'Ovulatory', value: 'O' },
-  { label: 'Mid-Luteal', value: 'ML' },
-  { label: 'Late-Luteal', value: 'LL' },
-];
-
-function parseQuantity(qtyStr) {
-  // exemplo simples: suporta "1", "1/2", "1 1/2"
-  if (!qtyStr) return 0;
-  const parts = String(qtyStr).split(' ').filter(Boolean);
-  let total = 0;
-  for (let p of parts) {
-    if (p.includes('/')) {
-      const [num, den] = p.split('/').map(Number);
-      if (!isNaN(num) && !isNaN(den) && den !== 0) total += num/den;
-    } else if (!isNaN(Number(p))) {
-      total += Number(p);
-    }
-  }
-  return total;
-}
+import  {
+  recipeCategoryOptions, 
+  newIngredientCategoryOptions,
+  cyclePhaseOptions ,
+  unitOptionsMap, 
+  getUnitOptions, 
+  parseQuantity,
+} from '../services/utils/utils';
 
 
 
@@ -275,7 +205,9 @@ function CreateRecipe() {
     setIngredientSearchTerm(ing.name);
     setLocalSearchResults([]); // Hide dropdown
     setShowNewIngredientForm(false); // Hide new ingredient form
-    setIngredientUnit(commonUnits.includes(ing.default_unit) ? ing.default_unit : '');
+    //verificar se vai bugar
+    //setIngredientUnit(commonUnits.includes(ing.default_unit) 
+    // ? ing.default_unit : '');
   };
 
   // Add ingredient to the recipe list (in state)
@@ -303,7 +235,7 @@ function CreateRecipe() {
         quantity: ingredientQuantity, // Keep original string for display/editing?
         unit: ingredientUnit,
         fdcId: selectedLocalIngredient.fdcId || null,
-        calculatedKcal: selectedLocalIngredient.kcal_per_unit || null, // Or calculate based on qty?
+        kcal_per_unit: selectedLocalIngredient.kcal_per_unit || null, // Or calculate based on qty?
         // Mark as existing
         isNew: false,
         category: selectedLocalIngredient.category,
@@ -577,7 +509,7 @@ function CreateRecipe() {
             onChange={(e) => setCategory(e.target.value)}
             >
           <option value="">Select Category...</option>
-          {categoryOptions.map((opt) => (
+          {recipeCategoryOptions.map((opt) => (
             <option key={opt} value={opt}>
               {opt}
             </option>

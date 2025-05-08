@@ -13,7 +13,7 @@ const getBaseUrl = () => {
     // Desenvolvimento: Functions emulator no localhost
     const projectId = 'licheskis-cook-assintant';
     const region    = 'us-central1';
-    return `http://localhost:5001/${projectId}/${region}/api/api`;
+    return `http://localhost:5001/${projectId}/${region}/api`;
   }
 };
 

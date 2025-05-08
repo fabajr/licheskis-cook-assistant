@@ -3,14 +3,19 @@
  * Turn a string like "1/2", "2", "1.5" into a Number.
  * Returns 0 for invalid or ≤ 0.
  */
-module.exports = function parseQuantity(qtyStr) {
-    if (typeof qtyStr !== 'string') return 0;
-    const parts = qtyStr.split('/').map(s => s.trim());
-    let num =
-      parts.length === 2
-        ? parseFloat(parts[0]) / parseFloat(parts[1])
-        : parseFloat(qtyStr);
-    if (isNaN(num) || num <= 0) return 0;
-    return num;
-  };
-  
+
+  module.exports = function parseQuantity(qtyStr) {
+    // exemplo simples: suporta "1", "1/2", "1 1/2"
+    if (!qtyStr) return 0;
+    const parts = String(qtyStr).split(' ').filter(Boolean);
+    let total = 0;
+    for (let p of parts) {
+      if (p.includes('/')) {
+        const [num, den] = p.split('/').map(Number);
+        if (!isNaN(num) && !isNaN(den) && den !== 0) total += num/den;
+      } else if (!isNaN(Number(p))) {
+        total += Number(p);
+      }
+    }
+    return total;
+  } 
