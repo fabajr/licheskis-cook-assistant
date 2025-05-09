@@ -1,11 +1,17 @@
 import apiClient from '../client';
 
 // GET /recipes
-export const getRecipes = async (filters = {}) => {
-    const res = await apiClient.get('/recipes', { params: filters });
-    return res.data;
-  };
-  
+/**
+ * Busca receitas paginadas.
+ * @param {string|null} nextPageToken – token da próxima página (null na primeira chamada)
+ * @returns {Promise<{ recipes: Array, nextPageToken: string|null }>}
+ */
+  export const getRecipes = async (nextPageToken = null) => {
+    const res = await apiClient.get('/recipes', {
+      params: { nextPageToken }
+    });
+    return res.data; // { recipes, nextPageToken }
+  }
   // GET /recipes/:id
   export const getRecipeById = async id => {
     const res = await apiClient.get(`/recipes/${id}`);
@@ -18,4 +24,9 @@ export const getRecipes = async (filters = {}) => {
     return res.data;
   };
 
+  // UPDATE /recipes/:id
+  export const updateRecipe = async (id, recipeData) => {
+    const res = await apiClient.put(`/recipes/${id}`, recipeData);
+    return res.data;
+  };
   
