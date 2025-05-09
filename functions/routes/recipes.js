@@ -73,7 +73,7 @@ if (!Array.isArray(ingredients) || ingredients.length === 0) {
       category,
       cycle_tags,
       image_url,
-      createdAt: new Date().toISOString(),
+      createdAt: FieldValue.serverTimestamp(),
     });
 
     // 4) For each ingredient, possibly create it, then link in recipe_ingredients
@@ -183,6 +183,7 @@ router.get('/recipes/:id', async (req, res) => {
     const recipeGlutenFree  = ingredients.every(i => i.is_gluten_free);
 
     // 7) Stub totalKcal (replace with your real sum logic later)
+    // TODO: Implement proper logic to calculate totalKcal based on ingredients
     const totalKcal = ingredients.reduce(
       (sum, i) => sum + (i.quantity * i.kcal_per_unit),
       0
@@ -208,5 +209,151 @@ router.get('/recipes/:id', async (req, res) => {
   }
 });
 
+router.put('/recipes/:id', async (req, res) => {
+  const recipeId = req.params.id;
+  const {
+    name,
+    description,
+    instructions,
+    prep_time,
+    servings,
+    category,
+    cycle_tags,
+    image_url,
+    ingredients
+  } = req.body;
+
+  // 1) Basic validation
+  if (!name?.trim()) {
+    return res.status(400).json({ error: 'Recipe name is required.' });
+  }
+  if (!category?.trim()) {
+    return res.status(400).json({ error: 'Recipe category is required.' });
+  }
+  if (
+    servings == null ||
+    typeof servings !== 'number' ||
+    !Number.isInteger(servings) ||
+    servings <= 0
+  ) {
+    return res
+      .status(400)
+      .json({ error: 'Servings must be a positive integer.' });
+  }
+  if (!Array.isArray(ingredients) || ingredients.length === 0) {
+    return res
+      .status(400)
+      .json({ error: 'At least one ingredient is required.' });
+  }
+
+  try {
+    // 2) Transaction: update recipe + replace links atomically
+    await db.runTransaction(async tx => {
+      const recipeRef = db.collection('recipes').doc(recipeId);
+
+      // 2a) update recipe fields
+      tx.update(recipeRef, {
+        name,
+        description,
+        instructions,
+        prep_time,
+        servings,
+        category,
+        cycle_tags,
+        image_url,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+
+      // 2b) delete old links
+      const oldLinksSnap = await tx.get(
+        db.collection('recipe_ingredients').where('recipe_id', '==', recipeId)
+      );
+      oldLinksSnap.forEach(docSnap => tx.delete(docSnap.ref));
+
+      // 2c) create new links
+      ingredients.forEach(ing => {
+        const linkRef = db.collection('recipe_ingredients').doc();
+        tx.set(linkRef, {
+          recipe_id:     recipeId,
+          ingredient_id: ing.ingredient_id,
+          quantity:      ing.quantity,
+          unit:          ing.unit
+        });
+      });
+    });
+
+    // 3) After commit, re-fetch & enrich payload
+    const recipeSnap = await db.collection('recipes').doc(recipeId).get();
+    const recipeData = recipeSnap.data();
+
+    const linksSnap = await db
+      .collection('recipe_ingredients')
+      .where('recipe_id', '==', recipeId)
+      .get();
+    const links = linksSnap.docs.map(d => d.data());
+
+    // fetch all ingredient masters
+    const ingDocs = await Promise.all(
+      links.map(l => db.collection('ingredients').doc(l.ingredient_id).get())
+    );
+
+    const ingMap = {};
+    const missingIngredients = [];
+    ingDocs.forEach(snap => {
+      if (snap.exists) ingMap[snap.id] = snap.data();
+      else missingIngredients.push(snap.id);
+    });
+
+    const ingredientsArray = links
+      .map(l => {
+        const master = ingMap[l.ingredient_id];
+        if (!master) return null;
+        return {
+          ingredient_id:  l.ingredient_id,
+          name:           master.name,
+          quantity:       l.quantity,
+          unit:           l.unit,
+          is_vegan:       master.is_vegan,
+          is_gluten_free: master.is_gluten_free,
+          kcal_per_unit:  master.kcal_per_unit,
+          default_unit:   master.default_unit
+        };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    // compute recipe flags & totals
+    const recipeVegan      = ingredientsArray.every(i => i.is_vegan);
+    const recipeGlutenFree = ingredientsArray.every(i => i.is_gluten_free);
+    const totalKcal        = ingredientsArray.reduce(
+      (sum, i) => sum + i.kcal_per_unit * i.quantity,
+      0
+    );
+    const cycle_tags_labels = (recipeData.cycle_tags || []).map(tag => {
+      const opt = cyclePhaseOptions.find(o => o.value === tag);
+      return opt ? opt.label : tag;
+    });
+
+    // 4) send enriched response
+    return res.json({
+      id:                  recipeId,
+      ...recipeData,
+      ingredients:         ingredientsArray,
+      missingIngredients,
+      recipeVegan,
+      recipeGlutenFree,
+      totalKcal,
+      cycle_tags_labels
+    });
+  } catch (err) {
+    console.error('Error updating recipe:', err);
+    return res
+      .status(500)
+      .json({ error: 'Failed to update recipe.', details: err.message });
+  }
+});
+
+// This router handles all recipe-related API endpoints, including creating, reading, updating, 
+// and deleting recipes. It interacts with Firestore to manage recipe data and related ingredients.
 module.exports = router;
 
