@@ -421,11 +421,10 @@ function handleEditIngredient(index) {
       category,
       cycle_tags: cycleTags,
       image_url: imageUrl || null,
-      ingredients: ingredients.map(i => ({
-          ingredient_id: i.ingredient_id ?? null,    // 👈 nunca undefined
-          quantity:      parseQuantity(i.quantity),   // número
-          unit:          i.unit                       // string
-        }))
+      ingredients: ingredients.map(ing => ({
+            ...ing,
+            quantity: parseQuantity(ing.quantity)
+          }))
 };
 
   try {
