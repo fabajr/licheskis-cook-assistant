@@ -1,34 +1,34 @@
-//src/components/ProtectedRoute.jsx
-
+// src/components/ProtectedRoute.jsx
 import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 /**
- * ProtectedRoute bloqueia acesso a rotas para usuários não autenticados
- * ou sem papel de admin, se requireAdmin=true.
+ * ProtectedRoute checks authentication and role, rendering children or navigating.
+ * Displays alerts before redirecting to provide clear feedback.
+ * Usage:
+ * <ProtectedRoute requireAdmin>
+ *   <Component />
+ * </ProtectedRoute>
  */
-export function ProtectedRoute({ component: Component, requireAdmin, ...rest }) {
+export function ProtectedRoute({ requireAdmin, children }) {
   const { user, role, loading } = useAuth();
 
-  // enquanto carrega o estado de auth, não renderiza nada
+  // While auth state is loading
   if (loading) return null;
 
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        if (!user) {
-          // não logado → redireciona p/ login
-          return <Navigate to="/login" />;
-        }
-        if (requireAdmin && role !== 'admin') {
-          // logado mas não é admin → tela inicial
-          return <Navigate to="/" />;
-        }
-        // autorizado → renderiza o componente
-        return <Component {...props} />;
-      }}
-    />
-  );
+  // If not logged in, alert and redirect to login
+  if (!user) {
+    alert('You must be logged in to view this page.');
+    return <Navigate to="/login" replace />;
+  }
+
+  // If admin role is required and user is not admin, alert and redirect to home
+  if (requireAdmin && role !== 'admin') {
+    alert('You do not have permission to access this page.');
+    return <Navigate to="/" replace />;
+  }
+
+  // Authorized
+  return <>{children}</>;
 }

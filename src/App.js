@@ -22,8 +22,8 @@ import Signup from './pages/Signup';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Recipe Forms
-import CreateRecipe from './components/CreateRecipe';
-import EditRecipe from './components/EditRecipe';
+import CreateRecipe from './pages/CreateRecipe';
+import EditRecipe from './pages/EditRecipe';
 
 function App() {
   return (
