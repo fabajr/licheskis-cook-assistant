@@ -1,12 +1,12 @@
 // functions/routes/ingredients.js
-const { Router } = require('express');
-const { getFirestore, FieldValue } = require('firebase-admin/firestore');
+const { FieldValue } = require('firebase-admin/firestore');
 
-const db = getFirestore();
-const router = Router();
+const router = require('express').Router();
+const auth   = require('../middleware/auth');
+const { db, admin } = require('../firebaseAdmin');
 
 // GET /ingredients
-router.get('/ingredients', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const q = req.query.search || '';
     const snap = await db.collection('ingredients').get();
@@ -23,7 +23,7 @@ router.get('/ingredients', async (req, res) => {
 });
 
 // POST /ingredients
-router.post('/ingredients', async (req, res) => {
+router.post('/', auth,  async (req, res) => {
   try {
     const payload = { ...req.body, createdAt: FieldValue.serverTimestamp() };
     const ref = await db.collection('ingredients').add(payload);
