@@ -647,7 +647,10 @@ export default function EditRecipe() {
         
         {/* Basic Recipe Fields (same layout as CreateRecipe) */}
         {/* ... replicate CreateRecipe JSX, prefilled with state values ... */}
+        <div className="d-flex justify-content-start gap-2">
         <button type="submit" className="btn btn-primary">Save Changes</button>
+        <button type='button' className="btn btn-primary" onClick={() => navigate(`/recipes/${id}`)}> Cancel </button>
+        </div>          
       </form>
     </div>
   );
