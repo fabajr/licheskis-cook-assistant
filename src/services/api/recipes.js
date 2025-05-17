@@ -29,4 +29,10 @@ import apiClient from '../client';
     const res = await apiClient.put(`/recipes/${id}`, recipeData);
     return res.data;
   };
+
+  // DELETE /recipes/:id
+  export const deleteRecipe = async id => {
+    const res = await apiClient.delete(`/recipes/${id}`);
+    return res.data;
+  };
   
