@@ -1,176 +1,245 @@
 // src/pages/RecipeDetail.js
 import React, { useState, useEffect } from 'react';
-import { useParams, Link }           from 'react-router-dom';
-import { getRecipeById }              from '../services/api/recipes';
-import veganIcon                      from '../assets/vegan.png';
-import gfIcon                         from '../assets/gluten-free.png';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getRecipeById, deleteRecipe } from '../services/api/recipes';
 
-function RecipeDetail() {
+export default function RecipeDetail() {
   const { id } = useParams();
-  const [recipe, setRecipe]   = useState(null);
+  const navigate = useNavigate();
+  const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) return;
-
-    (async () => {
-      setLoading(true);
-      setError(null);
-
+    let isMounted = true;
+    async function fetchRecipe() {
       try {
+        setLoading(true);
         const data = await getRecipeById(id);
-        console.log('Full recipe GET payload:', data);
-        
-        if (Array.isArray(data.missingIngredients) && data.missingIngredients.length) {
-          alert(
-            `Warning: ${data.missingIngredients.length} ingredient(s) ` +
-            `not found: ${data.missingIngredients.join(', ')}`
-          );
-        }
-
-        setRecipe(data);
+        if (isMounted) setRecipe(data);
       } catch (err) {
-        console.error(`Error fetching recipe ${id}:`, err);
-        setError('Failed to load recipe details.');
+        console.error(err);
+        if (isMounted) setError('Failed to load recipe. Please try again.');
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
-    })();
+    }
+    fetchRecipe();
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this recipe?')) return;
+    try {
+      await deleteRecipe(id);
+      navigate('/recipes');
+    } catch (err) {
+      console.error(err);
+      alert('Could not delete recipe.');
+    }
+  };
+
+  const phaseClasses = {
+    M: 'phase-M',
+    F: 'phase-F',
+    O: 'phase-O',
+    ML: 'phase-ML',
+    LL: 'phase-LL',
+  };
+
+  const phaseNames = {
+    M: 'Menstrual',
+    F: 'Follicular',
+    O: 'Ovulation',
+    ML: 'Mid-Luteal',
+    LL: 'Late-Luteal',
+  };
+
   if (loading) {
-    return <div className="container mt-4"><p>Loading recipe details...</p></div>;
-  }
-  if (error) {
-    return <div className="container mt-4 alert alert-danger">{error}</div>;
-  }
-  if (!recipe) {
-    return <div className="container mt-4"><p>Recipe not found.</p></div>;
+    return (
+      <div className="text-center my-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
-  // Destructure the enriched payload
+  if (error) {
+    return (
+      <div className="alert alert-danger my-5" role="alert">
+        {error}
+      </div>
+    );
+  }
+
+  if (!recipe) {
+    return (
+      <div className="alert alert-warning my-5" role="alert">
+        Recipe not found.
+      </div>
+    );
+  }
+
+  // Destructure with defaults
   const {
-    name,
-    image_url,
-    description,
-    prep_time,
-    servings,
-    category,
-    recipeVegan,
-    recipeGlutenFree,
-    totalKcal,
-    cycle_tags_labels = [],
+    name = '',
+    description = '',
+    category = 'Uncategorized',
+    total_calories = null,
+    servings = null,
+    prep_time = null,
+    is_vegan = false,
+    is_gluten_free = false,
+    cycle_tags = [],
+    image_url = '',
     ingredients = [],
-    instructions = []
+    instructions = [],
   } = recipe;
 
   return (
-    <div className="container mt-4">
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item"><Link to="/">Home</Link></li>
-          <li className="breadcrumb-item active" aria-current="page">{name}</li>
-        </ol>
-      </nav>
+    <div className="container py-4 recipe-detail">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="mb-0">{name}</h1>
+        <div>
+          <button
+            className="btn btn-outline-primary me-2"
+            onClick={() => navigate(`/recipes/${id}/edit`)}
+          >
+            Edit
+          </button>
+          <button
+            className="btn btn-outline-danger"
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
 
-      <div className="card">
-        <img 
-          src={image_url || 'https://placehold.co/600x300?text=No+Image'} 
-          className="card-img-top" 
-          alt={name}
-          style={{ maxHeight: 400, objectFit: 'cover' }}
-          onError={({ currentTarget }) => {
-            currentTarget.onerror = null;
-            currentTarget.src = 'https://placehold.co/600x300?text=Image+Not+Found';
-          }}
-        />
+      <div className="d-flex flex-wrap align-items-center mb-4">
+        <span className="badge bg-secondary me-2">{category}</span>
+        {total_calories != null && (
+          <span className="badge bg-info me-2">
+            {total_calories} kcal
+          </span>
+        )}
+        {servings != null && (
+          <span className="badge bg-primary me-2">
+            {servings} servings
+          </span>
+        )}
+        {prep_time > 0 && (
+          <span className="badge bg-dark me-2">
+            {prep_time} min prep
+          </span>
+        )}
+        {is_vegan && (
+          <span className="badge bg-success me-2">Vegan</span>
+        )}
+        {is_gluten_free && (
+          <span className="badge bg-warning text-dark me-2">
+            Gluten-Free
+          </span>
+        )}
+      </div>
 
-        <div className="card-body">
-          {/* === Title + Icons (yellow area) */}
-          <div className="d-flex justify-content-between align-items-start mb-2">
-            <h1 className="card-title">{name}</h1>
-            <div>
-              {recipeVegan && (
-                <img
-                  src={veganIcon}
-                  alt="Vegan"
-                  title="Vegan"
-                  style={{ width: 28, marginRight: 8 }}
-                />
-              )}
-              {recipeGlutenFree && (
-                <img
-                  src={gfIcon}
-                  alt="Gluten Free"
-                  title="Gluten Free"
-                  style={{ width: 28 }}
-                />
-              )}
-            </div>
-          </div>
-
-          {/* === Category larger */}
-          <h5 className="text-muted mb-3">{category}</h5>
-
-          {/* === Cycle Tags + Total Calories (blue area) */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>{cycle_tags_labels.join(' - ')}</div>
-            <div>
-              <strong>Total Calories:</strong> {totalKcal} kcal
-            </div>
-          </div>
-
-          {/* === Description */}
-          <p className="card-text">{description || 'No description available.'}</p>
-
-          <hr />
-
-          {/* === Prep Time & Servings */}
-          <div className="row mb-3">
-            <div className="col-md-6">
-              <h6>Preparation Time</h6>
-              <p>{prep_time ? `${prep_time} minutes` : 'N/A'}</p>
-            </div>
-            <div className="col-md-6">
-              <h6>Servings</h6>
-              <p>{servings}</p>
-            </div>
-          </div>
-
-          <hr />
-
-          {/* === Ingredients */}
-          <h5>Ingredients</h5>
-          {ingredients.length === 0 ? (
-            <p>No ingredients listed.</p>
+      <div className="mb-4">
+        <h5>Suitable for Hormonal Phases:</h5>
+        <div>
+          {Array.isArray(cycle_tags) && cycle_tags.length > 0 ? (
+            cycle_tags.map(tag => (
+              <span
+                key={tag}
+                className={`badge phase-badge ${phaseClasses[tag] || ''} me-2`}
+                title={phaseNames[tag] || tag}
+              >
+                {phaseNames[tag] || tag}
+              </span>
+            ))
           ) : (
-            <ul>
-              {ingredients.map((ing, idx) => (
-                <li key={idx}>
-                  {ing.name}: {ing.quantity} {ing.unit}
-                </li>
-              ))}
-            </ul>
-          )}
-
-          <hr />
-
-          {/* === Instructions */}
-          <h5>Instructions</h5>
-          {instructions.length === 0 ? (
-            <p>No instructions provided.</p>
-          ) : (
-            <ol>
-              {instructions.map((step, i) => (
-                <li key={i}>{typeof step === 'object' ? step.text : step}</li>
-              ))}
-            </ol>
+            <span className="text-muted">None</span>
           )}
         </div>
+      </div>
+
+      {image_url && (
+        <div className="mb-4 text-center">
+          <img
+            src={image_url}
+            alt={name}
+            className="img-fluid rounded"
+            style={{ maxHeight: 400, width: 'auto' }}
+          />
+        </div>
+      )}
+
+      <div className="row">
+        <div className="col-md-4">
+          <div className="card mb-4">
+            <div className="card-header">
+              <h4 className="mb-0">Ingredients</h4>
+            </div>
+            <div className="card-body">
+              <ul className="ingredient-list list-unstyled mb-0">
+                {Array.isArray(ingredients) && ingredients.length > 0 ? (
+                  ingredients.map((item, idx) => {
+                    const name =
+                      item.ingredient_details?.name || item.name || 'Item';
+                    const qty = item.quantity != null ? item.quantity : '';
+                    const unit = item.unit || '';
+                    return (
+                      <li key={idx} className="mb-1">
+                        <strong>{qty} {unit}</strong> {name}
+                      </li>
+                    );
+                  })
+                ) : (
+                  <li className="text-muted">No ingredients listed.</li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-md-8">
+          <div className="card">
+            <div className="card-header">
+              <h4 className="mb-0">Instructions</h4>
+            </div>
+            <div className="card-body">
+              <ol className="instruction-list mb-0">
+                {Array.isArray(instructions) && instructions.length > 0 ? (
+                  instructions.map((inst, idx) => (
+                    <li key={inst.step ?? idx}>{inst.text}</li>
+                  ))
+                ) : (
+                  <li className="text-muted">No instructions provided.</li>
+                )}
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action buttons at bottom */}
+      <hr className="my-4" />
+      <div className="d-flex justify-content-end gap-2">
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate(`/recipes/${id}/edit`)}
+        >
+          Edit
+        </button>
+        <button
+          className="btn btn-danger"
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
 }
-
-export default RecipeDetail;
