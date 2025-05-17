@@ -146,6 +146,42 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
     return () => clearTimeout(timeout);
   }, [ingredientSearchTerm, selectedLocalIngredient, performSearch]);
 
+  useEffect(() => {
+      if (selectedLocalIngredient?.default_unit) {
+        setIngredientUnit(selectedLocalIngredient.default_unit);
+      }
+    }, [selectedLocalIngredient]); // Se o ingrediente local já tem unidade padrão, usa ela
+  
+  useEffect(() => {
+    if (newIngredientDefaultUnit) {
+      setNewIngredientUnit(newIngredientDefaultUnit);
+    }
+  }, [newIngredientDefaultUnit]); // Se o novo ingrediente já tem unidade padrão, usa ela
+
+  // Debounce search 
+  useEffect(() => {
+    if (selectedLocalIngredient && ingredientSearchTerm === selectedLocalIngredient.name) {
+      setLocalSearchResults([]); // Clear results when an item is selected
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      performSearch(ingredientSearchTerm);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [ingredientSearchTerm, performSearch, selectedLocalIngredient]);
+
+  useEffect(() => {
+    if (showNewIngredientForm && newIngFormRef.current) {
+      newIngFormRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }, [showNewIngredientForm]); // Scroll to the new ingredient form when it opens
+
+
   // d) Seleção de ingrediente local
 
   const handleDuplicateIngredient = ing => {
@@ -196,7 +232,6 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
     setIngredientSearchTerm(ing.name);
     setLocalSearchResults([]); // Hide dropdown
     setShowNewIngredientForm(false); // Hide new ingredient form
-    
   };
 
   // e) Adição de ingrediente (novo ou existente)
@@ -207,6 +242,12 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
     if (isNaN(qty) || qty <= 0) {
       return alert('Invalid Quantity');
     }
+      
+    //const unitToUse = ingredientUnit || selectedLocalIngredient.default_unit || '';
+    
+    
+  console.log("Ingredient unit:", ingredientUnit);
+  
     let ingToAdd;
     if (selectedLocalIngredient && !isNew) {
       // Using an existing ingredient
@@ -214,7 +255,7 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
         ingredient_id: selectedLocalIngredient.id,
         name: selectedLocalIngredient.name,
         quantity: ingredientQuantity, // Keep original string for display/editing?
-        unit: ingredientUnit,
+        unit: ingredientUnit , // Use selected unit or default unit
         fdcId: selectedLocalIngredient.fdcId || null,
         kcal_per_unit: selectedLocalIngredient.kcal_per_unit || null, // Or calculate based on qty?
         // Mark as existing
@@ -227,23 +268,27 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
         //alternative_units: selectedLocalIngredient.alternative_units || [],
 
       };
-    } else {
-      // novo ingrediente
-      if (!newIngredientCategory || !newIngredientDefaultUnit) {
-        return alert('Preencha categoria e unidade padrão');
-      }
+    } else if (showNewIngredientForm && ingredientSearchTerm.trim()) {
+      // Creating a new ingredient (data captured in state)
+      const kcal = parseFloat(newIngredientKcalPerUnit);
+      const unitToUse = newIngredientUnit || newIngredientDefaultUnit || '';
+
+      if (isNaN(kcal) || kcal < 0) return alert("Invalid Kcal for new ingredient");
+      if (!newIngredientCategory) return alert("Category is required for new ingredient");
+      if (!newIngredientDefaultUnit) return alert("Default unit is required for new ingredient");
+
       ingToAdd = {
         ingredient_id: null,
         name: ingredientSearchTerm.trim(),
         quantity: newIngredientQuantity,
-        unit: newIngredientUnit,
+        unit: unitToUse,
         aliases: newIngredientAliases
           .split(',')
           .map(a => a.trim())
           .filter(Boolean),
         category: newIngredientCategory,
         default_unit: newIngredientDefaultUnit,
-        kcal_per_unit: parseFloat(newIngredientKcalPerUnit) || 0,
+        kcal_per_unit: kcal || 0,
         is_vegan: newIngredientIsVegan,
         is_gluten_free: newIngredientIsGlutenFree,
         alternative_units: newAltUnits
@@ -276,27 +321,51 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   function handleRemoveIngredient(idx) {
     setIngredients(prev => prev.filter((_, i) => i !== idx));
   }
-  function handleEditIngredient(idx) {
-    const ing = ingredients[idx];
-    if (ing.isNew) {
-      skipResetRef.current = true;
-      setShowNewIngredientForm(true);
-      setIngredientSearchTerm(ing.name);
-      setNewIngredientCategory(ing.category);
-      setNewIngredientDefaultUnit(ing.default_unit);
-      setNewIngredientKcalPerUnit(String(ing.kcal_per_unit));
-      setNewIngredientIsVegan(ing.is_vegan);
-      setNewIngredientIsGlutenFree(ing.is_gluten_free);
-      setNewIngredientAliases(ing.aliases.join(', '));
-      setNewAltUnits(ing.alternative_units);
-      setNewIngredientQuantity(ing.quantity);
-      setNewIngredientUnit(ing.unit);
-      return;
-    }
-    setEditingIndex(idx);
-    setEditingQuantity(ing.quantity);
-    setEditingUnit(ing.unit);
+
+// abre o modo edição para o item i
+function handleEditIngredient(index) {
+  const ing = ingredients[index];
+
+  // ——— Se for um ingrediente NOVO, volta ao painel de “novo ingrediente” ———
+  if (ing.isNew) {
+    console.log(ing);
+    skipResetRef.current = true; // pula o reset automático do form
+
+    // 1) remove da lista de ingredientes
+    setIngredients(prev =>
+      prev.filter((_, i) => i !== index)
+    );
+
+    // 2) abre o form de “novo ingrediente”
+    setShowNewIngredientForm(true);
+
+    // 3) pré-preenche todos os campos do form com os dados do ing
+    setIngredientSearchTerm(ing.name);
+    setNewIngredientCategory(ing.category);
+    setNewIngredientDefaultUnit(ing.default_unit);
+    setNewIngredientKcalPerUnit(String(ing.kcal_per_unit));
+    setNewIngredientIsVegan(ing.is_vegan);
+    setNewIngredientIsGlutenFree(ing.is_gluten_free);
+    setNewIngredientAliases(ing.aliases.join(', '));
+    setNewAltUnits(ing.alternative_units);
+
+    // campos de quantidade + unidade
+    setNewIngredientQuantity(ing.quantity);
+    setNewIngredientUnit(ing.unit);
+
+    return;
   }
+
+  // ——— Senão, edição “in-place” de ingrediente existente ———
+  setEditingIndex(index);
+  setEditingQuantity(ing.quantity);
+  setEditingUnit(ing.unit);
+}
+
+
+
+
+
   function handleSaveIngredient() {
     setIngredients(prev =>
       prev.map((ing, i) =>
