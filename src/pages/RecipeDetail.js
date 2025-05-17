@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getRecipeById, deleteRecipe } from '../services/api/recipes';
+import { useAuth } from '../context/AuthContext';
 
 export default function RecipeDetail() {
   const { id } = useParams();
@@ -9,6 +10,10 @@ export default function RecipeDetail() {
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { user } = useAuth();
+  const { role } = useAuth();
+
 
   useEffect(() => {
     let isMounted = true;
@@ -31,6 +36,7 @@ export default function RecipeDetail() {
   }, [id]);
 
   const handleDelete = async () => {
+    
     if (!window.confirm('Are you sure you want to delete this recipe?')) return;
     try {
       await deleteRecipe(id);
@@ -103,20 +109,7 @@ export default function RecipeDetail() {
     <div className="container py-4 recipe-detail">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="mb-0">{name}</h1>
-        <div>
-          <button
-            className="btn btn-outline-primary me-2"
-            onClick={() => navigate(`/recipes/${id}/edit`)}
-          >
-            Edit
-          </button>
-          <button
-            className="btn btn-outline-danger"
-            onClick={handleDelete}
-          >
-            Delete
-          </button>
-        </div>
+        
       </div>
 
       <div className="d-flex flex-wrap align-items-center mb-4">
@@ -226,6 +219,7 @@ export default function RecipeDetail() {
 
       {/* Action buttons at bottom */}
       <hr className="my-4" />
+      {user && role === 'admin' && (      
       <div className="d-flex justify-content-end gap-2">
         <button
           className="btn btn-primary"
@@ -239,7 +233,7 @@ export default function RecipeDetail() {
         >
           Delete
         </button>
-      </div>
+      </div> )}
     </div>
   );
 }

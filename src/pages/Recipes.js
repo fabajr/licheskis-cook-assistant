@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getRecipes } from '../services/api/recipes';
+import { useAuth } from '../context/AuthContext';
 
 function Recipes() {
   const [recipes, setRecipes]             = useState([]);
@@ -11,6 +12,10 @@ function Recipes() {
   const [error, setError]                 = useState(null);
   const loadMoreRef                       = useRef(null);
   const observerRef                       = useRef(null);
+
+  const { user } = useAuth();
+  const { role } = useAuth();
+
 
   // 1) Fetch inicial
   useEffect(() => {
@@ -91,9 +96,10 @@ function Recipes() {
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1>Recipes</h1>
+        {role === 'admin' && (
         <Link to="/recipes/create" className="btn btn-primary">
           Create New Recipe
-        </Link>
+        </Link>)}
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
