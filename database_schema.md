@@ -53,8 +53,6 @@ recipes/{recipeId}
   "cycle_tags": ["string"],
   "servings": "number",
   "prep_time": "number",
-  "is_vegan": "boolean",
-  "is_gluten_free": "boolean",
   "instructions": [
     {
       "step": "number",
@@ -88,7 +86,7 @@ recipe_ingredients/{recipeIngredientId}
 
 ### 4. `users` Collection
 
-Stores user information.
+Stores user profiles and preferences, including hormonal cycle parameters.
 
 ```
 users/{userId}
@@ -121,7 +119,7 @@ users/{userId}
 
 ### 6. `meal_plans` Collection
 
-Stores user-created meal plans.
+User-created meal plans under each user document.
 
 ```
 users/{userId}/meal_plans/{mealPlanId}
@@ -131,6 +129,7 @@ users/{userId}/meal_plans/{mealPlanId}
 ```json
 {
   "id": "string",
+  "user_id": "string",
   "name": "string",
   "start_date": "timestamp",
   "end_date": "timestamp",
@@ -162,6 +161,7 @@ users/{userId}/grocery_lists/{groceryListId}
 ```json
 {
   "id": "string",
+  "user_id": "string",
   "meal_plan_id": "string",
   "items": [
     {
@@ -185,24 +185,20 @@ To support efficient queries, the following indexes should be created:
 
 1. `recipes.category`
 2. `recipes.cycle_tags`
-3. `recipes.is_vegan`
-4. `recipes.is_gluten_free`
-5. `ingredients.category`
-6. `ingredients.is_vegan`
-7. `ingredients.is_gluten_free`
-8. `meal_plans.start_date`
-9. `meal_plans.end_date`
-10. `grocery_lists.meal_plan_id`
+3. `ingredients.category`
+4. `ingredients.is_vegan`
+5. `ingredients.is_gluten_free`
+6. `meal_plans.start_date`
+7. `meal_plans.end_date`
+8. `grocery_lists.meal_plan_id`
+9. `recipes.is_vegan`
+10. `recipes.is_gluten_free`
 
 ### Composite Indexes
 
-1. `recipes.category, recipes.cycle_tags`
-2. `recipes.is_vegan, recipes.cycle_tags`
-3. `recipes.is_gluten_free, recipes.cycle_tags`
-4. `recipes.category, recipes.is_vegan, recipes.is_gluten_free`
-5. `recipes.category, recipes.cycle_tags, recipes.is_vegan, recipes.is_gluten_free`
-6. `meal_plans.user_id, meal_plans.start_date`
-7. `grocery_lists.user_id, grocery_lists.created_at`
+1. `recipes.category, recipes.cycleTags`
+2. `meal_plans.userId, meal_plans.startDate`
+3. `grocery_lists.userId, grocery_lists.createdAt`
 
 ## Data Relationships
 
@@ -217,15 +213,14 @@ To support efficient queries, the following indexes should be created:
 
 1. Filter recipes by meal category 'Breakfast','Soups&Salads','Entree'(Lunch/Dinner),'Snacks','Desserts'
 2. Filter recipes by hormonal phase (M, F, O, ML, LL)
-3. Filter recipes by dietary restrictions (vegan, gluten-free)
+3. Filter recipes by dietary restrictions (vegan, gluten-free) ( Calculate by each ingredient in recipe)
 4. Filter recipes by caloric value
 5. Combination of the above filters
 
 ### Meal Planning
 
-1. Get recipes suitable for a specific hormonal phase
-2. Get meal plan for a specific date range
-3. Get meal plan for the current hormonal phase
+1. Fetch meal plan for a date range.
+2. Fetch meal plan for current hormonal phase.
 
 ### Grocery List Generation
 
@@ -311,17 +306,6 @@ service cloud.firestore {
   }
 }
 ```
-
-## Data Migration Strategy
-
-1. Import cleaned ingredients data to the `ingredients` collection
-2. Import cleaned recipes data to the `recipes` collection
-3. Import recipe-ingredient relationships to the `recipe_ingredients` collection
-4. Calculate and update derived fields (is_vegan, is_gluten_free) for recipes
-5. Set up authentication for user management
-6. Create sample hormonal cycle data for testing
-7. Create sample meal plans for testing
-8. Generate sample grocery lists for testing
 
 ## Future Extensibility
 
