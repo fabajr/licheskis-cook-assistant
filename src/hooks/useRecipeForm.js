@@ -205,15 +205,27 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
     const qtyStr = isNew ? newIngredientQuantity : ingredientQuantity;
     const qty = parseQuantity(qtyStr);
     if (isNaN(qty) || qty <= 0) {
-      return alert('Quantidade inválida');
+      return alert('Invalid Quantity');
     }
     let ingToAdd;
     if (selectedLocalIngredient && !isNew) {
+      // Using an existing ingredient
       ingToAdd = {
-        ...selectedLocalIngredient,
-        quantity: ingredientQuantity,
+        ingredient_id: selectedLocalIngredient.id,
+        name: selectedLocalIngredient.name,
+        quantity: ingredientQuantity, // Keep original string for display/editing?
         unit: ingredientUnit,
-        isNew: false
+        fdcId: selectedLocalIngredient.fdcId || null,
+        kcal_per_unit: selectedLocalIngredient.kcal_per_unit || null, // Or calculate based on qty?
+        // Mark as existing
+        isNew: false,
+        category: selectedLocalIngredient.category,
+        is_vegan: selectedLocalIngredient.is_vegan || false,
+        is_gluten_free: selectedLocalIngredient.is_gluten_free || false,
+        //default_unit: selectedLocalIngredient.default_unit || newIngredientDefaultUnit,
+        //aliases: selectedLocalIngredient.aliases || [],
+        //alternative_units: selectedLocalIngredient.alternative_units || [],
+
       };
     } else {
       // novo ingrediente
@@ -341,24 +353,28 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
       cycle_tags: cycleTags,
       image_url: imageUrl || null,
       ingredients: ingredients.map(i => ({
-        ...i,
-        quantity: parseQuantity(i.quantity)
-      }))
-    };
+          ingredient_id: i.ingredient_id ?? null,    // 👈 nunca undefined
+          quantity:      parseQuantity(i.quantity),   // número
+          unit:          i.unit                       // string
+        }))
+};
 
-    try {
-      if (recipeId) {
-        await updateRecipe(recipeId, payload);
-        onSuccessRedirect(`/recipes/${recipeId}`);
+  try {
+    console.log("Submitting recipe payload:", payload);
+    if (recipeId) {
+      await updateRecipe(recipeId, payload);
+      onSuccessRedirect(`/recipes/${recipeId}`);
       } else {
-        const newId = await saveRecipeToApi(payload);
-        onSuccessRedirect(`/recipes/${newId}`);
+        // chama a API e extrai o .id do response
+        const created = await saveRecipeToApi(payload);
+        const newId = created.id;      // ⬅️ aqui
+        onSuccessRedirect(`/recipes/${newId}`);  // path correto
       }
     } catch (err) {
       console.error(err);
       alert('Erro ao salvar receita');
     }
-  };
+};
 
   // 5) O QUE O HOOK RETORNA
   return {
@@ -438,14 +454,12 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
     handleCancelEdit,
     handleRemoveIngredient,
     handleDuplicateIngredient,
-    handleSelectLocalIngredient,
     getUnitOptions,
 
     // ações
        
 
     checkSimilarNames,
-    handlePhaseChange,
     
     handleSubmit
   };
