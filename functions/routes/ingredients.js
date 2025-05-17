@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 // POST /ingredients
 router.post('/', auth,  async (req, res) => {
   try {
-    const payload = { ...req.body, createdAt: FieldValue.serverTimestamp() };
+    const payload = { ...req.body, created_at: FieldValue.serverTimestamp() };
     const ref = await db.collection('ingredients').add(payload);
     const doc = await ref.get();
     return res.status(201).json({ id: doc.id, ...doc.data() });

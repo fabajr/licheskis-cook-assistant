@@ -176,8 +176,8 @@ router.post('/', auth, async (req, res) => {
       category,
       cycle_tags,
       image_url,
-      createdAt:   FieldValue.serverTimestamp(),
-      updatedAt:   FieldValue.serverTimestamp()
+      created_at:   FieldValue.serverTimestamp(),
+      updated_at:   FieldValue.serverTimestamp()
     });
 
     // 5) Cria promessas para ingredientes e links
@@ -286,7 +286,7 @@ router.put('/:id', auth, async (req, res) => {
               category,
               cycle_tags,
               image_url,
-              updatedAt: FieldValue.serverTimestamp()
+              updated_at: FieldValue.serverTimestamp()
             });
 
       //deleta links antigos
