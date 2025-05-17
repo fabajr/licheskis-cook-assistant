@@ -1,147 +1,73 @@
-// src/pages/Home.js
-
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { getRecipes } from '../services/api/recipes';
 
 function Home() {
-  const [recipes, setRecipes]             = useState([]);
-  const [nextPageToken, setNextPageToken] = useState(null);
-  const [loading, setLoading]             = useState(true);
-  const [error, setError]                 = useState(null);
-  const loadMoreRef                       = useRef(null);
-  const observerRef                       = useRef(null);
-
-  // 1) Fetch inicial
-  useEffect(() => {
-    const fetchInitial = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const { recipes: list, nextPageToken: token } = await getRecipes();
-        setRecipes(list);
-        setNextPageToken(token);
-      } catch (err) {
-        console.error("Error fetching recipes:", err);
-        setError('Failed to load recipes. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchInitial();
-  }, []);
-
-  // 2) Função de carregar próxima página
-  const loadMore = useCallback(async () => {
-    if (!nextPageToken || loading) return;   // ❶
-  
-    try {
-      setLoading(true);
-      const { recipes: more, nextPageToken: token } = await getRecipes(nextPageToken);
-  
-      setRecipes(prev => {
-        // filtra só os que ainda não estão no array
-        const uniqueNew = more.filter(item =>
-          !prev.some(old => old.docId === item.docId)
-        );
-        return [...prev, ...uniqueNew];
-      });
-  
-      setNextPageToken(token);
-    } catch (err) {
-      console.error("Error loading more recipes:", err);
-      setError('Failed to load more recipes.');
-    } finally {
-      setLoading(false);
-    }
-  }, [nextPageToken, loading]);
-
-  // 3) Intersection Observer controlado por nextPageToken
-  useEffect(() => {
-    // Se já existir um observer, desconecta antes de criar outro
-    if (observerRef.current) {
-      observerRef.current.disconnect();
-      observerRef.current = null;
-
-    }
-
-    // Só cria observer se ainda tiver próxima página
-    if (nextPageToken && loadMoreRef.current) {
-      observerRef.current = new IntersectionObserver(
-        entries => {
-          if (entries[0].isIntersecting) {
-            loadMore();
-          }
-        },
-        { rootMargin: '200px' }
-      );
-      observerRef.current.observe(loadMoreRef.current);
-    }
-
-    // cleanup
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
-      }
-    };
-  }, [loadMore, nextPageToken]);  // reexecuta sempre que mudar o token
-
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h1>Recipes</h1>
-        <Link to="/recipes/create" className="btn btn-primary">
-          Create New Recipe
-        </Link>
+    <div>
+      <div className="home-hero text-center">
+        <div className="container">
+          <h1 className="display-4">Licheskis Cook Assistant</h1>
+          <p className="lead">Intelligent Meal Planning Based on Hormonal Cycles</p>
+          <div className="mt-4">
+            <Link to="/meal-planner" className="btn btn-primary btn-lg me-3">
+              Start Planning
+            </Link>
+            <Link to="/recipes" className="btn btn-outline-secondary btn-lg">
+              Browse Recipes
+            </Link>
+          </div>
+        </div>
       </div>
-
-      {error && <div className="alert alert-danger">{error}</div>}
-
-      <div className="row">
-        {!loading && recipes.length === 0 && !error && (
-          <p>No recipes found. Why not create one?</p>
-        )}
-        {recipes.map(recipe => (
-          <div key={recipe.docId} className="col-md-4 mb-4">
-            <div className="card h-100">
-              <img
-                src={recipe.image_url || 'https://placehold.co/300x200?text=No+Image'}
-                className="card-img-top"
-                alt={recipe.name}
-                style={{ height: '200px', objectFit: 'cover' }}
-                onError={({ currentTarget }) => {
-                  currentTarget.onerror = null;
-                  currentTarget.src =
-                    'https://placehold.co/300x200?text=Image+Not+Found';
-                }}
-              />
-              <div className="card-body d-flex flex-column">
-                <h5 className="card-title">{recipe.name}</h5>
-                <p className="card-text flex-grow-1">
-                  {recipe.description
-                    ? recipe.description.length > 100
-                      ? recipe.description.slice(0, 100) + '…'
-                      : recipe.description
-                    : 'No description available.'}
-                </p>
-                <Link to={`/recipes/${recipe.docId}`} className="btn btn-secondary mt-auto">
-                  View Details
-                </Link>
-              </div>
+      
+      <div className="container">
+        <h2 className="text-center mb-5">How It Works</h2>
+        
+        <div className="row">
+          <div className="col-md-4">
+            <div className="feature-card">
+              <div className="feature-icon">📅</div>
+              <h3>Track Your Cycle</h3>
+              <p>Enter your hormonal cycle information to get personalized meal recommendations for each phase.</p>
             </div>
           </div>
-        ))}
+          <div className="col-md-4">
+            <div className="feature-card">
+              <div className="feature-icon">🍽️</div>
+              <h3>Plan Your Meals</h3>
+              <p>Create weekly meal plans with recipes tailored to your current hormonal phase and dietary preferences.</p>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="feature-card">
+              <div className="feature-icon">🛒</div>
+              <h3>Generate Grocery Lists</h3>
+              <p>Automatically generate organized grocery lists based on your meal plans, sorted by store categories.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="row mt-5">
+          <div className="col-md-6 offset-md-3 text-center">
+            <h3>Understand Your Hormonal Phases</h3>
+            <p className="mb-4">
+              Our app helps you plan meals according to the five phases of your hormonal cycle:
+            </p>
+            <div className="d-flex justify-content-between flex-wrap">
+              <span className="badge phase-M p-2">Menstrual (M)</span>
+              <span className="badge phase-F p-2">Follicular (F)</span>
+              <span className="badge phase-O p-2">Ovulation (O)</span>
+              <span className="badge phase-ML p-2">Mid-Luteal (ML)</span>
+              <span className="badge phase-LL p-2">Late-Luteal (LL)</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center mt-5">
+          <Link to="/hormonal-cycle" className="btn btn-primary">
+            Set Up Your Cycle
+          </Link>
+        </div>
       </div>
-
-      {/* Sentinel: só existe para ser observado */}
-      <div ref={loadMoreRef} />
-
-      {/* Mensagem de carregamento ou fim de lista */}
-      {loading && <p>Loading recipes...</p>}
-      {!loading && !nextPageToken && recipes.length > 0 && (
-        <p className="text-center mt-3">All recipes loaded.</p>
-      )}
     </div>
   );
 }
