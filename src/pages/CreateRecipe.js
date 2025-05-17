@@ -1,457 +1,112 @@
 // src/pages/CreateRecipe.js
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
-// Ensure correct import for createRecipe (used as saveRecipeToApi)
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecipeForm } from '../hooks/useRecipeForm';
+import { recipeCategoryOptions, cyclePhaseOptions, getUnitOptions } from '../services/utils/utils';
 
-import { 
-  createRecipe as saveRecipeToApi,
-  getRecipeById,
-  getRecipes,
-}from '../services/api/recipes';
+export default function CreateRecipe() {
+  const navigate = useNavigate();
+  const {
+    loading,
+    error,
 
-import { ingredients_db } from '../services/api/ingredients';
+    // basic fields
+    recipeName,
+    setRecipeName,
+    description,
+    setDescription,
+    instructions,
+    handleInstructionChange,
+    addInstruction,
+    removeInstruction,
+    prepTime,
+    setPrepTime,
+    servings,
+    setServings,
+    category,
+    setCategory,
+    cycleTags,
+    handlePhaseChange,
+    imageUrl,
+    setImageUrl,
+    originalName,
+    setOriginalName,
 
-import  {
-  recipeCategoryOptions, 
-  newIngredientCategoryOptions,
-  cyclePhaseOptions ,
-  getUnitOptions, 
-  parseQuantity,
-} from '../services/utils/utils';
+    //recipes
+    recipeCategoryOptions,
+    cyclePhaseOptions,
 
+    // ingredientes
+    ingredients,
+    ingredientSearchTerm,
+    setIngredientSearchTerm,
+    localSearchResults,
+    isLoadingSearch,
+    selectedLocalIngredient,
+    setSelectedLocalIngredient,
+    handleSelectLocalIngredient,
+    performSearch,
+    showNewIngredientForm,
+    newIngFormRef,
+    newIngredientCategoryOptions,
+    newIngredientCategory,
+    setNewIngredientCategory,
+    newIngredientDefaultUnit,
+    setNewIngredientDefaultUnit,
+    newIngredientUnit,
+    setNewIngredientUnit,
+    newIngredientKcalPerUnit,
+    setNewIngredientKcalPerUnit,
+    newIngredientIsVegan,
+    setNewIngredientIsVegan,
+    newIngredientIsGlutenFree,
+    setNewIngredientIsGlutenFree,
+    newIngredientAliases,
+    setNewIngredientAliases,
+    newAltUnits,
+    handleAltUnitChange,
+    addAltUnitRow,
+    removeAltUnitRow,
+    newIngredientQuantity,
+    setNewIngredientQuantity,
+    ingredientQuantity,
+    setIngredientQuantity,
+    ingredientUnit,
+    setIngredientUnit,
+    handleAddIngredient,
+    handleEditIngredient,
+    editingIndex,
+    editingQuantity,
+    setEditingQuantity,
+    editingUnit,
+    setEditingUnit,
+    handleSaveIngredient,
+    handleCancelEdit,
+    handleRemoveIngredient,
+    handleDuplicateIngredient,
+    getUnitOptions,
 
+    // ações
+       
 
-function CreateRecipe() {
-
-  const newIngFormRef = useRef(null); // Ref for the new ingredient form
-  const skipResetRef = useRef(false); // Ref to skip resetting the form on ingredient selection
-
-
-  // --- estados básicos da receita ---
-  const [recipeName, setRecipeName] = useState('');
-  const [description, setDescription] = useState('');
-  const [instructions, setInstructions] = useState([{ step: 1, text: '' }]);
-  const [prepTime, setPrepTime] = useState('');
-  const [servings, setServings] = useState('');
-  const [category, setCategory] = useState('');
-  const [cycleTags, setCycleTags] = useState(''); // Assuming this is an array of cycle tags
-  //const [phase, setPhase] = useState(''); // Assuming this maps to cycle_tags
-  const [imageUrl, setImageUrl] = useState('');
-
-  const handlePhaseChange = (value) => {
-    setCycleTags((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-  };
-
-
-  // --- estados dos ingredientes da receita ---
-  const [ingredients, setIngredients] = useState([]);
-
-  const [editingIndex, setEditingIndex]         = useState(null);
-  const [editingQuantity, setEditingQuantity]   = useState("");
-  const [editingUnit,     setEditingUnit]       = useState("");
-
-
-  // --- busca local de ingredientes ---
-  const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
-  const [localSearchResults, setLocalSearchResults] = useState([]);
-  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
-  const [selectedLocalIngredient, setSelectedLocalIngredient] = useState(null);
-
-  // --- controle do form de novo ingrediente ---
-  const [showNewIngredientForm, setShowNewIngredientForm] = useState(false);
-  const [newIngredientCategory, setNewIngredientCategory] = useState('');
-  const [newIngredientUnit, setNewIngredientUnit] = useState('');
-  const [newIngredientAliases, setNewIngredientAliases] = useState('');
-  const [newIngredientDefaultUnit, setNewIngredientDefaultUnit] = useState('');
-  const [newIngredientKcalPerUnit, setNewIngredientKcalPerUnit] = useState('');
-  const [newIngredientIsVegan, setNewIngredientIsVegan] = useState(false);
-  const [newIngredientIsGlutenFree, setNewIngredientIsGlutenFree] = useState(false);
-  const [newAltUnits, setNewAltUnits] = useState([]);
-  const [newIngredientQuantity, setNewIngredientQuantity] = useState('');
-
-  // --- quantidade e unidade ao adicionar ao recipe ---
-  const [ingredientQuantity, setIngredientQuantity] = useState('');
-  const [ingredientUnit, setIngredientUnit] = useState('');
-
-  // 1) Buscar em ingredients collection
-  const performSearch = useCallback(async (term) => {
-    if (term.trim().length < 2) {
-      setLocalSearchResults([]);
-      setShowNewIngredientForm(false); // Hide form if search term is too short
-      return;
-    }
-
-    setIsLoadingSearch(true);
-    try {
-      const localResults = await ingredients_db.search(term);
-      setLocalSearchResults(localResults || []);
-      // Show form only if search term is valid AND no results found
-      setShowNewIngredientForm(term.trim().length >= 2 && (!localResults || localResults.length === 0));
-    } catch (err) {
-      console.error("Erro buscando ingredients locais:", err);
-      setLocalSearchResults([]);
-      setShowNewIngredientForm(term.trim().length >= 2); // Show form on error if term is valid
-    } finally {
-      setIsLoadingSearch(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (selectedLocalIngredient?.default_unit) {
-      setIngredientUnit(selectedLocalIngredient.default_unit);
-    }
-  }, [selectedLocalIngredient]);
-
-  useEffect(() => {
-    if (newIngredientDefaultUnit) {
-      setNewIngredientUnit(newIngredientDefaultUnit);
-    }
-  }, [newIngredientDefaultUnit]);
-
-  useEffect(() => {
-
-  // if we're supposed to skip _this_ open, do so and clear the flag:
-  if (skipResetRef.current) {
-    skipResetRef.current = false;
-    return;
-  }
-   
-    if (showNewIngredientForm) {
-      setNewIngredientCategory("");
-      setNewIngredientDefaultUnit("");
-      setNewIngredientKcalPerUnit("");
-      setNewIngredientIsVegan(false);
-      setNewIngredientIsGlutenFree(false);
-      setNewIngredientAliases("");
-      setNewAltUnits([]);
-      setNewIngredientQuantity("");
-      setNewIngredientUnit("");
-      // … reset de qualquer outro campo …
-    }
-  }, [showNewIngredientForm]);
-
-  // Debounce search
-  useEffect(() => {
-    if (selectedLocalIngredient && ingredientSearchTerm === selectedLocalIngredient.name) {
-      setLocalSearchResults([]); // Clear results when an item is selected
-      return;
-    }
-
-    const timeoutId = setTimeout(() => {
-      performSearch(ingredientSearchTerm);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [ingredientSearchTerm, performSearch, selectedLocalIngredient]);
-
-  useEffect(() => {
-    if (showNewIngredientForm && newIngFormRef.current) {
-      newIngFormRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
-  }, [showNewIngredientForm]);
-
-  const handleDuplicateIngredient = ing => {
-    const isString = v => typeof v === "string";
-    const isObject = v => v !== null && typeof v === "object";
-  
-    const resetAndAlert = () => {
-      alert(
-        "This ingredient is already in your recipe. Change its quantity if you need more."
-      );
-      setIngredientSearchTerm("");
-    };
-  
-    // 1) string (novo ingrediente)?
-    if (isString(ing)) {
-      const nameLower = ing.trim().toLowerCase();
-      const isDupNew = ingredients.some(i =>
-        i.isNew && i.name.trim().toLowerCase() === nameLower
-      );
-      if (isDupNew) {
-        resetAndAlert();
-        return true;      // sinaliza que é duplicata
-      }
-      return false;       // não é duplicata
-    }
-  
-    // 2) objeto (ingrediente existente)?
-    if (isObject(ing)) {
-      const isDupExisting = ingredients.some(
-        i => !i.isNew && i.ingredient_id === ing.id
-      );
-      if (isDupExisting) {
-        resetAndAlert();
-        return true;      // sinaliza que é duplicata
-      }
-      return false;       // não é duplicata
-    }
-  
-    return false;         // qualquer outro caso
-  };
-  
-  
-  // When the user clicks an existing ingredient
-  const handleSelectLocalIngredient = (ing) => {
-
-    if (handleDuplicateIngredient(ing)) return; // Se duplicata, não faz nada
-   
-    setSelectedLocalIngredient(ing);
-    setIngredientSearchTerm(ing.name);
-    setLocalSearchResults([]); // Hide dropdown
-    setShowNewIngredientForm(false); // Hide new ingredient form
-    //verificar se vai bugar
-    //setIngredientUnit(commonUnits.includes(ing.default_unit) 
-    // ? ing.default_unit : '');
-  };
-
-  // Add ingredient to the recipe list (in state)
-  const handleAddIngredient = () => {
-
-    const isNew = showNewIngredientForm;
-
-  // escolhe a string certa para o parse
-  const qtyStr = isNew
-    ? newIngredientQuantity    // <<< aqui, puxe a quantidade do novo ingrediente
-    : ingredientQuantity;      // <<< aqui, a quantidade do ingrediente local
-
-  const qty = parseQuantity(qtyStr);
-  if (isNaN(qty) || qty <= 0) {
-    return alert("Invalid quantity");
-  }
-
-    let ingToAdd;
-
-    if (selectedLocalIngredient) {
-      // Using an existing ingredient
-      ingToAdd = {
-        ingredient_id: selectedLocalIngredient.id,
-        name: selectedLocalIngredient.name,
-        quantity: ingredientQuantity, // Keep original string for display/editing?
-        unit: ingredientUnit,
-        fdcId: selectedLocalIngredient.fdcId || null,
-        kcal_per_unit: selectedLocalIngredient.kcal_per_unit || null, // Or calculate based on qty?
-        // Mark as existing
-        isNew: false,
-        category: selectedLocalIngredient.category,
-        is_vegan: selectedLocalIngredient.is_vegan || false,
-        is_gluten_free: selectedLocalIngredient.is_gluten_free || false,
-        //default_unit: selectedLocalIngredient.default_unit || newIngredientDefaultUnit,
-        //aliases: selectedLocalIngredient.aliases || [],
-        //alternative_units: selectedLocalIngredient.alternative_units || [],
-
-      };
-    } else if (showNewIngredientForm && ingredientSearchTerm.trim()) {
-      // Creating a new ingredient (data captured in state)
-      const kcal = parseFloat(newIngredientKcalPerUnit);
-      if (isNaN(kcal) || kcal < 0) return alert("Invalid Kcal for new ingredient");
-      if (!newIngredientCategory) return alert("Category is required for new ingredient");
-      if (!newIngredientDefaultUnit) return alert("Default unit is required for new ingredient");
-
-      ingToAdd = {
-        ingredient_id: null, // Will be created on backend
-        name: ingredientSearchTerm.trim(),
-        quantity: newIngredientQuantity,
-        unit: newIngredientUnit,
-        // Include metadata for backend creation
-        aliases: newIngredientAliases.split(',').map(s => s.trim()).filter(Boolean),
-        category: newIngredientCategory,
-        default_unit: newIngredientDefaultUnit,
-        kcal_per_unit: kcal,
-        is_vegan: newIngredientIsVegan,
-        is_gluten_free: newIngredientIsGlutenFree,
-        alternative_units: newAltUnits
-          .map(u => ({ unit: u.unit, conversion_factor: parseFloat(u.conversion_factor) }))
-          .filter(u => u.unit && !isNaN(u.conversion_factor)),
-        // Mark as new
-        isNew: true,
-      };
-    } else {
-      return alert("Please search and select an ingredient, or fill the details for a new one.");
-    }
-
-    setIngredients([...ingredients, ingToAdd]);
-
-    // Clear fields
-    setIngredientSearchTerm('');
-    setSelectedLocalIngredient(null);
-    setIngredientQuantity('');
-    setIngredientUnit('');
-    setShowNewIngredientForm(false);
-    // Clear new ingredient form fields too
-    setNewIngredientCategory('');
-    setNewIngredientAliases('');
-    setNewIngredientDefaultUnit('');
-    setNewIngredientKcalPerUnit('');
-    setNewIngredientIsVegan(false);
-    setNewIngredientIsGlutenFree(false);
-    setNewAltUnits([]);
-  };
-
-  // Remove ingredient from the recipe list (in state)
-  const handleRemoveIngredient = (indexToRemove) => {
-    setIngredients(ingredients.filter((_, i) => i !== indexToRemove));
-  };
-
-  // --- Instructions Handling ---
-  const handleInstructionChange = (index, value) => {
-    const newInstructions = [...instructions];
-    newInstructions[index].text = value;
-    setInstructions(newInstructions);
-  };
-
-  const addInstruction = () => {
-    setInstructions([...instructions, { step: instructions.length + 1, text: '' }]);
-  };
-
-  const removeInstruction = (index) => {
-    if (instructions.length > 1) { // Keep at least one instruction
-      setInstructions(instructions.filter((_, i) => i !== index));
-    }
-  };
-
-  // --- Alternative Units Handling ---
-  const handleAltUnitChange = (idx, field, value) => {
-    const copy = [...newAltUnits];
-    copy[idx] = { ...copy[idx], [field]: value };
-    setNewAltUnits(copy);
-  };
-  const addAltUnitRow = () => setNewAltUnits([...newAltUnits, { unit: '', conversion_factor: '' }]);
-  const removeAltUnitRow = idx => setNewAltUnits(newAltUnits.filter((_, i) => i !== idx));
-
-  // --- Form Submission ---
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const sanitizedIngredients = ingredients.map(ing => ({
-      ...ing,
-      quantity: parseQuantity(ing.quantity)
-    }));// Ensure quantities are parsed correctly
-
-    if (!recipeName || !recipeName.trim()) {
-      window.alert("Recipe name is required.");
-      return;
-    }
-  
-    // 2) Validação de ingredientes
-    if (ingredients.length === 0) {
-      window.alert("Please add at least one ingredient.");
-      return;
-    }
-
-    if(!category || !category.trim()) {
-      window.alert("Recipe Category is required.");
-      return;
-    }
-
-    if(!servings || !servings.trim()) {
-      window.alert("Total Servings is required.");
-      return;
-    }
-
+    checkSimilarNames,
     
+    handleSubmit
 
-    // Prepare payload according to backend expectations
-    const recipePayload = {
-      name: recipeName,
-      description: description,
-      instructions: instructions.filter(inst => inst.text.trim()), // Remove empty instructions
-      prep_time: prepTime ? parseInt(prepTime, 10) : null,
-      servings: servings ? parseInt(servings, 10) : null,
-      category: category,
-      cycle_tags: cycleTags,  // agora será um array de strings, ex: ["M","O","LL"]
-      image_url: imageUrl || null,
-      // Send the ingredients array as built in the state
-      // Backend will handle separating existing/new and saving correctly
-      ingredients: sanitizedIngredients,
-    };
+  } = useRecipeForm({
+    recipeId: null,
+    onSuccessRedirect: navigate
+  });
 
-    try {
-      console.log("Submitting recipe payload:", recipePayload);
-      const created = await saveRecipeToApi(recipePayload);
-      alert(`Recipe created successfully! ID: ${created.id}`);
-      // Optionally clear form or redirect
-      setRecipeName('');
-      setDescription('');
-      setInstructions([{ step: 1, text: '' }]);
-      setPrepTime('');
-      setServings('');
-      setCategory('');
-      setCycleTags('');
-      setImageUrl('');
-      setIngredients([]);
-    } catch (err) {
-      console.error("Error creating recipe:", err);
-      alert(`Failed to create recipe: ${err.message || 'Unknown error'}`);
-    }
-  };
-
-    // abre o modo edição para o item i
-    const handleEditIngredient = index => {
-      const ing = ingredients[index]; //
-    
-      // ——— If it was a NEW ingredient, send it back to the "Add New" panel ———
-      if (ing.isNew) {
-        console.log(ing);
-        skipResetRef.current = true; // Skip resetting the form fields
-        // 1) remove from list
-        setIngredients(prev =>
-          prev.filter((_, i) => i !== index)
-        );
-        
-        // 2) show the new-ingredient form
-        setShowNewIngredientForm(true);
-    
-        // 3) populate the search-and-details panel
-        setIngredientSearchTerm(ing.name);
-    
-        setNewIngredientCategory(ing.category);
-        setNewIngredientDefaultUnit(ing.default_unit);
-        setNewIngredientKcalPerUnit(String(ing.kcal_per_unit));
-        setNewIngredientIsVegan(ing.is_vegan);
-        setNewIngredientIsGlutenFree(ing.is_gluten_free);
-        setNewIngredientAliases(ing.aliases.join(", "));
-        setNewAltUnits(ing.alternative_units);
-    
-        // bottom “Quantity” + “Unit” fields:
-        setNewIngredientQuantity(ing.quantity);
-        setNewIngredientUnit(ing.unit);
-    
-        return;
-      }
-    
-      // ——— Else, existing ingredient: your in-place edit logic ———
-      setEditingIndex(index);
-      setEditingQuantity(ing.quantity);
-      setEditingUnit(ing.unit);
-    };
-  
-    // salva o item editado
-    const handleSaveIngredient = () => {
-      setIngredients(prev =>
-        prev.map((ing, i) =>
-          i === editingIndex
-            ? { ...ing, quantity: editingQuantity, unit: editingUnit }
-            : ing
-        )
-      );
-      // fecha edição
-      setEditingIndex(null);
-    };
-  
-    // cancela a edição
-    const handleCancelEdit = () => {
-      setEditingIndex(null);
-    };
+  if (loading) return <p>Loading...</p>;
+  if (error)   return <div className="alert alert-danger">{error}</div>;
 
   // --- JSX RENDER ---
   return (
       <div className="container py-4">
         <h1>Create New Recipe</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={e => { e.preventDefault(); handleSubmit(); }}>
 
         {/* --- Basic Recipe Fields --- ADDED BACK --- */}
         <div className="mb-3">
@@ -987,6 +642,4 @@ function CreateRecipe() {
       </div>
     );
 }
-
-export default CreateRecipe;
 
