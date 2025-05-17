@@ -56,10 +56,31 @@ function App() {
           />
           <Route path="/recipes/:id" element={<RecipeDetail />} />
 
-          {/* Additional Features */}
-          <Route path="/meal-planner" element={<MealPlanner />} />
-          <Route path="/hormonal-cycle" element={<HormonalCycle />} />
-          <Route path="/grocery-list" element={<GroceryList />} />
+          {/* Additional Features (authenticated users only) */}
+          <Route
+            path="/meal-planner"
+            element={
+              <ProtectedRoute>
+                <MealPlanner />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/hormonal-cycle"
+            element={
+              <ProtectedRoute>
+                <HormonalCycle />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/grocery-list"
+            element={
+              <ProtectedRoute>
+                <GroceryList />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Catch-all: redirect to home */}
           <Route path="*" element={<Navigate to="/" replace />} />
