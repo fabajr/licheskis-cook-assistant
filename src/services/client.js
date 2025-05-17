@@ -1,4 +1,4 @@
-// src/lib/apiClient.js
+// src/services/client.js
 import axios from 'axios';
 import { auth } from '../firebase'; // seu firebase.js já expõe o auth
 
