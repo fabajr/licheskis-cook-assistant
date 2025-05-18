@@ -76,7 +76,7 @@ async function getEnrichedRecipe(recipeId) {
  * GET /recipes?limit=50&startAfter=<docId>
  * Supports optional pagination.
  */
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 100;
 
 router.get('/', async (req, res) => {
   try {
