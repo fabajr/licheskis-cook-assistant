@@ -143,6 +143,7 @@ export default function MealPlanner() {
     }
     setSavingPlan(true);
     try {
+      console.log('Saving meal plan:', mealPlanDays);
       const recipeCounts = mealPlanDays
         .flatMap(d => d.meals.map(m => m.recipe_id))
         .filter(id => id)
@@ -155,7 +156,7 @@ export default function MealPlanner() {
         name: planName,
         start_date: startDate,
         end_date: endDate,
-        recipe_counts: recipeCounts
+        days: mealPlanDays
       };
       await createMealPlan(payload);
       setSuccess(true);
