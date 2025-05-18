@@ -1,15 +1,11 @@
 // src/pages/MealPlanner.js
 import React, { useState, useEffect } from 'react';
 import { getRecipes } from '../services/api/recipes'; // Only API call available
+import { calculateCyclePhase } from '../services/utils/utils';
+import { getUserProfile } from '../services/api/users'; // Only API call available
 
 // Simulated data for phases and categories
-const defaultPhases = [
-  { code: 'M', name: 'Menstrual' },
-  { code: 'F', name: 'Follicular' },
-  { code: 'O', name: 'Ovulation' },
-  { code: 'ML', name: 'Mid-Luteal' },
-  { code: 'LL', name: 'Late-Luteal' }
-];
+
 const defaultCategories = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
 
 // Simulated createMealPlan function
@@ -19,11 +15,14 @@ const createMealPlan = async (plan) => {
 };
 
 function MealPlanner() {
+
+  const [userCycle, setUserCycle] = useState(null);
+
   const [recipes, setRecipes] = useState([]);
-  const [phases] = useState(defaultPhases);
+  //const [phases] = useState(defaultPhases);
   const [categories] = useState(defaultCategories);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
-
+  const [selectedRecipes, setSelectedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -36,6 +35,20 @@ function MealPlanner() {
   const [mealPlanDays, setMealPlanDays] = useState([]);
   const [selectedPhase, setSelectedPhase] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  // Fetch user profile to get hormonal cycle
+  useEffect(() => {
+  async function loadUser() {
+    try {
+      const user = await getUserProfile();
+      setUserCycle(user.hormonal_cycle);
+      console.log('userCycle', user.hormonal_cycle);
+    } catch (err) {
+      console.error('Erro ao buscar perfil:', err);
+    }
+  }
+  loadUser();
+}, []);  
 
   // Fetch recipes only
   useEffect(() => {
@@ -68,22 +81,24 @@ function MealPlanner() {
 
   // Generate days when dates change
   useEffect(() => {
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const days = [];
-      const cursor = new Date(start);
-      while (cursor <= end) {
+     if (startDate && endDate && userCycle) {
+       const start = new Date(startDate);
+       const end   = new Date(endDate);
+       const days  = [];
+       const cursor = new Date(start);
+       while (cursor <= end) {
+         const dayStr = cursor.toISOString().split('T')[0];
         days.push({
-          date: cursor.toISOString().split('T')[0],
-          hormonal_phase: '',
+          date: dayStr,
+          hormonal_phase: calculateCyclePhase(dayStr, userCycle),
           meals: defaultCategories.map(type => ({ type, recipe_id: '', servings: 1 }))
         });
-        cursor.setDate(cursor.getDate() + 1);
-      }
-      setMealPlanDays(days);
-    }
-  }, [startDate, endDate]);
+        console.log('mealPlanDays', days);
+         cursor.setDate(cursor.getDate() + 1);
+       }
+       setMealPlanDays(days);
+     }
+   }, [startDate, endDate, userCycle]);
 
   // Filter recipes client-side
   useEffect(() => {
@@ -96,6 +111,11 @@ function MealPlanner() {
     }
     setFilteredRecipes(filtered);
   }, [recipes, selectedPhase, selectedCategory]);
+
+  function parseLocalDate(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return new Date(y, m - 1, d);
+}
 
   const handlePhaseChange = (dayIndex, phase) => {
     const copy = [...mealPlanDays];
@@ -135,6 +155,8 @@ function MealPlanner() {
   if (error)   return <div className="alert alert-danger">{error}</div>;
   if (success) return <div className="alert alert-success">Meal plan simulated!</div>;
 
+
+  // Render the meal planner JSX
   return (
     <div className="container py-4">
       <h1>Meal Planner</h1>
@@ -155,41 +177,17 @@ function MealPlanner() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="row mb-4">
-        <div className="col-md-6">
-          <label>Phase</label>
-          <select className="form-select" value={selectedPhase} onChange={e => setSelectedPhase(e.target.value)}>
-            <option value="">All</option>
-            {phases.map(p => <option key={p.code} value={p.code}>{p.name}</option>)}
-          </select>
-        </div>
-        <div className="col-md-6">
-          <label>Category</label>
-          <select className="form-select" value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}>
-            <option value="">All</option>
-            {categories.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-      </div>
-
+      
       {/* Plan Table */}
       {mealPlanDays.map((day, di) => (
-        <div key={di} className="mb-4">
+        <div key={di} className={`mb-4 phase-${day.hormonal_phase}`}>
           <h5>
             {formatDate(day.date)}
-            <select
-              className="form-select form-select-sm d-inline-block w-auto ms-2"
-              value={day.hormonal_phase}
-              onChange={e => handlePhaseChange(di, e.target.value)}
-            >
-              <option value="">Phase</option>
-              {phases.map(p => <option key={p.code} value={p.code}>{p.code}</option>)}
-            </select>
+            
           </h5>
           <table className="table table-sm">
             <thead>
-              <tr><th>Meal</th><th>Recipe</th><th>Servings</th></tr>
+              <tr><th>Meal</th><th>Recipe</th></tr>
             </thead>
             <tbody>
               {day.meals.map((meal, mi) => (
@@ -207,14 +205,7 @@ function MealPlanner() {
                       ))}
                     </select>
                   </td>
-                  <td>
-                    <input
-                      type="number"
-                      className="form-control form-control-sm"
-                      value={meal.servings}
-                      onChange={e => handleServingsChange(di, mi, e.target.value)}
-                    />
-                  </td>
+                  
                 </tr>
               ))}
             </tbody>
