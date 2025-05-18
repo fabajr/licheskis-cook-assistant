@@ -51,7 +51,7 @@ export const getUnitOptions = category => {
 // (para tags de receita)
 export const cyclePhaseOptions = [
   { label: 'Menstruation', value: 'M' },
-  { label: 'Late Follicular', value: 'L' },
+  { label: 'Follicular', value: 'F' },
   { label: 'Ovulatory', value: 'O' },
   { label: 'Mid-Luteal', value: 'ML' },
   { label: 'Late-Luteal', value: 'LL' },
@@ -129,9 +129,92 @@ export function parseQuantity(qtyStr) {
     else {
       throw new Error(`Unknown unit(s): ${fromUnit}, ${toUnit}`);
     }
+
+
   }
-  
-  // Example usage:
+    // Example usage:
   // console.log(convert(1, 'CUP', 'TBSP'));    // → 16
   // console.log(convert(2, 'LB', 'G'));        // → 907.184
   // console.log(convert(1, 'BOTTLE', 'CUP'));  // → 3.125
+
+
+
+
+
+
+ /**
+ * Converte vários formatos de timestamp em Date.
+ */
+function parseTimestamp(raw) {
+  // Firestore Timestamp serializado
+  if (raw?._seconds != null && raw?._nanoseconds != null) {
+    return new Date(raw._seconds * 1000 + raw._nanoseconds / 1e6);
+  }
+  // Firestore Timestamp (classe)
+  if (typeof raw.toDate === 'function') {
+    return raw.toDate();
+  }
+  // ISO string ou outro que o JS reconheça
+  return new Date(raw);
+}
+
+/**
+ * Calcula a fase do ciclo para uma determinada data.
+ *
+ * @param {string} dateStr – 'YYYY-MM-DD'
+ * @param {object} cycle – objeto hormonal_cycle do usuário:
+ *   {
+ *     start_date,
+ *     cycle_length,
+ *     menstrual_length,
+ *     follicular_length,
+ *     ovulatory_length,
+ *     midluteal_length,
+ *     lateluteal_length
+ *   }
+ * @returns {'M'|'F'|'O'|'ML'|'LL'}
+ */
+export function calculateCyclePhase(dateStr, cycle) {
+  // 1) Normaliza data de entrada na meia-noite local
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const date = new Date(y, m - 1, d);
+
+  // 2) Converte start_date para Date e normaliza na meia-noite
+  const startRaw = parseTimestamp(cycle.start_date);
+  const start    = new Date(
+    startRaw.getFullYear(),
+    startRaw.getMonth(),
+    startRaw.getDate()
+  );
+
+  // 3) Diferença em dias inteiros
+  const diffMs   = date.getTime() - start.getTime();
+  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+  // 4) Dia no ciclo [0 .. cycle_length-1]
+  const modDay = ((diffDays % cycle.cycle_length) + cycle.cycle_length) % cycle.cycle_length;
+
+  // 5) Cálculo cumulativo das fases
+  const {
+    menstrual_length,
+    follicular_length,
+    ovulatory_length,
+    midluteal_length,
+  } = cycle;
+
+  if (modDay < menstrual_length) {
+    return 'M';   // Menstruation
+  }
+  if (modDay < menstrual_length + follicular_length) {
+    return 'F';   // Follicular (ajustado de 'L' para 'F')
+  }
+  if (modDay < menstrual_length + follicular_length + ovulatory_length) {
+    return 'O';   // Ovulatory
+  }
+  if (modDay < menstrual_length + follicular_length + ovulatory_length + midluteal_length) {
+    return 'ML';  // Mid-Luteal
+  }
+  return 'LL';    // Late-Luteal
+}
+
+
