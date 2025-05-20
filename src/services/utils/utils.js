@@ -217,4 +217,13 @@ export function calculateCyclePhase(dateStr, cycle) {
   return 'LL';    // Late-Luteal
 }
 
+/*
+const recipeCounts = mealPlanDays
+        .flatMap(d => d.meals.map(m => m.recipe_id))
+        .filter(id => id)
+        .reduce((acc, id) => {
+          acc[id] = (acc[id] || 0) + 1;
+          return acc;
+        }, {});
 
+*/
