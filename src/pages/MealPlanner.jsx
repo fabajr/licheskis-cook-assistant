@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { getRecipes } from '../services/api/recipes';
 import { getUserProfile } from '../services/api/users';
 import { calculateCyclePhase } from '../services/utils/utils';
+import { createMealPlan } from '../services/api/meal_plans';
 
 
 // Mapeia cada slot para as categorias permitidas
@@ -17,11 +18,7 @@ const categoryMap = {
 // slots na ordem que você quer renderizar
 const defaultCategories = Object.keys(categoryMap);
 
-// Simulated API call to create a meal plan (replace with real endpoint)
-const createMealPlan = async (plan) => {
-  console.log('Simulated createMealPlan payload:', plan);
-  return Promise.resolve({ id: 'SIMULATED_PLAN_ID' });
-};
+
 
 export default function MealPlanner() {
   // Helper: parse "YYYY-MM-DD" into a local Date at midnight
@@ -51,7 +48,7 @@ export default function MealPlanner() {
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState('');
   const [success, setSuccess]         = useState(false);
-  const [savingPlan, setSavingPlan]   = useState(false);
+  const [savingPlan, setSavingPlan]   = useState(false); //
 
   const [planName, setPlanName]       = useState('Weekly Meal Plan');
   const [startDate, setStartDate]     = useState('');
@@ -135,7 +132,13 @@ export default function MealPlanner() {
     setMealPlanDays(copy);
   };
 
-  // Save meal plan: aggregate recipe counts
+  // Save meal plan
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    saveMealPlan();
+  };
+
   const saveMealPlan = async () => {
     if (!planName.trim()) {
       setError('Please enter a plan name.');
@@ -144,14 +147,7 @@ export default function MealPlanner() {
     setSavingPlan(true);
     try {
       console.log('Saving meal plan:', mealPlanDays);
-      const recipeCounts = mealPlanDays
-        .flatMap(d => d.meals.map(m => m.recipe_id))
-        .filter(id => id)
-        .reduce((acc, id) => {
-          acc[id] = (acc[id] || 0) + 1;
-          return acc;
-        }, {});
-
+      
       const payload = {
         name: planName,
         start_date: startDate,
@@ -176,6 +172,7 @@ export default function MealPlanner() {
   // Render component
   return (
     <div className="container py-4">
+      <form onSubmit={handleSubmit} >
       <h1>Meal Planner</h1>
 
       {/* Plan Details */}
@@ -254,14 +251,10 @@ export default function MealPlanner() {
       ))}
 
       <div className="text-center">
-        <button
-          className="btn btn-primary"
-          onClick={saveMealPlan}
-          disabled={savingPlan}
-        >
-          {savingPlan ? 'Saving...' : 'Save Plan'}
-        </button>
+        <button type="submit" className="btn btn-primary">Save Meal Plan</button>
       </div>
+
+      </form>
     </div>
   );
 }
