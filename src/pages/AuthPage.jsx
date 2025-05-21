@@ -1,6 +1,6 @@
 // src/pages/AuthPage.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword,
@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { useAuth } from '../context/AuthContext';
 
 export default function AuthPage() {
   // State management
@@ -21,6 +22,22 @@ export default function AuthPage() {
   const [fieldErrors, setFieldErrors] = useState({});
   
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, loading: authLoading } = useAuth();
+  
+  // Set initial mode based on URL path
+  useEffect(() => {
+    setIsLogin(location.pathname === '/login');
+  }, [location.pathname]);
+  
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (user && !authLoading) {
+      // Redirect to recipes page or to the page they were trying to access before
+      const from = location.state?.from || '/profile';
+      navigate(from, { replace: true });
+    }
+  }, [user, authLoading, navigate, location.state]);
 
   // Form validation
   const validateForm = () => {
@@ -123,6 +140,31 @@ export default function AuthPage() {
     setError(null);
     setFieldErrors({});
   };
+
+  // Show loading state while checking authentication
+  if (authLoading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is already authenticated, don't render the form (will redirect via useEffect)
+  if (user) {
+    return (
+      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+        <div className="text-center">
+          <div className="spinner-border text-primary mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p>You are already logged in. Redirecting...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-5">

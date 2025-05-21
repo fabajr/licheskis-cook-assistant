@@ -28,7 +28,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/signup" element={<AuthPage />} />
-          <Route path="/complete-profile" element={
+          <Route path="/profile" element={
             <ProtectedRoute>
               <div className="alert alert-info">
                 <h4>Complete Profile Page</h4>
