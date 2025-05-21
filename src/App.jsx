@@ -3,10 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
 // Layout
 import Navbar from './components/Navbar';
-
 // Pages
 import Home from './pages/Home';
 import Recipes from './pages/Recipes';
@@ -14,17 +12,12 @@ import RecipeDetail from './pages/RecipeDetail';
 import MealPlanner from './pages/MealPlanner';
 import HormonalCycle from './pages/HormonalCycle';
 import GroceryList from './pages/GroceryList';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-
+import AuthPage from './pages/AuthPage';
 // Auth
-
 import { ProtectedRoute } from './components/ProtectedRoute';
-
 // Recipe Forms
 import CreateRecipe from './pages/CreateRecipe';
 import EditRecipe from './pages/EditRecipe';
-
 function App() {
   return (
     <BrowserRouter>
@@ -33,9 +26,16 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-
+          <Route path="/login" element={<AuthPage />} />
+          <Route path="/signup" element={<AuthPage />} />
+          <Route path="/complete-profile" element={
+            <ProtectedRoute>
+              <div className="alert alert-info">
+                <h4>Complete Profile Page</h4>
+                <p>This page will be implemented later to allow users to fill preferences and hormonal cycle information.</p>
+              </div>
+            </ProtectedRoute>
+          } />
           {/* Recipe Routes */}
           <Route path="/recipes" element={<Recipes />} />
           <Route
@@ -55,7 +55,6 @@ function App() {
             }
           />
           <Route path="/recipes/:id" element={<RecipeDetail />} />
-
           {/* Additional Features (authenticated users only) */}
           <Route
             path="/meal-planner"
@@ -81,7 +80,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           {/* Catch-all: redirect to home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
@@ -89,5 +87,4 @@ function App() {
     </BrowserRouter>
   );
 }
-
 export default App;
