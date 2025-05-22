@@ -19,7 +19,8 @@
     "indexes": "firestore.indexes.json"
   },
   "functions": {
-    "source": "functions"
+    "source": "functions",
+    "platform": "gcfv2"
   },
   "hosting": {
     "public": "build",
