@@ -10,9 +10,10 @@ import Home from './pages/Home';
 import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
 import MealPlanner from './pages/MealPlanner';
-import HormonalCycle from './pages/HormonalCycle';
 import GroceryList from './pages/GroceryList';
 import AuthPage from './pages/AuthPage';
+import Profile from './pages/Profile';
+
 // Auth
 import { ProtectedRoute } from './components/ProtectedRoute';
 // Recipe Forms
@@ -30,10 +31,7 @@ function App() {
           <Route path="/signup" element={<AuthPage />} />
           <Route path="/profile" element={
             <ProtectedRoute>
-              <div className="alert alert-info">
-                <h4>Complete Profile Page</h4>
-                <p>This page will be implemented later to allow users to fill preferences and hormonal cycle information.</p>
-              </div>
+              <Profile />
             </ProtectedRoute>
           } />
           {/* Recipe Routes */}
@@ -64,14 +62,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/hormonal-cycle"
-            element={
-              <ProtectedRoute>
-                <HormonalCycle />
-              </ProtectedRoute>
-            }
-          />
+          
           <Route
             path="/grocery-list"
             element={

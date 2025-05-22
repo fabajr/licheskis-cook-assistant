@@ -52,10 +52,10 @@ function Navbar() {
             </li>
             <li className="nav-item">
               <Link 
-                className={`nav-link ${location.pathname === '/hormonal-cycle' ? 'active' : ''}`} 
-                to="/hormonal-cycle"
+                className={`nav-link ${location.pathname === '/Profile' ? 'active' : ''}`} 
+                to="/Profile"
               >
-                Hormonal Cycle
+                Profile
               </Link>
             </li>
           </ul>
