@@ -4,6 +4,8 @@ import { getRecipes } from '../services/api/recipes';
 import { getUserProfile } from '../services/api/users';
 import { calculateCyclePhase } from '../services/utils/utils';
 import { createMealPlan } from '../services/api/meal_plans';
+import { useNavigate } from 'react-router-dom';
+
 
 
 // Mapeia cada slot para as categorias permitidas
@@ -21,6 +23,10 @@ const defaultCategories = Object.keys(categoryMap);
 
 
 export default function MealPlanner() {
+
+  const navigate = useNavigate(); // Hook: useNavigate
+
+
   // Helper: parse "YYYY-MM-DD" into a local Date at midnight
   const parseLocalDate = (dateStr) => {
     const [y, m, d] = dateStr.split('-').map(Number);
@@ -60,13 +66,31 @@ export default function MealPlanner() {
     (async () => {
       try {
         const user = await getUserProfile();
+
         setUserCycle(user.hormonal_cycle);
       } catch (err) {
         console.error('Error fetching profile:', err);
         setError('Failed to load user data.');
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
+
+   useEffect(() => {
+    if (!userCycle && !loading ) { 
+      // Se o ciclo não estiver definido, redireciona para o perfil
+      alert('Please set your hormonal cycle in your profile before.');
+      navigate('/profile', {
+        state: {
+        from: 'meal-planner',
+        showHormonalModal: true,
+        foo: 123
+        },
+        replace: true
+        });
+    }
+  }, [userCycle, navigate]);
 
   // Fetch all recipe pages and set default week
   useEffect(() => {
