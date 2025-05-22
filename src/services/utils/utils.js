@@ -145,7 +145,7 @@ export function parseQuantity(qtyStr) {
  /**
  * Converte vários formatos de timestamp em Date.
  */
-function parseTimestamp(raw) {
+export function parseTimestamp(raw) {
   // Firestore Timestamp serializado
   if (raw?._seconds != null && raw?._nanoseconds != null) {
     return new Date(raw._seconds * 1000 + raw._nanoseconds / 1e6);
