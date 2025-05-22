@@ -1,5 +1,5 @@
 // functions/index.js
-const functions = require('firebase-functions');
+const { onRequest } = require('firebase-functions/v2/https');
 const express   = require('express');
 const cors      = require('cors');
 
@@ -35,4 +35,16 @@ if (typeof window !== 'undefined') {
 
 
 
-exports.api = functions.https.onRequest(app);
+
+// “envelope” que expõe o app em / **e** em /api
+const root = express();
+root.use(cors({ origin: true }));
+root.use(express.json());
+
+// roda o mesmo app sem prefixo (emulador)
+root.use('/', app);
+// roda o mesmo app com /api (produção via Hosting rewrite)
+root.use('/api', app);
+
+// exporta como função Gen2
+exports.api = onRequest({ region: 'us-central1' }, root);
