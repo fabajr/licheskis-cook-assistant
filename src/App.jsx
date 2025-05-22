@@ -9,7 +9,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
-import MealPlanner from './pages/MealPlanner';
+import MealPlanner from './pages/MealPlanner';  
 import GroceryList from './pages/GroceryList';
 import AuthPage from './pages/AuthPage';
 import Profile from './pages/Profile';
