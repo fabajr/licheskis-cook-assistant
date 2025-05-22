@@ -80,7 +80,7 @@ export default function AuthPage() {
       if (isLogin) {
         // Login flow
         await signInWithEmailAndPassword(auth, email, password);
-        navigate('/complete-profile');
+        navigate('/profile');
       } else {
         // Signup flow
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -103,7 +103,7 @@ export default function AuthPage() {
           updated_at: serverTimestamp()
         });
         
-        navigate('/complete-profile');
+        navigate('/profile');
       }
     } catch (err) {
       console.error('Authentication error:', err);
