@@ -37,21 +37,19 @@ router.use(auth);
 /**
  * GET /meal-plans
  */
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
   try {
     const snap = await db
       .collection('users')
       .doc(req.uid)
       .collection('meal_plans')
+      .orderBy('start_date', 'desc')
       .get();
 
-    const mealPlans = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    return res.json(mealPlans);
+    const plans = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    res.json(plans);
   } catch (err) {
-    console.error('[GET /meal-plans] error for user', req.uid, err);
-    return res
-      .status(500)
-      .json({ error: 'Falha ao listar meal plans.', details: err.message });
+    res.status(500).json({ error: 'Failed to fetch meal plans', details: err.message });
   }
 });
 
