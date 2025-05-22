@@ -1,170 +1,212 @@
-// src/pages/GroceryList.js
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+// src/pages/GroceryList.jsx
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { getMealPlans } from '../services/api/meal_plans';
+import { createGroceryList } from '../services/api/grocery_lists';
+import MealPlanSelection from '../components/grocery/MealPlanSelection';
+import ServingsAdjuster from '../components/grocery/ServingsAdjuster';
+import GroceryPreview from '../components/grocery/GroceryPreview';
 
-// Stub for generateGroceryList since API is not available
-const generateGroceryList = async (recipeIds) => {
-  console.log('Simulated generateGroceryList for recipes:', recipeIds);
-  // Return a demo grocery list
-  return {
-    name: 'Demo Grocery List',
-    items: [
-      { ingredient_id: '1', name: 'Apples', category: 'Produce', quantity: 4, unit: 'unit', checked: false },
-      { ingredient_id: '1', name: 'Apples', category: 'Produce', quantity: 4, unit: 'unit', checked: false },
-      { ingredient_id: '2', name: 'Milk', category: 'Dairy', quantity: 1, unit: 'gal', checked: false },
-      { ingredient_id: '3', name: 'Eggs', category: 'Dairy', quantity: 12, unit: 'unit', checked: false },
-      { ingredient_id: '4', name: 'Carrots', category: 'Produce', quantity: 1, unit: 'lb', checked: false }
-    ]
-  };
-};
-
-function GroceryList() {
-  const [recipeIds, setRecipeIds] = useState([]);
-  const [groceryList, setGroceryList] = useState(null);
-  const [generating, setGenerating] = useState(false);
+export default function GroceryList() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  
+  // State management
+  const [allMealPlans, setAllMealPlans] = useState([]);
+  const [selectedMealPlans, setSelectedMealPlans] = useState([]);
+  const [servingsByRecipe, setServingsByRecipe] = useState({});
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const handleGenerateList = async () => {
-    setError(null);
-    setGenerating(true);
-    try {
-      const result = await generateGroceryList(recipeIds);
-      setGroceryList(result);
-    } catch (err) {
-      console.error(err);
-      setError('Failed to generate grocery list. Please try again.');
-    } finally {
-      setGenerating(false);
-    }
-  };
+  // Fetch all meal plans on component mount
+  useEffect(() => {
+    const fetchMealPlans = async () => {
+      try {
+        setLoading(true);
+        const plans = await getMealPlans();
+        setAllMealPlans(plans);
+        
+        // Initialize servings state with default counts
+        const initialServings = {};
+        plans.forEach(plan => {
+          plan.days.forEach(day => {
+            day.meals.forEach(meal => {
+              if (meal.recipe_id) {
+                initialServings[meal.recipe_id] = initialServings[meal.recipe_id] || 0;
+                initialServings[meal.recipe_id] += 1;
+              }
+            });
+          });
+        });
+        setServingsByRecipe(initialServings);
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching meal plans:', err);
+        setError('Failed to load meal plans. Please try again later.');
+        setLoading(false);
+      }
+    };
 
-  const toggleItemCheck = (itemIndex) => {
-    setGroceryList(prev => {
-      const updated = { ...prev };
-      updated.items = [...updated.items];
-      updated.items[itemIndex] = {
-        ...updated.items[itemIndex],
-        checked: !updated.items[itemIndex].checked
-      };
-      return updated;
+    fetchMealPlans();
+  }, [user]);
+
+  // Toggle meal plan selection
+  const toggleMealPlanSelection = (mealPlan) => {
+    setSelectedMealPlans(prev => {
+      const isSelected = prev.some(plan => plan.id === mealPlan.id);
+      
+      if (isSelected) {
+        // Remove from selection
+        return prev.filter(plan => plan.id !== mealPlan.id);
+      } else {
+        // Add to selection
+        return [...prev, mealPlan];
+      }
     });
   };
 
-  const printGroceryList = () => window.print();
+  // Update servings for a recipe
+  const handleServingsChange = (recipeId, newCount) => {
+    setServingsByRecipe(prev => ({
+      ...prev,
+      [recipeId]: parseInt(newCount, 10) || 0
+    }));
+  };
+
+  // Toggle preview section
+  const togglePreview = () => {
+    setPreviewOpen(prev => !prev);
+  };
+
+  // Close preview section
+  const closePreview = () => {
+    setPreviewOpen(false);
+  };
+
+  // Create grocery list
+  const handleCreateList = async () => {
+    try {
+      // Get only the recipes that are in selected meal plans
+      const relevantRecipes = {};
+      selectedMealPlans.forEach(plan => {
+        plan.days.forEach(day => {
+          day.meals.forEach(meal => {
+            if (meal.recipe_id && servingsByRecipe[meal.recipe_id]) {
+              relevantRecipes[meal.recipe_id] = servingsByRecipe[meal.recipe_id];
+            }
+          });
+        });
+      });
+/*
+      await createGroceryList({
+        name: `Grocery List - ${new Date().toLocaleDateString()}`,
+        plans: selectedMealPlans.map(plan => plan.id),
+        servings: relevantRecipes,
+        created_at: new Date().toISOString()
+      }); */
+
+      // Reset state or redirect
+      setSelectedMealPlans([]);
+      setPreviewOpen(false);
+      navigate('/profile'); // Redirect to profile page where grocery lists are shown
+    } catch (err) {
+      console.error('Error creating grocery list:', err);
+      setError('Failed to create grocery list. Please try again.');
+    }
+  };
+
+  // Get unique recipes from selected meal plans
+  const getUniqueRecipes = () => {
+    const recipesMap = new Map();
+    
+    selectedMealPlans.forEach(plan => {
+      plan.days.forEach(day => {
+        day.meals.forEach(meal => {
+          if (meal.recipe_id && meal.recipe) {
+            if (!recipesMap.has(meal.recipe_id)) {
+              recipesMap.set(meal.recipe_id, {
+                id: meal.recipe_id,
+                name: meal.recipe.name,
+                defaultCount: 0
+              });
+            }
+            
+            // Increment the default count
+            const recipe = recipesMap.get(meal.recipe_id);
+            recipe.defaultCount += 1;
+          }
+        });
+      });
+    });
+    
+    return Array.from(recipesMap.values()); 
+  };
+
+  if (loading) {
+    return (
+      <div className="container py-5 text-center">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="mt-3">Loading meal plans...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container py-5">
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+        <button 
+          className="btn btn-primary" 
+          onClick={() => window.location.reload()}
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="container py-4">
-      <h1 className="mb-4">Grocery List</h1>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Grocery List</h1>
+        <span className="badge bg-primary">
+          Selected: {selectedMealPlans.length} Meal Plan(s)
+        </span>
+      </div>
 
-      {!groceryList ? (
-        <div className="card mb-4">
-          <div className="card-header">
-            <h4 className="mb-0">Generate Grocery List</h4>
-          </div>
-          <div className="card-body">
-            {error && (
-              <div className="alert alert-danger" role="alert">
-                {error}
-              </div>
-            )}
+      {/* Meal Plan Selection */}
+      <MealPlanSelection 
+        mealPlans={allMealPlans}
+        selectedMealPlans={selectedMealPlans}
+        onToggleSelect={toggleMealPlanSelection}
+      />
 
-            <p>
-              You can generate a grocery list from your meal plan or select individual recipes.
-            </p>
+      {/* Servings Adjuster */}
+      <ServingsAdjuster 
+        recipes={getUniqueRecipes()}
+        servingsByRecipe={servingsByRecipe}
+        onChangeServings={handleServingsChange}
+        onTogglePreview={togglePreview}
+        previewEnabled={selectedMealPlans.length > 0}
+        previewOpen={previewOpen}
+      />
 
-            <div className="d-grid gap-2">
-              <Link to="/meal-planner" className="btn btn-outline-primary">
-                Use Meal Plan
-              </Link>
-              <Link to="/recipes" className="btn btn-outline-secondary">
-                Select Recipes
-              </Link>
-              <button
-                className="btn btn-primary"
-                onClick={handleGenerateList}
-                disabled={generating}
-              >
-                {generating ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" />
-                    Generating...
-                  </>
-                ) : (
-                  'Generate Demo Grocery List'
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="grocery-list-container">
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <h3>{groceryList.name}</h3>
-            <div>
-              <button
-                className="btn btn-outline-secondary me-2"
-                onClick={() => setGroceryList(null)}
-              >
-                Back
-              </button>
-              <button className="btn btn-primary" onClick={printGroceryList}>
-                Print List
-              </button>
-            </div>
-          </div>
-
-          <div className="card mb-4">
-            <div className="card-body">
-              {groceryList.items.length === 0 ? (
-                <div className="alert alert-info" role="alert">
-                  No items in grocery list.
-                </div>
-              ) : (
-                <>
-                  {/* Group items by category */}
-                  {Array.from(
-                    new Set(groceryList.items.map(item => item.category))
-                  ).map(category => (
-                    <div key={category} className="mb-3">
-                      <div className="grocery-category fw-bold mb-2">{category}</div>
-                      {groceryList.items
-                        .filter(item => item.category === category)
-                        .map((item, index) => (
-                          <div
-                            key={index}
-                            className="grocery-item d-flex justify-content-between align-items-center mb-1"
-                          >
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id={`item-${index}`}
-                                checked={item.checked}
-                                onChange={() => toggleItemCheck(index)}
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor={`item-${index}`}
-                                style={{ textDecoration: item.checked ? 'line-through' : 'none' }}
-                              >
-                                {item.name}
-                              </label>
-                            </div>
-                            <span className="badge bg-light text-dark">
-                              {item.quantity} {item.unit}
-                            </span>
-                          </div>
-                        ))}
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+      {/* Grocery Preview (conditionally rendered) */}
+      {previewOpen && (
+        <GroceryPreview 
+          mealPlans={selectedMealPlans}
+          servingsByRecipe={servingsByRecipe}
+          onCreateList={handleCreateList}
+          onClose={closePreview}
+        />
       )}
     </div>
   );
 }
-
-export default GroceryList;
