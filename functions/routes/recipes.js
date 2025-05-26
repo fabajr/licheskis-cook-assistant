@@ -50,7 +50,11 @@ async function getEnrichedRecipe(recipeId) {
         is_vegan:       m.is_vegan,
         is_gluten_free: m.is_gluten_free,
         kcal_per_unit:  m.kcal_per_unit,
-        default_unit:   m.default_unit
+        default_unit:   m.default_unit,
+        category:       m.category,
+        alternative_units: m.alternative_units || [],
+        aliases:        m.aliases || [],
+        
       };
     })
     .filter(Boolean)
