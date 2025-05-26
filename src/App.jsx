@@ -11,6 +11,7 @@ import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
 import MealPlanner from './pages/MealPlanner';  
 import GroceryList from './pages/GroceryList';
+import GroceryListDetails from './pages/GroceryListDetails';
 import AuthPage from './pages/AuthPage';
 import Profile from './pages/Profile';
 
@@ -68,6 +69,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <GroceryList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/grocery-list/:id"
+            element={
+              <ProtectedRoute>
+                <GroceryListDetails />
               </ProtectedRoute>
             }
           />
