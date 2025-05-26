@@ -8,10 +8,15 @@ export default function MealPlanSelection({ mealPlans, selectedMealPlans, onTogg
     return selectedMealPlans.some(plan => plan.id === mealPlanId);
   };
 
+  console.log('MealPlanSelection', { mealPlans, selectedMealPlans, onToggleSelect });
   return (
     <div className="mb-4">
-      <h2 className="h4 mb-3">Select Meal Plans</h2>
-      
+      <div className="d-flex justify-content-between align-items-center mb-4">
+      <h2 className="h4 mb-3">Select Meal Plans&nbsp;</h2>
+      <span className="badge bg-primary">
+          Selected: {selectedMealPlans.length} Meal Plan(s)
+        </span>
+      </div>
       {mealPlans.length === 0 ? (
         <div className="alert alert-info">
           You don't have any meal plans yet. Create a meal plan first to generate a grocery list.
