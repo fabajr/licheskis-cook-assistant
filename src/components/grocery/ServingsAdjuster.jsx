@@ -9,6 +9,8 @@ export default function ServingsAdjuster({
   previewEnabled, 
   previewOpen 
 }) {
+  console.log('ServingsAdjuster', { recipes, servingsByRecipe, onChangeServings, onTogglePreview, previewEnabled, previewOpen });
+
   // Handle input change for servings
   const handleServingChange = (recipeId, e) => {
     const newValue = e.target.value;
@@ -39,8 +41,9 @@ export default function ServingsAdjuster({
               <thead>
                 <tr>
                   <th>Recipe Name</th>
-                  <th>Default ×</th>
-                  <th>Servings</th>
+                  <th>Servings in the Plan</th>
+                  <th>Servings per Recipe</th>
+                  <th>Select Servings </th>
                 </tr>
               </thead>
               <tbody>
@@ -48,11 +51,14 @@ export default function ServingsAdjuster({
                   <tr key={recipe.id}>
                     <td>{recipe.name}</td>
                     <td>{recipe.defaultCount}×</td>
+                    <td>{recipe.servingPerRecipe}</td>
                     <td style={{ width: '150px' }}>
                       <input
                         type="number"
+                        
                         className="form-control form-control-sm"
                         value={servingsByRecipe[recipe.id] || 0}
+                        
                         onChange={(e) => handleServingChange(recipe.id, e)}
                         min="0"
                       />
