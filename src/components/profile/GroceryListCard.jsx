@@ -1,6 +1,7 @@
 // src/components/profile/GroceryListCard.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { parseTimestamp } from '../../services/utils/utils';
 
 export default function GroceryListCard({ groceryList, onDelete }) {
   // Format date for display
@@ -9,7 +10,7 @@ export default function GroceryListCard({ groceryList, onDelete }) {
       return 'Date not available';
     }
     
-    const date = new Date(groceryList.created_at);
+    const date = parseTimestamp(groceryList.created_at);
     return date.toLocaleDateString('en-US', { 
       year: 'numeric',
       month: 'short', 
@@ -18,14 +19,14 @@ export default function GroceryListCard({ groceryList, onDelete }) {
   };
 
   return (
-    <div className="card h-100 shadow-sm">
+    <div className="card shadow-sm">
       <div className="card-body">
-        <h5 className="card-title">{groceryList.name || 'Grocery List'}</h5>
+        
         <p className="card-text">
           <small className="text-muted">{formatDate()}</small>
         </p>
         <p className="card-text">
-          {groceryList.items?.length || 0} items
+          <small> {groceryList.items?.length || 0} items </small>
         </p>
       </div>
       <div className="card-footer bg-transparent border-top-0">
