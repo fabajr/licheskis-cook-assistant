@@ -62,40 +62,41 @@ export default function MealPlanner() {
   const [mealPlanDays, setMealPlanDays] = useState([]);
 
   // Fetch user cycle
-  useEffect(() => {
+ useEffect(() => {
     (async () => {
       try {
         const user = await getUserProfile();
+        // 1. Campos obrigatórios segundo seu schema :contentReference[oaicite:0]{index=0}
+      const required = [
+        'start_date',
+        'cycle_length',
+        'menstrual_length',
+        'ovulatory_length',
+        'follicular_length',
+        'midluteal_length',
+        'lateluteal_length'
+      ];
 
+      // 2. Extrai o ciclo (pode ser {} se nunca setado)
+      const cycle = user.hormonal_cycle || {};
+
+      // 3. Descobre quais estão faltando ou vazios
+      const missing = required.filter(key =>
+        cycle[key] === undefined || cycle[key] === null
+      );
+        if (missing.length > 0) {
+          // 4. Se faltando, avisa e redireciona para o perfil	
+          alert('Please set your hormonal cycle in your profile before.');
+          navigate('/profile', {
+            state: { from: 'meal-planner', showHormonalModal: true },
+            replace: true
+          });
+          return;
+        }
+
+        
         setUserCycle(user.hormonal_cycle);
-      } catch (err) {
-        console.error('Error fetching profile:', err);
-        setError('Failed to load user data.');
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
 
-   useEffect(() => {
-    if (!userCycle && !loading ) { 
-      // Se o ciclo não estiver definido, redireciona para o perfil
-      alert('Please set your hormonal cycle in your profile before.');
-      navigate('/profile', {
-        state: {
-        from: 'meal-planner',
-        showHormonalModal: true,
-        foo: 123
-        },
-        replace: true
-        });
-    }
-  }, [userCycle, navigate]);
-
-  // Fetch all recipe pages and set default week
-  useEffect(() => {
-    (async () => {
-      try {
         setLoading(true);
         // 1) busca paginada, 2) deduplica por id/docId
         let all = [], token = null;
@@ -112,19 +113,18 @@ export default function MealPlanner() {
           setRecipes(unique);
           setFilteredRecipes(unique);
 
-        // Initialize to current week (Sunday to Saturday)
-        const today = formatYMD(new Date());
 
+        const today = formatYMD(new Date());
         setStartDate(today);
         setEndDate(today);
       } catch (err) {
+        setError('Failed to load user data.');
         console.error(err);
-        setError('Failed to fetch recipes.');
       } finally {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [navigate]);
 
   // Generate mealPlanDays when dates or cycle change
   useEffect(() => {
@@ -137,10 +137,10 @@ export default function MealPlanner() {
 
     while (cursor <= end) {
       const dayStr = formatYMD(cursor);
-      const phase  = calculateCyclePhase(dayStr, userCycle);
+      
       days.push({
         date: dayStr,
-        hormonal_phase: phase,
+        hormonal_phase: calculateCyclePhase(dayStr, userCycle),
         meals: defaultCategories.map(type => ({ type, recipe_id: '' }))
       });
       cursor.setDate(cursor.getDate() + 1);
@@ -185,12 +185,17 @@ export default function MealPlanner() {
       setError('Failed to save plan.');
     } finally {
       setSavingPlan(false);
+      navigate('/profile', {
+            state: { from: 'meal-planner', showMealPlans: true },
+            replace: true
+          });
     }
   };
 
   // Render states
   if (loading) return <p>Loading...</p>;
   if (error)   return <div className="alert alert-danger">{error}</div>;
+  if (!userCycle) return <div className="alert alert-info">No hormonal cycle set.</div>;
   if (success) return <div className="alert alert-success">Plan saved!</div>;
 
   // Render component
