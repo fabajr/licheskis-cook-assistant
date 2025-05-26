@@ -1,51 +1,55 @@
-// src/components/profile/HormonalCalendar.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 export default function HormonalCalendar({ cycleData, calculatePhase }) {
   const [calendarDays, setCalendarDays] = useState([]);
-  const [currentMonth, setCurrentMonth] = useState('');
-  
-  // Phase colors and labels
-  const phaseInfo = {
-    'M': { color: '#dc3545', label: 'Menstrual' },
-    'F': { color: '#0d6efd', label: 'Follicular' },
-    'O': { color: '#ffc107', label: 'Ovulatory' },
-    'ML': { color: '#6f42c1', label: 'Mid-Luteal' },
-    'LL': { color: '#6c757d', label: 'Late-Luteal' }
-  };
-  
+  const carouselRef = useRef(null);
+  const DAYS_BATCH = 35;
+
+  // Generate initial days
   useEffect(() => {
     if (!cycleData || !cycleData.start_date) return;
-    
-    // Generate calendar days for the next 35 days
     const days = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
-    // Set month name
-    setCurrentMonth(today.toLocaleString('default', { month: 'long', year: 'numeric' }));
-    
-    // Generate days
-    for (let i = 0; i < 35; i++) {
+
+    for (let i = 0; i < DAYS_BATCH; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      
       const dateStr = date.toISOString().split('T')[0];
       const phase = calculatePhase(dateStr, cycleData);
-      
-      days.push({
-        date,
-        dateStr,
-        day: date.getDate(),
-        month: date.getMonth(),
-        phase,
-        isToday: i === 0
-      });
+      days.push({ date, dateStr, phase });
     }
-    
+
     setCalendarDays(days);
   }, [cycleData, calculatePhase]);
-  
+
+  // Load more when scrolling near end
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 100) {
+        loadMoreDays();
+      }
+    };
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [calendarDays]);
+
+  const loadMoreDays = () => {
+    if (!calendarDays.length) return;
+    const lastDate = new Date(calendarDays[calendarDays.length - 1].date);
+    const newDays = [];
+    for (let i = 1; i <= DAYS_BATCH; i++) {
+      const date = new Date(lastDate);
+      date.setDate(lastDate.getDate() + i);
+      const dateStr = date.toISOString().split('T')[0];
+      const phase = calculatePhase(dateStr, cycleData);
+      newDays.push({ date, dateStr, phase });
+    }
+    setCalendarDays(prev => [...prev, ...newDays]);
+  };
+
   if (!cycleData || !cycleData.start_date || calendarDays.length === 0) {
     return (
       <div className="alert alert-info">
@@ -53,57 +57,60 @@ export default function HormonalCalendar({ cycleData, calculatePhase }) {
       </div>
     );
   }
-  
+
+  // Arrow scroll helpers
+  const scrollBy = offset => {
+    const el = carouselRef.current;
+    if (el) el.scrollBy({ left: offset, behavior: 'smooth' });
+  };
+
   return (
-    <div className="hormonal-calendar">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h5 className="mb-0">{currentMonth}</h5>
-        <div className="phase-legend d-flex">
-          {Object.entries(phaseInfo).map(([key, { color, label }]) => (
-            <div key={key} className="ms-3 d-flex align-items-center">
-              <span 
-                className="badge rounded-pill me-1" 
-                style={{ backgroundColor: color, width: '30px' }}
-              >
-                {key}
-              </span>
-              <small>{label}</small>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      <div className="calendar-grid">
-        <div className="row row-cols-7 text-center mb-2">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="col fw-bold">{day}</div>
-          ))}
-        </div>
-        
-        <div className="row row-cols-7">
-          {calendarDays.map((day, index) => {
-            const phase = day.phase;
-            const phaseColor = phaseInfo[phase]?.color || '#6c757d';
-            
-            return (
-              <div key={index} className="col p-1">
-                <div 
-                  className={`calendar-day rounded p-2 text-center ${day.isToday ? 'border border-dark' : ''}`}
-                  style={{ 
-                    backgroundColor: phaseColor,
-                    opacity: day.month !== calendarDays[0].month ? 0.5 : 1
-                  }}
-                >
-                  <span className="badge bg-light text-dark">{day.day}</span>
-                  <div className="mt-1">
-                    <small className="text-white">{phase}</small>
-                  </div>
+    <div className="position-relative">
+      {/* Left arrow */}
+      <button
+        onClick={() => scrollBy(-300)}
+        className="position-absolute top-50 start-0 translate-middle-y btn btn-light p-2"
+        style={{ zIndex: 1, opacity: 0.7 }}
+      >
+        ‹
+      </button>
+
+      <div
+        ref={carouselRef}
+        className="d-flex overflow-x-auto"
+        style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
+      >
+        {calendarDays.map((day, idx) => {
+          const weekday = day.date.toLocaleString('default', { weekday: 'short' });
+          const month = String(day.date.getMonth() + 1).padStart(2, '0');
+          const dateNum = String(day.date.getDate()).padStart(2, '0');
+
+          return (
+            <div
+              key={idx}
+              className="flex-shrink-0 p-2"
+              style={{ width: 100, scrollSnapAlign: 'start' }}
+            >
+              <div className={`card text-center phase-${day.phase} text-white`}>
+                <div className="card-body p-1">
+                  <div className="fw-bold">{weekday}</div>
+                  <div>{`${month}/${dateNum}`}</div>
+                  <span className="badge bg-light text-dark mt-1">{day.phase}</span>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
+
+      {/* Right arrow */}
+      <button
+        onClick={() => scrollBy(300)}
+        className="position-absolute top-50 end-0 translate-middle-y btn btn-light p-2"
+        style={{ zIndex: 1, opacity: 0.7 }}
+      >
+        ›
+      </button>
     </div>
   );
 }
