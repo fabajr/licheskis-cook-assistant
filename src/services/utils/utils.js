@@ -24,17 +24,17 @@ export const newIngredientCategoryOptions = [
 
 // mapeamento categoria → lista de unidades
 export const unitOptionsMap = {
-  Baking:                   ["CUP","TBSP","TSP","G","KG"],
+  Baking:                   ["CUP","TBSP","TSP","G","KG","LB","OZ"],
   Beverages:                ["FL OZ","CUP","L","ML","BOTTLE"],
-  "Canned & Jarred Goods":  ["CAN","OZ","G","KG"],
+  "Canned & Jarred Goods":  ["OZ","CAN","G","KG"],
   "Condiments & Sauces":    ["TBSP","TSP","FL OZ"],
   Dairy:                    ["CUP","PT","QT","OZ"],
-  Herbs:                    ["BUNCH","STEAMS","TBSP","TSP"],
+  Herbs:                    ["TSP","BUNCH","STEAMS","TBSP"],
   "Meat & Seafood":         ["LB","OZ","G","KG"],
   "Nuts & Seeds":           ["CUP","OZ","G","KG"],
   "Oils & Vinegars":        ["TBSP","FL OZ","ML"],
   Pantry:                   ["CUP","OZ","G","KG"],
-  Produce:                  ["UNIT","LB","OZ","KG"],
+  Produce:                  ["LB","UNIT","OZ","KG"],
   Spices:                   ["TSP","PINCH","TBSP"]
 };
 
@@ -75,7 +75,7 @@ export function parseQuantity(qtyStr) {
   }
 
   // Conversion factors to a base unit (mL for volume, g for weight)
-  const volumeFactors = {
+  export const volumeFactors = {
     CUP:   240,
     TBSP:  14.7868,
     TSP:   4.92892,
@@ -88,7 +88,7 @@ export function parseQuantity(qtyStr) {
     BOTTLE: 750
   };
   
-  const weightFactors = {
+  export const weightFactors = {
     G:   1,
     OZ:  28.3495,
     LB:  453.592,
