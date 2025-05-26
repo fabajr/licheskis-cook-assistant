@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getUserProfile, updateUserProfile } from '../services/api/users';
 import { getMealPlans, deleteMealPlan } from '../services/api/meal_plans';
+import { getGroceryLists, deleteGroceryList } from '../services/api/grocery_lists';
 import { calculateCyclePhase } from '../services/utils/utils';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Subcomponents
 import UserInfoForm from '../components/profile/UserInfoForm';
@@ -24,12 +25,15 @@ export default function Profile() {
   const [error, setError] = useState(null);
   const [saveStatus, setSaveStatus] = useState({ saving: false, success: false, error: null });
   
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
+  const navigate = useNavigate();
   
   const location = useLocation(); // Get location state to check if coming from meal planner
   const hormonalRef = useRef(null); // Ref to scroll to hormonal cycle section
-  const [highlight, setHighlight] = useState(false); // Highlight hormonal cycle section if coming from meal planner
+  const groceryRef = useRef(null); //Ref to scroll to groceryList section
+  const [highlightHormonal, setHighlightHormonal] = useState(false); // Highlight hormonal cycle section if coming from meal planner
+  const [highlightGrocery, setHighlightGrocery] = useState(false); // Highlight hormonal cycle section if coming from meal planner
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -46,9 +50,12 @@ export default function Profile() {
         console.log('Fetched Meal Plans:', mealsData);
         
         setMealPlans(mealsData);
+
+        const groceryData = await getGroceryLists();
         
         // TODO: Fetch grocery lists when API is available
-        setGroceryLists([]);
+        setGroceryLists(groceryData);
+        
       } catch (err) {
         console.error('Error fetching user data:', err);
         setError('Failed to load profile data. Please try again.');
@@ -66,13 +73,27 @@ export default function Profile() {
 useLayoutEffect(() => {
    // só quando vier do meal-planner, terminar o loading e o elemento existir
    if ( 
-     location.state?.from === 'meal-planner' &&
+     location.state?.from === 'meal-planner' && location.state?.showHormonalModal === true &&
      !loading &&
      hormonalRef.current 
    ) { 
-     setHighlight(true);
+     setHighlightHormonal(true);
      hormonalRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-     const timer = setTimeout(() => setHighlight(false), 3000);
+     const timer = setTimeout(() => setHighlightHormonal(false), 3000);
+     return () => clearTimeout(timer);
+   }
+ }, [location.state, loading]);
+
+ useLayoutEffect(() => {
+   // só quando vier do grocery, terminar o loading e o elemento existir
+   if ( 
+     location.state?.from === 'grocery-list' && location.state?.show === 'GroceryModal' &&
+     !loading &&
+     groceryRef.current 
+   ) { 
+     setHighlightGrocery(true);
+     groceryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+     const timer = setTimeout(() => setHighlightGrocery(false), 3000);
      return () => clearTimeout(timer);
    }
  }, [location.state, loading]);
@@ -169,12 +190,23 @@ useLayoutEffect(() => {
   const handleDeleteGroceryList = async (id) => {
     if (window.confirm('Are you sure you want to delete this grocery list?')) {
       try {
-        // TODO: Implement when API is available
+        
+        await deleteGroceryList(id);
+        
         setGroceryLists(prev => prev.filter(list => list.id !== id));
       } catch (err) {
         console.error('Error deleting grocery list:', err);
         alert('Failed to delete grocery list. Please try again.');
       }
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/login', { replace: true });
+    } catch (err) {
+      console.error('Erro no logout', err);
     }
   };
 
@@ -250,7 +282,7 @@ useLayoutEffect(() => {
       <div
         ref={hormonalRef}           
         className={`card shadow-sm mb-4 transition-shadow ${
-          highlight ? 'shadow-lg border-primary' : ''
+          highlightHormonal ? 'shadow-lg border-primary' : ''
         }`}
         style={{ transition: 'box-shadow 0.3s, border-color 0.3s' }}
       >
@@ -308,7 +340,14 @@ useLayoutEffect(() => {
       </div>
       
       {/* Grocery Lists Section */}
-      <div className="card shadow-sm">
+       
+      <div 
+        ref={groceryRef}
+        className={`card shadow-sm mb-4 transition-shadow ${
+          highlightGrocery ? 'shadow-lg border-primary' : ''
+        }`}
+        style={{ transition: 'box-shadow 0.3s, border-color 0.3s' }}>
+        
         <div className="card-header bg-light d-flex justify-content-between align-items-center">
           <h5 className="mb-0">Your Grocery Lists</h5>
           <Link to="/grocery-list" className="btn btn-primary btn-sm">
@@ -320,6 +359,7 @@ useLayoutEffect(() => {
             <div className="row">
               {groceryLists.map(list => (
                 <div key={list.id} className="col-md-6 col-lg-4 mb-3">
+                                   
                   <GroceryListCard 
                     groceryList={list} 
                     onDelete={() => handleDeleteGroceryList(list.id)} 
@@ -332,6 +372,18 @@ useLayoutEffect(() => {
           )}
         </div>
       </div>
+
+
+      {/* Botão de logout no fim da página */}
+      <div className="mt-4 text-center">
+        <button
+          onClick={handleLogout}
+          className="btn btn-danger"
+        >
+          Logout
+        </button>
+      </div>
+
     </div>
   );
 }
