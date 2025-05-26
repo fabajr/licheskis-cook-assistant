@@ -9,6 +9,7 @@ const recipesRouter            = require('./routes/recipes');
 const ingredientsRouter        = require('./routes/ingredients');
 const recipeIngredientsRouter  = require('./routes/recipe_ingredients');
 const mealPlanRouter           = require('./routes/meal_plans');
+const groceryListRouter        = require('./routes/grocery_lists');
 
 const app = express();
 
@@ -28,6 +29,9 @@ app.use('/recipe_ingredients', recipeIngredientsRouter);
 
 // mount de plano alimentar (exige token válido)
 app.use('/meal_plans', auth, mealPlanRouter);
+
+app.use('/grocery_lists' , auth, groceryListRouter);
+
 
 if (typeof window !== 'undefined') {
     window._auth = auth;
