@@ -33,10 +33,16 @@ export const unitOptionsMap = {
   "Meat & Seafood":         ["LB","OZ","G","KG"],
   "Nuts & Seeds":           ["CUP","OZ","G","KG"],
   "Oils & Vinegars":        ["TBSP","FL OZ","ML"],
-  Pantry:                   ["CUP","OZ","G","KG"],
+  Pantry:                   ["LB","CUP","OZ","G","KG"],
   Produce:                  ["LB","UNIT","OZ","KG"],
   Spices:                   ["TSP","PINCH","TBSP"]
 };
+
+export const reverseParseCheck = [
+  "CUP",
+  "TBSP",
+  "TSP",
+];
 
 const unitOptionsMapNormalized = Object.fromEntries(
   Object.entries(unitOptionsMap).map(([k,v]) => [k.toLowerCase(), v])
@@ -56,6 +62,7 @@ export const cyclePhaseOptions = [
   { label: 'Mid-Luteal', value: 'ML' },
   { label: 'Late-Luteal', value: 'LL' },
 ];
+
 
 
 export function parseQuantity(qtyStr) {
@@ -157,6 +164,41 @@ export function parseTimestamp(raw) {
   // ISO string ou outro que o JS reconheça
   return new Date(raw);
 }
+
+
+
+/**
+ * Recebe:
+ *   - value: pode ser
+ *      • número (milissegundos desde 1970) 
+ *      • Firestore Timestamp 
+ *      • string no formato "YYYY-MM-DD"
+ * Retorna uma data-formatada tipo "Fri, May 30".
+ */
+export function formatDate(value) {
+  
+  let dateObj;
+
+  // 1) Se vier como string "YYYY-MM-DD", converter localmente:
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    // parseLocalDate já faz new Date(ano, mês-1, dia) → meia-noite local
+    const [y, m, d] = value.split('-').map(Number);
+    dateObj = new Date(y, m - 1, d);
+
+  } else {
+    // 2) Se vier como número ou Timestamp, use parseTimestamp para obter
+    //    milliseconds UTC, depois converta para Date local
+    const ms = parseTimestamp(value);
+    dateObj = new Date(ms);
+  }
+
+  return dateObj.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month:   'short',
+    day:     'numeric'
+  });
+};
+
 
 /**
  * Calcula a fase do ciclo para uma determinada data.
