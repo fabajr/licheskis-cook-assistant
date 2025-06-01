@@ -202,12 +202,15 @@ useLayoutEffect(() => {
   };
 
   const handleLogout = async () => {
+    setError(null);
+    
     try {
       await logout();
+      
       navigate('/login', { replace: true });
     } catch (err) {
       console.error('Erro no logout', err);
-    }
+    } 
   };
 
   if (loading) {
