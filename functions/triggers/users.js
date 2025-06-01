@@ -12,8 +12,6 @@ exports.createUserProfile = onUserCreated(
       id: user.uid,
       email: user.email,
       display_name: user.displayName || '',
-      preferences: {},
-      hormonal_cycle: {},
       created_at: FieldValue.serverTimestamp(),
       updated_at: FieldValue.serverTimestamp(),
     });
