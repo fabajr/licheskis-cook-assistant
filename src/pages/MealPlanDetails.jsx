@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMealPlanById, deleteMealPlan } from '../services/api/meal_plans';
-import { parseTimestamp } from '../services/utils/utils';
+import { parseTimestamp, formatDate } from '../services/utils/utils';
 
 export default function MealPlanDetails() {
   const { id } = useParams();
@@ -36,7 +36,13 @@ export default function MealPlanDetails() {
 
   // Empty handlers for edit and delete (to be implemented later)
   const handleEdit = () => {
-    // Will be implemented later
+
+    navigate(`/meal-planner/${mealPlan.id}/edit`, {
+        state: {
+          from: 'meal-planner',
+          },
+        replace: false
+      });
     console.log('Edit meal plan:', id);
   };
 
@@ -56,17 +62,7 @@ export default function MealPlanDetails() {
      }
    };
 
-  // Helper unificado para qualquer formato de data
-const formatDate = (value) => {
-  // parseTimestamp lida com number | Timestamp | string
-  const ms = parseTimestamp(value)
-  const date = new Date(ms)
-  return date.toLocaleDateString('en-US', {
-    weekday: 'short',
-    month:   'short',
-    day:     'numeric'
-  })
-}
+
 
   // Format date range for display
   const formatDateRange = () => {
@@ -74,8 +70,8 @@ const formatDate = (value) => {
       return 'Date range not available';
     }
     
-    const startDate = new Date(parseTimestamp(mealPlan.start_date));
-    const endDate = new Date(parseTimestamp(mealPlan.end_date));
+    const startDate = formatDate(mealPlan.start_date);
+    const endDate = formatDate(mealPlan.end_date);
     
     const formatDateDisplay = (date) => {
       return date.toLocaleDateString('en-US', { 
@@ -88,8 +84,8 @@ const formatDate = (value) => {
     
     return (
       <div>
-        <p><strong>Start Date:</strong> {formatDateDisplay(startDate)}</p>
-        <p><strong>End Date:</strong> {formatDateDisplay(endDate)}</p>
+        <p><strong>Start Date:</strong> {(startDate)}</p>
+        <p><strong>End Date:</strong> {(endDate)}</p>
       </div>
     );
   };
