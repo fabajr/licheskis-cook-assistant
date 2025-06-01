@@ -9,11 +9,14 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Recipes from './pages/Recipes';
 import RecipeDetail from './pages/RecipeDetail';
-import MealPlanner from './pages/MealPlanner';  
+import MealPlanner from './pages/MealPlanner';
+import MealPlanDetails from './pages/MealPlanDetails';
+import EditMealPlanner from './pages/EditMealPlanner';
 import GroceryList from './pages/GroceryList';
 import GroceryListDetails from './pages/GroceryListDetails';
 import AuthPage from './pages/AuthPage';
 import Profile from './pages/Profile';
+import ManageIngredients from './pages/ManageIngredients';
 
 // Auth
 import { ProtectedRoute } from './components/ProtectedRoute';
@@ -63,6 +66,27 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/meal-planner/:id"
+            element={
+              <ProtectedRoute>
+                <MealPlanDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/meal-planner/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditMealPlanner />
+              </ProtectedRoute>
+            }
+          />
+
+          
+
+          {/* Grocery List Routes */}
           
           <Route
             path="/grocery-list"
@@ -82,6 +106,16 @@ function App() {
           />
           {/* Catch-all: redirect to home */}
           <Route path="*" element={<Navigate to="/" replace />} />
+
+          <Route
+          path="/admin/ingredients"
+          element={
+            <ProtectedRoute requireAdmin>
+              <ManageIngredients />
+            </ProtectedRoute>
+          }
+        />
+
         </Routes>
       </main>
     </BrowserRouter>
