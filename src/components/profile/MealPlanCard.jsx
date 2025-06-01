@@ -34,9 +34,15 @@ export default function MealPlanCard({ mealPlan, onDelete }) {
       </div>
       <div className="card-footer bg-transparent border-top-0">
         <div className="d-flex justify-content-between">
+          
           <Link to={`/meal-planner/${mealPlan.id}`} className="btn btn-outline-primary btn-sm">
+            <i className="bi bi-eye me-1"></i> View
+          </Link>
+          
+          <Link to={`/meal-planner/${mealPlan.id}/edit`} className="btn btn-outline-primary btn-sm">
             <i className="bi bi-pencil me-1"></i> Edit
           </Link>
+          
           <button 
             className="btn btn-outline-danger btn-sm"
             onClick={() => onDelete(mealPlan.id)}
