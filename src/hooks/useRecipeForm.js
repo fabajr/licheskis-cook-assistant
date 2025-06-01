@@ -299,6 +299,8 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
           .filter(u => u.unit && !isNaN(u.conversion_factor)),
         isNew: true
       };
+
+
     }
     setIngredients(prev => [...prev, ingToAdd]);
     // limpa campos
@@ -431,6 +433,11 @@ function handleEditIngredient(index) {
     console.log("Submitting recipe payload:", payload);
     if (recipeId) {
       await updateRecipe(recipeId, payload);
+      // **LIMPA CACHE** de cada ingrediente novo que foi criado
+    ingredients
+      .filter(i => i.isNew)
+      .forEach(i => ingredients_db.clearSearchCache(i.name));
+      
       onSuccessRedirect(`/recipes/${recipeId}`);
       } else {
         // chama a API e extrai o .id do response
