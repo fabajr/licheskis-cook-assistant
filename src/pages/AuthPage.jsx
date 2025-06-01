@@ -97,8 +97,6 @@ export default function AuthPage() {
           email: user.email,
           display_name: displayName.trim() || '',
           role: 'user',
-          preferences: {},
-          hormonal_cycle: {},
           created_at: serverTimestamp(),
           updated_at: serverTimestamp()
         });
