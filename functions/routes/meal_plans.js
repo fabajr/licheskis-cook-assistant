@@ -20,10 +20,10 @@ function buildMealPlanPayload(body, uid) {
   return {
     user_id:    uid,
     name:       name || 'Untitled',
-    start_date: Timestamp.fromDate(new Date(start_date)),
-    end_date:   Timestamp.fromDate(new Date(end_date)),
+    start_date: start_date,
+    end_date:   end_date,
     days:       days.map(d => ({
-      date:            Timestamp.fromDate(new Date(d.date)),
+      date:            d.date,
       hormonal_phase:  d.hormonal_phase,    // ← adiciona aqui
       meals:           d.meals
     })),
