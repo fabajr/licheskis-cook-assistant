@@ -1,7 +1,19 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Home() {
+  const navigate = useNavigate();
+
+  const handleCicleSetup = () => {
+    navigate('/profile', {
+        state: {
+        from: 'meal-planner',
+        showHormonalModal: true,
+        foo: 123
+        },
+        replace: true
+        })};
+
   return (
     <div>
       <div className="home-hero text-center">
@@ -63,9 +75,10 @@ function Home() {
         </div>
 
         <div className="text-center mt-5">
-          <Link to="/hormonal-cycle" className="btn btn-primary">
+          <button className='btn btn-primary me-3' 
+          onClick={handleCicleSetup}>
             Set Up Your Cycle
-          </Link>
+          </button>
         </div>
       </div>
     </div>
