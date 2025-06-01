@@ -14,8 +14,6 @@ router.post('/', auth, async (req, res) => {
       email: req.body.email,
       display_name: req.body.display_name,
       role: 'user',
-      preferences: {},
-      hormonal_cycle: req.body.hormonal_cycle || {},
       created_at: FieldValue.serverTimestamp(),
       updated_at: FieldValue.serverTimestamp()
     });
