@@ -1,12 +1,12 @@
 // src/pages/GroceryList.jsx
 import React, { useState, useEffect, useCallback, useMemo, use } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 import { getMealPlans } from '../services/api/meal_plans';
 import { createGroceryList } from '../services/api/grocery_lists';
 import { getRecipeById } from '../services/api/recipes';
-import { parseTimestamp, convert, unitOptionsMap} from '../services/utils/utils';
+import { parseTimestamp, convert, unitOptionsMap, formatDate} from '../services/utils/utils';
 
 import GroceryPreview from '../components/grocery/GroceryPreview';
 
@@ -91,7 +91,7 @@ export default function GroceryList() {
   // Toggle meal plan selection with caching
   const toggleSelect = useCallback(async (plan) => {
     const isAlready = selectedMealPlans.some(p => p.id === plan.id);
-
+    
     if (isAlready) {
       // Deselect
       setSelectedMealPlans(prev =>
@@ -99,7 +99,7 @@ export default function GroceryList() {
       );
     } else {
       let planToAdd;
-
+      
       if (enrichedPlans[plan.id]) { 
         // Reuse enriched plan
         planToAdd = enrichedPlans[plan.id];
@@ -110,8 +110,9 @@ export default function GroceryList() {
         ));
 
         // Fetch recipes in parallel
-        setLoadingRecipes(true);
+        
         try {
+          
         const recipes = await Promise.all(
           recipeIds.map(id => getRecipeById(id))
         );
@@ -131,10 +132,7 @@ export default function GroceryList() {
         } catch (err) {
           console.error('Error fetching recipes:', err);
           setError('Failed to load recipes for the selected meal plan. Please try again later.');
-        } finally {
-          setLoadingRecipes(false);
-        }
-
+        } 
         ;
 
         // Save in local cache
@@ -343,22 +341,18 @@ const processIngredients = (mealPlans, servingsByRecipe) => {
   return categories;
 };
 
+
   // Format date range for display
   const formatDateRange = (mealPlan) => {
     if (!mealPlan.start_date || !mealPlan.end_date) {
       return 'Date range not available';
     }
-    const startDate = new Date(parseTimestamp(mealPlan.start_date));
-    const endDate = new Date(parseTimestamp(mealPlan.end_date));
+    const startDate = formatDate(mealPlan.start_date);
+    const endDate = formatDate(mealPlan.end_date);
     
-    const formatDate = (date) => {
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric' 
-      });
-    };
     
-    return `Start: ${formatDate(startDate)} - End: ${formatDate(endDate)}`;
+    
+    return `Start: ${(startDate)} - End: ${(endDate)}`;
   };
 
   // Check if a meal plan is selected
@@ -405,8 +399,13 @@ const processIngredients = (mealPlans, servingsByRecipe) => {
           </span>
         </div>
         {allMealPlans.length === 0 ? (
-          <div className="alert alert-info">
-            You don't have any meal plans yet. Create a meal plan first to generate a grocery list.
+          <div>
+            <div className="alert alert-info">
+              You don't have any meal plans yet. Create a meal plan first to generate a grocery list.
+            </div>
+            <Link to="/meal-planner" className="btn btn-primary btn-sm">
+            <i className="bi bi-plus-lg me-1"></i> New Meal Plan
+            </Link>
           </div>
         ) : (
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
