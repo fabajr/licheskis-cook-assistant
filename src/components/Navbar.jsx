@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 function Navbar() {
   const location = useLocation();
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+
+  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -11,17 +14,19 @@ function Navbar() {
         <button 
           className="navbar-toggler" 
           type="button" 
-          data-bs-toggle="collapse" 
-          data-bs-target="#navbarNav"
+          onClick={handleNavCollapse}
+          aria-expanded={!isNavCollapsed}
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
               <Link 
                 className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} 
                 to="/"
+                onClick={() => setIsNavCollapsed(true)}
               >
                 Home
               </Link>
@@ -30,6 +35,7 @@ function Navbar() {
               <Link 
                 className={`nav-link ${location.pathname === '/recipes' ? 'active' : ''}`} 
                 to="/recipes"
+                onClick={() => setIsNavCollapsed(true)}
               >
                 Recipes
               </Link>
@@ -38,6 +44,7 @@ function Navbar() {
               <Link 
                 className={`nav-link ${location.pathname === '/meal-planner' ? 'active' : ''}`} 
                 to="/meal-planner"
+                onClick={() => setIsNavCollapsed(true)}
               >
                 Meal Planner
               </Link>
@@ -46,14 +53,16 @@ function Navbar() {
               <Link 
                 className={`nav-link ${location.pathname === '/grocery-list' ? 'active' : ''}`} 
                 to="/grocery-list"
+                onClick={() => setIsNavCollapsed(true)}
               >
                 Grocery List
               </Link>
             </li>
             <li className="nav-item">
               <Link 
-                className={`nav-link ${location.pathname === '/Profile' ? 'active' : ''}`} 
-                to="/Profile"
+                className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`} 
+                to="/profile"
+                onClick={() => setIsNavCollapsed(true)}
               >
                 Profile
               </Link>
