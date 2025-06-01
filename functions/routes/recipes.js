@@ -41,7 +41,10 @@ async function getEnrichedRecipe(recipeId) {
   const ingredients = links
     .map(l => {
       const m = ingMap[l.ingredient_id];
-      if (!m) return null;
+      if (!m) {
+          console.warn(`Orphaned link for ingredient ${l.ingredient_id}`);
+          return null;
+        }
       return {
         ingredient_id:  l.ingredient_id,
         name:           m.name,
@@ -271,44 +274,64 @@ router.put('/:id', auth, async (req, res) => {
       const recRef = db.collection('recipes').doc(recipeId);
       const recDoc = await tx.get(recRef);
       if (!recDoc.exists) throw new Error('NOT_FOUND');
-        
+
       // busca links antigos
       const oldLinksSnap = await tx.get(
-        db.collection('recipe_ingredients')
-          .where('recipe_id', '==', recipeId)
+        db.collection('recipe_ingredients').where('recipe_id', '==', recipeId)
       );
-    
+
       // atualiza campos da receita
       tx.update(recRef, {
-              name,
-              description,
-              instructions: Array.isArray(instructions)
-                ? instructions.filter(i => typeof i.text === 'string' && i.text.trim())
-                : [],
-              prep_time,
-              servings: Number(servings),
-              category,
-              cycle_tags,
-              image_url,
-              updated_at: FieldValue.serverTimestamp()
-            });
+        name,
+        description,
+        instructions: Array.isArray(instructions)
+          ? instructions
+              .filter(i => typeof i.text === 'string' && i.text.trim())
+              .map(i => ({ step: i.step, text: i.text.trim() }))
+          : [],
+        prep_time,
+        servings: Number(servings),
+        category,
+        cycle_tags,
+        image_url,
+        updated_at: FieldValue.serverTimestamp()
+      });
 
-      //deleta links antigos
-
+      // deleta links antigos
       oldLinksSnap.forEach(linkDoc => tx.delete(linkDoc.ref));
 
-      // cria novos links
-      ingredients.forEach(({ ingredient_id, quantity, unit }) => {
+      // cria novos links (e registros de ingredientes novos se necessário)
+      ingredients.forEach(ing => {
+        let ingId = ing.ingredient_id;
+
+        if (ing.isNew) {
+          // se for novo, já cria o documento em ingredients
+          const newIngRef = db.collection('ingredients').doc();
+          tx.set(newIngRef, {
+            name:              ing.name.trim(),
+            aliases:           ing.aliases || [],
+            category:          ing.category,
+            default_unit:      ing.default_unit,
+            kcal_per_unit:     ing.kcal_per_unit,
+            is_vegan:          ing.is_vegan,
+            is_gluten_free:    ing.is_gluten_free,
+            alternative_units: ing.alternative_units || []
+          });
+          ingId = newIngRef.id;
+        }
+
+        // por fim, cria o link recipe ↔ ingredient
         const linkRef = db.collection('recipe_ingredients').doc();
         tx.set(linkRef, {
-          recipe_id: recipeId,
-          ingredient_id,
-          quantity,
-          unit
+          recipe_id:     recipeId,
+          ingredient_id: ingId,
+          quantity:      parseQuantity(String(ing.quantity)),
+          unit:          ing.unit
         });
       });
     });
 
+    // depois da transação, retorna a receita “enriquecida”
     const enriched = await getEnrichedRecipe(recipeId);
     return res.json(enriched);
   } catch (err) {
@@ -319,6 +342,7 @@ router.put('/:id', auth, async (req, res) => {
     return res.status(500).json({ error: 'Internal error', details: err.message });
   }
 });
+
 
 // DELETE /recipes/:id
 router.delete('/:id', auth, async (req, res) => {
