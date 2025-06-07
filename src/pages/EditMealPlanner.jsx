@@ -2,7 +2,10 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import useMealPlanner from '../hooks/useMealPlanner';
-import { parseTimestamp } from '../services/utils/utils';
+import { calculateCyclePhase } from '../services/utils/utils';
+
+//subcomponents
+import HormonalCalendar from '../components/profile/HormonalCalendar';
 
 export default function EditMealPlanner() {
   const { id } = useParams();
@@ -77,6 +80,21 @@ export default function EditMealPlanner() {
           />
         </div>
       </div>
+    
+      {/* Hormonal Phase Calendar */}
+                    {userCycle && (
+                      <div className="card shadow-sm mb-4">
+                        <div className="card-header bg-light">
+                          <h5 className="mb-0">Your Hormonal Phase Calendar</h5>
+                        </div>
+                        <div className="card-body">
+                          <HormonalCalendar 
+                            cycleData={userCycle} 
+                            calculatePhase={calculateCyclePhase} 
+                          />
+                        </div>
+                      </div>
+                    )}
 
       {/* Meal Plan Table */}
       {mealPlanDays.map((day, di) => (
