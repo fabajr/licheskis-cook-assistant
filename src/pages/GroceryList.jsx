@@ -22,6 +22,7 @@ export default function GroceryList() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingRecipes, setLoadingRecipes] = useState(false);
+  const [pendingFetches, setPendingFetches] = useState(0);
   const [error, setError] = useState(null);
   const [enrichedPlans, setEnrichedPlans] = useState({});
   
@@ -59,6 +60,11 @@ export default function GroceryList() {
 
     fetchMealPlans();
   }, [user]);
+
+  // Reflect recipe loading state
+  useEffect(() => {
+    setLoadingRecipes(pendingFetches > 0);
+  }, [pendingFetches]);
   
   // Update servings when selected meal plans change
   useEffect(() => {
@@ -94,59 +100,57 @@ export default function GroceryList() {
   }, [selectedMealPlans]);
 
   // Toggle meal plan selection with caching
-  const toggleSelect = useCallback(async (plan) => {
+  const toggleSelect = useCallback((plan) => {
     const isAlready = selectedMealPlans.some(p => p.id === plan.id);
-    
+
     if (isAlready) {
       // Deselect
-      setSelectedMealPlans(prev =>
-        prev.filter(p => p.id !== plan.id)
-      );
+      setSelectedMealPlans(prev => prev.filter(p => p.id !== plan.id));
     } else {
-      let planToAdd;
-      
-      if (enrichedPlans[plan.id]) { 
-        // Reuse enriched plan
-        planToAdd = enrichedPlans[plan.id];
-      } else {
-        // First access: fetch only necessary recipes
-        const recipeIds = Array.from(new Set(
-          plan.days.flatMap(d => d.meals.map(m => m.recipe_id))
-        ));
+      // Immediately mark as selected so UI updates instantly
+      setSelectedMealPlans(prev => [...prev, plan]);
 
-        // Fetch recipes in parallel
-        
-        try {
-          
-        const recipes = await Promise.all(
-          recipeIds.map(id => getRecipeById(id))
-        );
-        const recipeMap = Object.fromEntries(recipes.map(r => [r.id, r]));
+      const loadRecipes = async () => {
+        setPendingFetches(c => c + 1);
+        let planToAdd = plan;
 
-        // Inject recipe in each meal
-        planToAdd = {
-          ...plan,
-          days: plan.days.map(d => ({
-            ...d,
-            meals: d.meals.map(m => ({
-              ...m,
-              recipe: recipeMap[m.recipe_id]
-            }))
-          }))
+        if (enrichedPlans[plan.id]) {
+          planToAdd = enrichedPlans[plan.id];
+        } else {
+          const recipeIds = Array.from(new Set(
+            plan.days.flatMap(d => d.meals.map(m => m.recipe_id))
+          ));
+
+          try {
+            const recipes = await Promise.all(
+              recipeIds.map(id => getRecipeById(id))
+            );
+            const recipeMap = Object.fromEntries(recipes.map(r => [r.id, r]));
+
+            planToAdd = {
+              ...plan,
+              days: plan.days.map(d => ({
+                ...d,
+                meals: d.meals.map(m => ({
+                  ...m,
+                  recipe: recipeMap[m.recipe_id]
+                }))
+              }))
+            };
+
+            setEnrichedPlans(prev => ({ ...prev, [plan.id]: planToAdd }));
+          } catch (err) {
+            console.error('Error fetching recipes:', err);
+            setError('Failed to load recipes for the selected meal plan. Please try again later.');
+          }
         }
-        } catch (err) {
-          console.error('Error fetching recipes:', err);
-          setError('Failed to load recipes for the selected meal plan. Please try again later.');
-        } 
-        ;
 
-        // Save in local cache
-        setEnrichedPlans(prev => ({ ...prev, [plan.id]: planToAdd }));
-      }
+        // Replace placeholder plan with enriched version
+        setSelectedMealPlans(prev => prev.map(p => p.id === plan.id ? planToAdd : p));
+        setPendingFetches(c => c - 1);
+      };
 
-      // Add to selected plans
-      setSelectedMealPlans(prev => [...prev, planToAdd]);
-      //console.log('Selected meal plan:', planToAdd);
+      loadRecipes();
     }
   }, [selectedMealPlans, enrichedPlans]);
 
