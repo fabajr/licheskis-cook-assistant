@@ -213,7 +213,7 @@ router.post('/', auth, async (req, res) => {
         return linkRef.set({
           recipe_id:     recipeRef.id,
           ingredient_id: ingredientId,
-          quantity:      parseQuantity(String(ing.quantity)),
+          quantity:      ing.quantity,
           unit:          ing.unit
         });
       });
@@ -325,7 +325,7 @@ router.put('/:id', auth, async (req, res) => {
         tx.set(linkRef, {
           recipe_id:     recipeId,
           ingredient_id: ingId,
-          quantity:      parseQuantity(String(ing.quantity)),
+          quantity:      ing.quantity,
           unit:          ing.unit
         });
       });

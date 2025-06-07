@@ -419,13 +419,13 @@ function handleEditIngredient(index) {
       description,
       instructions: instructions.filter(inst => inst.text.trim()),
       prep_time: prepTime ? parseInt(prepTime, 10) : null,
-      servings: parseInt(servings, 10),
+      servings: parseInt(servings, 10), 
       category,
       cycle_tags: cycleTags,
       image_url: imageUrl || null,
       ingredients: ingredients.map(ing => ({
             ...ing,
-            quantity: parseQuantity(ing.quantity)
+            quantity: ing.quantity || '1', // garante que sempre tenha uma quantidade
           }))
 };
 
