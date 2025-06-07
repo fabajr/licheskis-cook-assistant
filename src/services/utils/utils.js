@@ -175,10 +175,11 @@ export function parseTimestamp(raw) {
  *      • string no formato "YYYY-MM-DD"
  * Retorna uma data-formatada tipo "Fri, May 30".
  */
-export function formatDate(value) {
+export function formatDate(value, size) {
   
   let dateObj;
 
+  
   // 1) Se vier como string "YYYY-MM-DD", converter localmente:
   if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
     // parseLocalDate já faz new Date(ano, mês-1, dia) → meia-noite local
@@ -191,6 +192,14 @@ export function formatDate(value) {
     const ms = parseTimestamp(value);
     dateObj = new Date(ms);
   }
+  if(size = 'long'){
+      return dateObj.toLocaleDateString('en-US', { 
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }else{
 
   return dateObj.toLocaleDateString('en-US', {
     weekday: 'short',
@@ -198,6 +207,7 @@ export function formatDate(value) {
     day:     'numeric'
   });
 };
+}
 
 
 /**
