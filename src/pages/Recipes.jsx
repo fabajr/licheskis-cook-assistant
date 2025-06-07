@@ -14,7 +14,7 @@ function Recipes() {
   const loadMoreRef = useRef(null);
   const observerRef = useRef(null);
 
-  const { user, role } = useAuth();
+  const { role } = useAuth();
 
   // 1) Fetch initial recipes
   useEffect(() => {
