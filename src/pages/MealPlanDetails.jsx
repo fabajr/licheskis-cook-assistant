@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getMealPlanById, deleteMealPlan } from '../services/api/meal_plans';
-import { parseTimestamp, formatDate } from '../services/utils/utils';
+import { formatDate } from '../services/utils/utils';
 
 export default function MealPlanDetails() {
   const { id } = useParams();
@@ -70,17 +70,10 @@ export default function MealPlanDetails() {
       return 'Date range not available';
     }
     
-    const startDate = formatDate(mealPlan.start_date);
-    const endDate = formatDate(mealPlan.end_date);
+    const startDate = formatDate(mealPlan.start_date,'long');
+    const endDate = formatDate(mealPlan.end_date, 'long');
     
-    const formatDateDisplay = (date) => {
-      return date.toLocaleDateString('en-US', { 
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long', 
-        day: 'numeric' 
-      });
-    };
+    
     
     return (
       <div>
