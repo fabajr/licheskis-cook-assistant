@@ -106,7 +106,9 @@ export default function RecipeDetail() {
   } = recipe;
 
   return (
+    
     <div className="container py-4 recipe-detail">
+      {console.log(recipe)}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="mb-0">{name}</h1>
         
@@ -168,6 +170,18 @@ export default function RecipeDetail() {
           />
         </div>
       )}
+      
+      <div className="card mb-4">
+            <div className="card-header">
+              <h4 className="mb-0">Description</h4>
+            </div>
+            <div className="card-body">
+              {recipe.description}
+            </div>
+
+      </div>
+      
+
 
       <div className="row">
         <div className="col-md-4">
