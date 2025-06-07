@@ -49,6 +49,7 @@ recipes/{recipeId}
 {
   "id": "string",
   "name": "string",
+  "description": "string",
   "category": "string",
   "cycle_tags": ["string"],
   "servings": "number",
@@ -136,6 +137,7 @@ users/{userId}/meal_plans/{mealPlanId}
     "days": [
     {
       "date": "timestamp",
+      "hormonal_phase": "string",
       "meals": [
         {
           "type": "string",
@@ -162,7 +164,7 @@ users/{userId}/grocery_lists/{groceryListId}
 {
   "id": "string",
   "user_id": "string",
-  "meal_plan_id": "string",
+  "meal_plan_id": ["string"],
   "items": [
     {
       "ingredient_id": "string",
@@ -181,24 +183,13 @@ users/{userId}/grocery_lists/{groceryListId}
 
 To support efficient queries, the following indexes should be created:
 
-### Single-Field Indexes
-
-1. `recipes.category`
-2. `recipes.cycle_tags`
-3. `ingredients.category`
-4. `ingredients.is_vegan`
-5. `ingredients.is_gluten_free`
-6. `meal_plans.start_date`
-7. `meal_plans.end_date`
-8. `grocery_lists.meal_plan_id`
-9. `recipes.is_vegan`
-10. `recipes.is_gluten_free`
-
 ### Composite Indexes
 
-1. `recipes.category, recipes.cycleTags`
-2. `meal_plans.userId, meal_plans.startDate`
-3. `grocery_lists.userId, grocery_lists.createdAt`
+The project defines the following composite indexes:
+
+1. `meal_plans.user_id, meal_plans.created_at`
+2. `recipes.cycle_tags, is_gluten_free`
+3. `recipes.cycle_tags, is_vegan`
 
 ## Data Relationships
 
@@ -278,16 +269,16 @@ service cloud.firestore {
 
     // 5. MEAL_PLANS como subcoleção de USERS:
     match /users/{userId}/meal_plans/{planId} {
-      // ao criar, userId no path e no payload (camelCase) devem bater
+      // ao criar, user_id no path e no payload devem bater
       allow create:
         if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.userId == userId;
+        && request.resource.data.user_id == userId;
       // leitura/edição: só o dono
       allow read, update, delete:
         if request.auth != null
         && request.auth.uid == userId
-        && resource.data.userId == userId;
+        && resource.data.user_id == userId;
     }
 
     // 6. GROCERY_LISTS como subcoleção de USERS:
@@ -295,11 +286,11 @@ service cloud.firestore {
       allow create:
         if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.userId == userId;
+        && request.resource.data.user_id == userId;
       allow read, update, delete:
         if request.auth != null
         && request.auth.uid == userId
-        && resource.data.userId == userId;
+        && resource.data.user_id == userId;
     }
 
     // 7. Outras coleções (logs, configurações etc.) ficam conforme necessidade

@@ -1,20 +1,6 @@
 {
   "indexes": [
     {
-      "collectionGroup": "hormonal_cycles",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "user_id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "start_date",
-          "order": "DESCENDING"
-        }
-      ]
-    },
-    {
       "collectionGroup": "meal_plans",
       "queryScope": "COLLECTION",
       "fields": [
