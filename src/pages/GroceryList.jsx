@@ -1,12 +1,12 @@
 // src/pages/GroceryList.jsx
-import React, { useState, useEffect, useCallback, useMemo, use } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef, useLayoutEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 import { getMealPlans } from '../services/api/meal_plans';
 import { createGroceryList } from '../services/api/grocery_lists';
 import { getRecipeById } from '../services/api/recipes';
-import { parseTimestamp, convert, unitOptionsMap, formatDate} from '../services/utils/utils';
+import { convert, unitOptionsMap, formatDate, parseQuantity} from '../services/utils/utils';
 
 import GroceryPreview from '../components/grocery/GroceryPreview';
 
@@ -23,7 +23,12 @@ export default function GroceryList() {
   const [loading, setLoading] = useState(true);
   const [loadingRecipes, setLoadingRecipes] = useState(false);
   const [error, setError] = useState(null);
-  const [enrichedPlans, setEnrichedPlans] = useState({}); 
+  const [enrichedPlans, setEnrichedPlans] = useState({});
+  
+  const previewRef = useRef(null);
+  // Highlighting for grocery list preview
+  const [ highlightGroceryListPreview, setHighlightGroceryListPreview ] = useState(null);
+
 
  /* useEffect(() => {
     console.log('teste', { 
@@ -145,6 +150,13 @@ export default function GroceryList() {
     }
   }, [selectedMealPlans, enrichedPlans]);
 
+  // layout effect to scroll preview into view when opened
+  useLayoutEffect(() => {
+    if (previewOpen && previewRef.current) {
+      previewRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [previewOpen]);
+
   // Update servings
   const handleServingsChange = (recipeId, newCount) => {
     setServingsByRecipe(prev => ({
@@ -168,7 +180,7 @@ export default function GroceryList() {
       items.push({
         name:     item.name,
         category,
-        quantity: item.quantity,
+        quantity: parseQuantity(item.quantity),
         unit:     item.unit
       });
     });
@@ -496,7 +508,9 @@ const processIngredients = (mealPlans, servingsByRecipe) => {
       {/* Grocery Preview Section */}
       {previewOpen && (
         
-        <div className="card mb-4">
+        <div 
+            ref = {previewRef}
+            className="card mb-4">
           <div className="card-header d-flex justify-content-between align-items-center">
             <h3 className="h5 mb-0">Preview Grocery List</h3>
             <div>
