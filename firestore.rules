@@ -35,16 +35,16 @@ service cloud.firestore {
 
     // 5. MEAL_PLANS como subcoleção de USERS:
     match /users/{userId}/meal_plans/{planId} {
-      // ao criar, userId no path e no payload (camelCase) devem bater
+      // ao criar, user_id no path e no payload devem bater
       allow create:
         if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.userId == userId;
+        && request.resource.data.user_id == userId;
       // leitura/edição: só o dono
       allow read, update, delete:
         if request.auth != null
         && request.auth.uid == userId
-        && resource.data.userId == userId;
+        && resource.data.user_id == userId;
     }
 
     // 6. GROCERY_LISTS como subcoleção de USERS:
@@ -52,11 +52,11 @@ service cloud.firestore {
       allow create:
         if request.auth != null
         && request.auth.uid == userId
-        && request.resource.data.userId == userId;
+        && request.resource.data.user_id == userId;
       allow read, update, delete:
         if request.auth != null
         && request.auth.uid == userId
-        && resource.data.userId == userId;
+        && resource.data.user_id == userId;
     }
 
     // 7. Outras coleções (logs, configurações etc.) ficam conforme necessidade
