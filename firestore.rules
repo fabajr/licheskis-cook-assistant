@@ -1,19 +1,64 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 5, 23);
+    // 1. USERS: cada usuário só pode ler/escrever seu próprio perfil
+    match /users/{userId} {
+      allow create:        if request.auth != null && request.auth.uid == userId;
+      allow read, update, delete:
+        if request.auth != null && request.auth.uid == userId;
     }
+
+    // 2. RECIPES: públicas para leitura, mas só admins podem criar/editar/excluir
+    match /recipes/{recipeId} {
+      allow read:  if true;
+      allow create, update, delete:
+        if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 3. INGREDIENTS: mesmas regras de recipes
+    match /ingredients/{ingredientId} {
+      allow read:  if true;
+      allow create, update, delete:
+        if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 4. RECIPE_INGREDIENTS: mesmas regras de recipes
+    match /recipe_ingredients/{linkId} {
+      allow read:  if true;
+      allow create, update, delete:
+        if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // 5. MEAL_PLANS como subcoleção de USERS:
+    match /users/{userId}/meal_plans/{planId} {
+      // ao criar, userId no path e no payload (camelCase) devem bater
+      allow create:
+        if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.userId == userId;
+      // leitura/edição: só o dono
+      allow read, update, delete:
+        if request.auth != null
+        && request.auth.uid == userId
+        && resource.data.userId == userId;
+    }
+
+    // 6. GROCERY_LISTS como subcoleção de USERS:
+    match /users/{userId}/grocery_lists/{listId} {
+      allow create:
+        if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.userId == userId;
+      allow read, update, delete:
+        if request.auth != null
+        && request.auth.uid == userId
+        && resource.data.userId == userId;
+    }
+
+    // 7. Outras coleções (logs, configurações etc.) ficam conforme necessidade
   }
 }
