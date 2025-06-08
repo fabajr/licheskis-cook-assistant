@@ -81,7 +81,7 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
 
         setOriginalName(data.name);
       })
-      .catch(err => setError('Erro ao carregar receita'))
+      .catch(err => setError('Error loading recipe'))
       .finally(() => setLoading(false));
   }, [recipeId]);
 
@@ -111,8 +111,8 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
         .map(r => r.item.name)
         .join('”, “');
       show(
-        `Existem receitas com nomes parecidos (“${sugestoes}”). ` +
-        `Tem certeza que deseja manter “${recipeName}”?`
+        `There are recipes with similar names (“${sugestoes}”). ` +
+        `Are you sure you want to keep “${recipeName}”?`
       );
     }
   }, [recipeName, recipeId]);
@@ -422,19 +422,19 @@ function handleEditIngredient(index) {
   // i) Submit (create ou update)
   const handleSubmit = async () => {
     if (!recipeName.trim()) {
-      show('Nome é obrigatório');
+      show('Name is required');
       return;
     }
     if (!category) {
-      show('Categoria é obrigatória');
+      show('Category is required');
       return;
     }
     if (!servings) {
-      show('Servings é obrigatório');
+      show('Servings is required');
       return;
     }
     if (ingredients.length === 0) {
-      show('Adicione pelo menos 1 ingrediente');
+      show('Add at least 1 ingredient');
       return;
     }
 
@@ -471,7 +471,7 @@ function handleEditIngredient(index) {
       }
   } catch (err) {
     console.error(err);
-    show('Erro ao salvar receita');
+    show('Error saving recipe');
   }
 };
 

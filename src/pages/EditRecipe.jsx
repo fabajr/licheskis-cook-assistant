@@ -96,7 +96,7 @@ export default function EditRecipe() {
     onSuccessRedirect: newId => navigate(`/recipes/${newId}`)
   });
 
-  if (loading) return <p>Carregando...</p>;
+  if (loading) return <p>Loading...</p>;
   if (error)   return <div className="alert alert-danger">{error}</div>;
 
   return (
