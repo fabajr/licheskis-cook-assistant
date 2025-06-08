@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Fuse from 'fuse.js';
+import { useToast } from '../context/ToastContext';
 import {
   createRecipe as saveRecipeToApi,
   getRecipeById,
@@ -21,6 +22,7 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   // 1) REFS
   const newIngFormRef = useRef(null);
   const skipResetRef  = useRef(false);
+  const { show } = useToast();
 
   // 2) STATE
   const [loading, setLoading]     = useState(!!recipeId);
@@ -108,7 +110,7 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
         .slice(0, 3)
         .map(r => r.item.name)
         .join('”, “');
-      alert(
+      show(
         `Existem receitas com nomes parecidos (“${sugestoes}”). ` +
         `Tem certeza que deseja manter “${recipeName}”?`
       );
@@ -189,7 +191,7 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
     const isObject = v => v !== null && typeof v === "object";
   
     const resetAndAlert = () => { //
-      alert(
+      show(
         "This ingredient is already in your recipe. Change its quantity if you need more."
       );
       setIngredientSearchTerm("");
@@ -240,7 +242,8 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
     const qtyStr = isNew ? newIngredientQuantity : ingredientQuantity;
     const qty = parseQuantity(qtyStr);
     if (isNaN(qty) || qty <= 0) {
-      return alert('Invalid Quantity');
+      show('Invalid Quantity');
+      return;
     }
       
     //const unitToUse = ingredientUnit || selectedLocalIngredient.default_unit || '';
@@ -273,9 +276,18 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
       const kcal = parseFloat(newIngredientKcalPerUnit);
       const unitToUse = newIngredientUnit || newIngredientDefaultUnit || '';
 
-      if (isNaN(kcal) || kcal < 0) return alert("Invalid Kcal for new ingredient");
-      if (!newIngredientCategory) return alert("Category is required for new ingredient");
-      if (!newIngredientDefaultUnit) return alert("Default unit is required for new ingredient");
+      if (isNaN(kcal) || kcal < 0) {
+        show('Invalid Kcal for new ingredient');
+        return;
+      }
+      if (!newIngredientCategory) {
+        show('Category is required for new ingredient');
+        return;
+      }
+      if (!newIngredientDefaultUnit) {
+        show('Default unit is required for new ingredient');
+        return;
+      }
 
       ingToAdd = {
         ingredient_id: null,
@@ -409,10 +421,22 @@ function handleEditIngredient(index) {
 
   // i) Submit (create ou update)
   const handleSubmit = async () => {
-    if (!recipeName.trim()) return alert('Nome é obrigatório');
-    if (!category) return alert('Categoria é obrigatória');
-    if (!servings) return alert('Servings é obrigatório');
-    if (ingredients.length === 0) return alert('Adicione pelo menos 1 ingrediente');
+    if (!recipeName.trim()) {
+      show('Nome é obrigatório');
+      return;
+    }
+    if (!category) {
+      show('Categoria é obrigatória');
+      return;
+    }
+    if (!servings) {
+      show('Servings é obrigatório');
+      return;
+    }
+    if (ingredients.length === 0) {
+      show('Adicione pelo menos 1 ingrediente');
+      return;
+    }
 
     const payload = {
       name: recipeName,
@@ -445,10 +469,10 @@ function handleEditIngredient(index) {
         const newId = created.id;      // ⬅️ aqui
         onSuccessRedirect(newId);
       }
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar receita');
-    }
+  } catch (err) {
+    console.error(err);
+    show('Erro ao salvar receita');
+  }
 };
 
   // 5) O QUE O HOOK RETORNA

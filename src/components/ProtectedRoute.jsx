@@ -1,6 +1,6 @@
 // src/components/ProtectedRoute.jsx
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
@@ -16,28 +16,24 @@ export function ProtectedRoute({ requireAdmin, message, children }) {
   const { user, role, loading } = useAuth();
   const { show } = useToast();
   const location = useLocation();
+  const navigate = useNavigate();
+  // Handle redirects and toasts in effects to avoid side-effects in render
+  useEffect(() => {
+    if (loading) return;
 
-  // While auth state is loading
-  if (loading) return null;
+    if (!user) {
+      if (message) show(message);
+      navigate('/login', { replace: true, state: { from: location } });
+    } else if (requireAdmin && role !== 'admin') {
+      show(message || 'You do not have permission to access this page.');
+      navigate('/', { replace: true });
+    }
+  }, [loading, user, role, requireAdmin, message, show, navigate, location]);
 
-  // If not logged in, show toast (if provided) and redirect to login
-  if (!user) {
-    if (message) show(message);
-    return (
-      <Navigate
-        to="/login"
-        replace
-        state={{ from: location }}
-      />
-    );
+  // Do not render content while redirecting or auth is loading
+  if (loading || !user || (requireAdmin && role !== 'admin')) {
+    return null;
   }
 
-  // If admin role is required and user is not admin, show toast and redirect
-  if (requireAdmin && role !== 'admin') {
-    show(message || 'You do not have permission to access this page.');
-    return <Navigate to="/" replace />;
-  }
-
-  // Authorized
   return <>{children}</>;
 }
