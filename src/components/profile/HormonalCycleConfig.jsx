@@ -1,5 +1,6 @@
 // src/components/profile/HormonalCycleConfig.jsx
 import React, { useState, useEffect, use } from 'react';
+import { useToast } from '../../context/ToastContext';
 
 export default function HormonalCycleConfig({ cycleData, onSubmit, saving }) {
   const [startDate, setStartDate] = useState('');
@@ -8,6 +9,7 @@ export default function HormonalCycleConfig({ cycleData, onSubmit, saving }) {
   const [follicularLength, setFollicularLength] = useState('');
   const [ovulatoryLength, setOvulatoryLength] = useState('');
   const [lutealLength, setLutealLength] = useState('');
+  const { show } = useToast();
   
   // Initialize form with user data
   useEffect(() => {
@@ -62,7 +64,7 @@ export default function HormonalCycleConfig({ cycleData, onSubmit, saving }) {
 
                         
     if (totalLength !== parseInt(cycleLength, 10)) {
-      alert(`The sum of all phase lengths (${totalLength}) must equal the cycle length (${cycleLength}).`);
+      show(`The sum of all phase lengths (${totalLength}) must equal the cycle length (${cycleLength}).`);
       return;
     }
     

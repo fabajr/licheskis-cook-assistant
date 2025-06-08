@@ -1,6 +1,7 @@
 // src/pages/MealPlanDetails.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 import { getMealPlanById, deleteMealPlan } from '../services/api/meal_plans';
 import { formatDate } from '../services/utils/utils';
 
@@ -12,6 +13,7 @@ export default function MealPlanDetails() {
   const [mealPlan, setMealPlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { show } = useToast();
 
   // Fetch meal plan data
   useEffect(() => {
@@ -51,8 +53,8 @@ export default function MealPlanDetails() {
        try {
          await deleteMealPlan(id);
        } catch (err) {
-         console.error('Error deleting meal plan:', err);
-         alert('Failed to delete meal plan. Please try again.');
+        console.error('Error deleting meal plan:', err);
+        show('Failed to delete meal plan. Please try again.');
        }
         // Redirect to profile after deletion
         navigate('/profile', {
