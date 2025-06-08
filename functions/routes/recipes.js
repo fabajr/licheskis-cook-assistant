@@ -87,18 +87,27 @@ const PAGE_SIZE = 100;
 
 router.get('/', async (req, res) => {
   try {
-    let query = db
-      .collection('recipes')
-      .orderBy('category', 'desc')      // ordenação explícita
-      .limit(PAGE_SIZE);
+    const { nextPageToken, phase, category } = req.query;
 
-    if (req.query.nextPageToken) {
-      // paginar a partir do último documentId
-      query = db
-        .collection('recipes')
-        .orderBy('__name__')             // orderBy no documentID
-        .startAfter(req.query.nextPageToken)
+    let query = db.collection('recipes');
+
+    // aplica filtros antes de ordenar/paginar
+    if (category) {
+      query = query.where('category', '==', category);
+    }
+    if (phase) {
+      query = query.where('cycle_tags', 'array-contains', phase);
+    }
+
+    if (nextPageToken) {
+      // paginação com o token
+      query = query
+        .orderBy('__name__')
+        .startAfter(nextPageToken)
         .limit(PAGE_SIZE);
+    } else {
+      // ordem padrão na primeira página
+      query = query.orderBy('category', 'desc').limit(PAGE_SIZE);
     }
 
     const snap = await query.get();

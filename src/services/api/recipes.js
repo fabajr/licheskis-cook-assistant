@@ -6,12 +6,13 @@ import apiClient from '../client';
  * @param {string|null} nextPageToken – token da próxima página (null na primeira chamada)
  * @returns {Promise<{ recipes: Array, nextPageToken: string|null }>}
  */
-  export const getRecipes = async (nextPageToken = null) => {
-    const res = await apiClient.get('/recipes', {
-      params: { nextPageToken }
-    });
-    return res.data; // { recipes, nextPageToken }
-  }
+export const getRecipes = async (nextPageToken = null, filters = {}) => {
+  const params = { nextPageToken };
+  if (filters.phase) params.phase = filters.phase;
+  if (filters.category) params.category = filters.category;
+  const res = await apiClient.get('/recipes', { params });
+  return res.data; // { recipes, nextPageToken }
+}
   // GET /recipes/:id
   export const getRecipeById = async id => {
     const res = await apiClient.get(`/recipes/${id}`);

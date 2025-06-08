@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { getRecipes } from '../services/api/recipes';
 import { useAuth } from '../context/AuthContext';
+import { recipeCategoryOptions, cyclePhaseOptions } from '../services/utils/utils';
 
 function Recipes() {
   const [recipes, setRecipes] = useState([]);
@@ -10,19 +11,23 @@ function Recipes() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [phaseFilter, setPhaseFilter] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const loadMoreRef = useRef(null);
   const observerRef = useRef(null);
 
   const { role } = useAuth();
 
-  // 1) Fetch initial recipes
+  // 1) Fetch initial recipes (with filters)
   useEffect(() => {
     const fetchInitial = async () => {
       try {
         setLoading(true);
         setError(null);
-        const { recipes: list, nextPageToken: token } = await getRecipes();
+        const { recipes: list, nextPageToken: token } = await getRecipes(null, {
+          category: categoryFilter || undefined,
+          phase: phaseFilter || undefined,
+        });
         setRecipes(list);
         setNextPageToken(token);
       } catch (err) {
@@ -33,14 +38,17 @@ function Recipes() {
       }
     };
     fetchInitial();
-  }, []);
+  }, [categoryFilter, phaseFilter]);
 
   // 2) Load more for pagination
   const loadMore = useCallback(async () => {
     if (!nextPageToken || loading) return;
     try {
       setLoading(true);
-      const { recipes: more, nextPageToken: token } = await getRecipes(nextPageToken);
+      const { recipes: more, nextPageToken: token } = await getRecipes(nextPageToken, {
+        category: categoryFilter || undefined,
+        phase: phaseFilter || undefined,
+      });
       setRecipes(prev => {
         const uniqueNew = more.filter(item => !prev.some(old => old.docId === item.docId));
         return [...prev, ...uniqueNew];
@@ -52,7 +60,7 @@ function Recipes() {
     } finally {
       setLoading(false);
     }
-  }, [nextPageToken, loading]);
+  }, [nextPageToken, loading, categoryFilter, phaseFilter]);
 
   // 3) Infinite scroll observer
   useEffect(() => {
@@ -79,11 +87,9 @@ function Recipes() {
     };
   }, [loadMore, nextPageToken]);
 
-  // Derive categories and filtered list
-  const categories = Array.from(new Set(recipes.map(r => r.category))).sort();
+  // Derived list filtered by search term only
   const filteredRecipes = recipes.filter(r =>
-    (!categoryFilter || r.category === categoryFilter) &&
-    (!searchTerm || r.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    !searchTerm || r.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -107,14 +113,28 @@ function Recipes() {
             onChange={e => setCategoryFilter(e.target.value)}
           >
             <option value="">All Categories</option>
-            {categories.map(cat => (
+            {recipeCategoryOptions.map(cat => (
               <option key={cat} value={cat}>
                 {cat}
               </option>
             ))}
           </select>
         </div>
-        <div className="col-md-8 mb-2">
+        <div className="col-md-4 mb-2">
+          <select
+            className="form-select"
+            value={phaseFilter}
+            onChange={e => setPhaseFilter(e.target.value)}
+          >
+            <option value="">All Phases</option>
+            {cyclePhaseOptions.map(opt => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="col-md-4 mb-2">
           <input
             type="text"
             className="form-control"
