@@ -96,7 +96,7 @@ export default function CreateRecipe() {
 
   } = useRecipeForm({
     recipeId: null,
-    onSuccessRedirect: navigate
+    onSuccessRedirect: id => navigate(`/recipes/${id}`)
   });
 
   if (loading) return <p>Loading...</p>;

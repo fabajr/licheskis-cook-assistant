@@ -93,7 +93,7 @@ export default function EditRecipe() {
   handleSubmit
   } = useRecipeForm({
     recipeId: id || null,
-    onSuccessRedirect: navigate
+    onSuccessRedirect: newId => navigate(`/recipes/${newId}`)
   });
 
   if (loading) return <p>Carregando...</p>;
