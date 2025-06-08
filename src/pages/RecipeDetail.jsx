@@ -1,6 +1,7 @@
 // src/pages/RecipeDetail.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 import { getRecipeById, deleteRecipe } from '../services/api/recipes';
 import { useAuth } from '../context/AuthContext';
 
@@ -13,6 +14,7 @@ export default function RecipeDetail() {
 
   const { user } = useAuth();
   const { role } = useAuth();
+  const { show } = useToast();
 
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function RecipeDetail() {
       navigate('/recipes');
     } catch (err) {
       console.error(err);
-      alert('Could not delete recipe.');
+      show('Could not delete recipe.');
     }
   };
 

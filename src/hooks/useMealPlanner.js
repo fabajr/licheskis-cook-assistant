@@ -1,6 +1,7 @@
 // src/hooks/useMealPlanner.js
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 import { getRecipes } from '../services/api/recipes';
 import { getUserProfile } from '../services/api/users';
 import { getMealPlanById, createMealPlan, updateMealPlan } from '../services/api/meal_plans';
@@ -59,6 +60,7 @@ export function formatDate(value) {
 
 export default function useMealPlanner(mealPlanId = null) {
   const navigate = useNavigate();
+  const { show } = useToast();
 
   // *** STATES PRINCIPAIS ***
   const [userCycle, setUserCycle] = useState(null);
@@ -100,7 +102,7 @@ export default function useMealPlanner(mealPlanId = null) {
   // --- 2) REDIRECIONA SE NÃO TIVER CYCLE ---
   useEffect(() => {
     if (!userCycle && !loading) {
-      alert('Please set your hormonal cycle in your profile before.');
+      show('Please set your hormonal cycle in your profile before.');
       navigate('/profile', {
         state: {
           from: 'meal-planner',

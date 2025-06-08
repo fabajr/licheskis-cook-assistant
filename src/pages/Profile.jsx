@@ -7,6 +7,7 @@ import { getMealPlans, deleteMealPlan } from '../services/api/meal_plans';
 import { getGroceryLists, deleteGroceryList } from '../services/api/grocery_lists';
 import { calculateCyclePhase } from '../services/utils/utils';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 // Subcomponents
 import UserInfoForm from '../components/profile/UserInfoForm';
@@ -28,6 +29,7 @@ export default function Profile() {
   const { user, logout } = useAuth();
 
   const navigate = useNavigate();
+  const { show } = useToast();
   
   const location = useLocation(); // Get location state to check if coming from meal planner
   const hormonalRef = useRef(null); // Ref to scroll to hormonal cycle section
@@ -181,7 +183,7 @@ useLayoutEffect(() => {
         setMealPlans(prev => prev.filter(plan => plan.id !== id));
       } catch (err) {
         console.error('Error deleting meal plan:', err);
-        alert('Failed to delete meal plan. Please try again.');
+        show('Failed to delete meal plan. Please try again.');
       }
     }
   };
@@ -196,7 +198,7 @@ useLayoutEffect(() => {
         setGroceryLists(prev => prev.filter(list => list.id !== id));
       } catch (err) {
         console.error('Error deleting grocery list:', err);
-        alert('Failed to delete grocery list. Please try again.');
+        show('Failed to delete grocery list. Please try again.');
       }
     }
   };
