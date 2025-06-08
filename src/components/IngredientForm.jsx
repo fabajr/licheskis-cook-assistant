@@ -67,7 +67,7 @@ export default function IngredientForm({
   }
 
   const handleDelete = () => {
-    if (ingredient.id && window.confirm('Deletar esse ingrediente?')) {
+    if (ingredient.id && window.confirm('Delete this ingredient?')) {
       onDeleted(ingredient.id)
     }
   }
