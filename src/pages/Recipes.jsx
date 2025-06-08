@@ -15,8 +15,15 @@ function Recipes() {
   const [searchTerm, setSearchTerm] = useState('');
   const loadMoreRef = useRef(null);
   const observerRef = useRef(null);
+  const loadingMoreRef = useRef(false);
 
   const { role } = useAuth();
+
+  // Clear list when filters or search term change
+  useEffect(() => {
+    setRecipes([]);
+    setNextPageToken(null);
+  }, [categoryFilter, phaseFilter, searchTerm]);
 
   // 1) Fetch initial recipes (with filters)
   useEffect(() => {
@@ -24,11 +31,18 @@ function Recipes() {
       try {
         setLoading(true);
         setError(null);
+        setRecipes([]);
+        setNextPageToken(null);
         const { recipes: list, nextPageToken: token } = await getRecipes(null, {
           category: categoryFilter || undefined,
           phase: phaseFilter || undefined,
         });
-        setRecipes(list);
+        const unique = Array.isArray(list)
+          ? list.filter(
+              (r, i, arr) => i === arr.findIndex(o => o.docId === r.docId)
+            )
+          : [];
+        setRecipes(unique);
         setNextPageToken(token);
       } catch (err) {
         console.error("Error fetching recipes:", err);
@@ -38,11 +52,12 @@ function Recipes() {
       }
     };
     fetchInitial();
-  }, [categoryFilter, phaseFilter]);
+  }, [categoryFilter, phaseFilter, searchTerm]);
 
   // 2) Load more for pagination
   const loadMore = useCallback(async () => {
-    if (!nextPageToken || loading) return;
+    if (!nextPageToken || loadingMoreRef.current) return;
+    loadingMoreRef.current = true;
     try {
       setLoading(true);
       const { recipes: more, nextPageToken: token } = await getRecipes(nextPageToken, {
@@ -59,8 +74,9 @@ function Recipes() {
       setError('Failed to load more recipes.');
     } finally {
       setLoading(false);
+      loadingMoreRef.current = false;
     }
-  }, [nextPageToken, loading, categoryFilter, phaseFilter]);
+  }, [nextPageToken, categoryFilter, phaseFilter]);
 
   // 3) Infinite scroll observer
   useEffect(() => {
