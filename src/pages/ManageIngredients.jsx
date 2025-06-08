@@ -46,29 +46,42 @@ export default function ManageIngredients() {
     }
   }, [editing])
 
-  const handleSaved = async data => {
-    let saved
-    if (editing?.id) {
-      saved = await updateIngredient(editing.id, data)
-      console.log('Saved ingredient:', saved)
-    } else {
-      saved = await createIngredient(data)
-        console.log('Created ingredient:', saved)
-    }
-    // Atualiza a lista de ingredientes
-    // Verifica se já existe na lista
-    // Se existir, atualiza; se não, adiciona no início
-    setList(prev => {
-      const idx = prev.findIndex(i => i.id === saved.id)
-      if (idx > -1) {
-        const copy = [...prev]
-        copy[idx] = saved
-        return copy
-      }
-      return [saved, ...prev]
-    })
-    setEditing(null)
+ const handleSaved = async data => {
+  // 1) Limpa alternative_units, mantendo só unit e conversion_factor
+  if (Array.isArray(data.alternative_units)) {
+    data.alternative_units = data.alternative_units.map(u => ({
+      unit: u.unit,
+      conversion_factor:
+        typeof u.conversion_factor === 'string'
+          ? parseFloat(u.conversion_factor)
+          : u.conversion_factor
+    }));
   }
+
+  // 2) Cria ou atualiza no backend
+  let saved;
+  if (editing?.id) {
+    saved = await updateIngredient(editing.id, data);
+    console.log('Saved ingredient:', saved);
+  } else {
+    saved = await createIngredient(data);
+    console.log('Created ingredient:', saved);
+  }
+
+  // 3) Atualiza a lista local de ingredientes
+  setList(prev => {
+    const idx = prev.findIndex(i => i.id === saved.id);
+    if (idx > -1) {
+      const copy = [...prev];
+      copy[idx] = saved;
+      return copy;
+    }
+    return [saved, ...prev];
+  });
+
+  // 4) Fecha o form de edição
+  setEditing(null);
+};
 
   const handleDeleted = async id => {
     await deleteIngredient(id)
