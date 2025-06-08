@@ -34,7 +34,7 @@ function App() {
           <Route path="/login" element={<AuthPage />} />
           <Route path="/signup" element={<AuthPage />} />
           <Route path="/profile" element={
-            <ProtectedRoute>
+            <ProtectedRoute message="Please log in to access your profile.">
               <Profile />
             </ProtectedRoute>
           } />
@@ -43,7 +43,7 @@ function App() {
           <Route
             path="/recipes/create"
             element={
-              <ProtectedRoute requireAdmin>
+              <ProtectedRoute requireAdmin message="Admin access required.">
                 <CreateRecipe />
               </ProtectedRoute>
             }
@@ -51,7 +51,7 @@ function App() {
           <Route
             path="/recipes/:id/edit"
             element={
-              <ProtectedRoute requireAdmin>
+              <ProtectedRoute requireAdmin message="Admin access required.">
                 <EditRecipe />
               </ProtectedRoute>
             }
@@ -61,7 +61,7 @@ function App() {
           <Route
             path="/meal-planner"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute message="Please log in to use the meal planner.">
                 <MealPlanner />
               </ProtectedRoute>
             }
@@ -69,7 +69,7 @@ function App() {
           <Route
             path="/meal-planner/:id"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute message="Please log in to view meal plan details.">
                 <MealPlanDetails />
               </ProtectedRoute>
             }
@@ -78,7 +78,7 @@ function App() {
           <Route
             path="/meal-planner/:id/edit"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute message="Please log in to edit meal plans.">
                 <EditMealPlanner />
               </ProtectedRoute>
             }
@@ -91,7 +91,7 @@ function App() {
           <Route
             path="/grocery-list"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute message="Please log in to view your grocery lists.">
                 <GroceryList />
               </ProtectedRoute>
             }
@@ -99,7 +99,7 @@ function App() {
           <Route
             path="/grocery-list/:id"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute message="Please log in to view this grocery list.">
                 <GroceryListDetails />
               </ProtectedRoute>
             }
@@ -110,7 +110,7 @@ function App() {
           <Route
           path="/admin/ingredients"
           element={
-            <ProtectedRoute requireAdmin>
+            <ProtectedRoute requireAdmin message="Admin access required.">
               <ManageIngredients />
             </ProtectedRoute>
           }

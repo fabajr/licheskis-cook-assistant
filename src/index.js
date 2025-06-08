@@ -5,6 +5,7 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './firebase';                  // Firebase bootstrap
 import { AuthProvider } from './context/AuthContext';  // note o plural “contexts”
+import { ToastProvider } from './context/ToastContext';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
@@ -14,7 +15,9 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </AuthProvider>
   </React.StrictMode>
 );
