@@ -33,7 +33,7 @@ function Recipes() {
         setError(null);
         setRecipes([]);
         setNextPageToken(null);
-        const { recipes: list, nextPageToken: token } = await getRecipes(null, {
+        const { recipes: list, nextPageToken: token } = await getRecipes(nextPageToken, {
           category: categoryFilter || undefined,
           phase: phaseFilter || undefined,
         });

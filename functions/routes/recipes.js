@@ -80,7 +80,7 @@ async function getEnrichedRecipe(recipeId) {
 
 
 /**
- * GET /recipes?limit=50&startAfter=<docId>
+ * GET /recipes?limit=PAGE_SIZE&startAfter=<docId>
  * Supports optional pagination.
  */
 const PAGE_SIZE = 10;
@@ -88,10 +88,9 @@ const PAGE_SIZE = 10;
 router.get('/', async (req, res) => {
   try {
     const { nextPageToken, phase, category } = req.query;
-
     let query = db.collection('recipes');
 
-    // aplica filtros antes de ordenar/paginar
+    // Filtros
     if (category) {
       query = query.where('category', '==', category);
     }
@@ -99,16 +98,25 @@ router.get('/', async (req, res) => {
       query = query.where('cycle_tags', 'array-contains', phase);
     }
 
-    if (nextPageToken) {
-      // paginação com o token
-      query = query
-        .orderBy('__name__')
-        .startAfter(nextPageToken)
-        .limit(PAGE_SIZE);
+    // Ordenação e paginação
+    if (category) {
+      // Se tem filtro por categoria, ordena por category + __name__
+      query = query.orderBy('category', 'desc').orderBy('__name__');
+
+      if (nextPageToken) {
+        // nextPageToken deve ser objeto {category, docId}
+        const { categoryValue, docId } = JSON.parse(nextPageToken);
+        query = query.startAfter(categoryValue, docId);
+      }
     } else {
-      // ordem padrão na primeira página
-      query = query.orderBy('category', 'desc').limit(PAGE_SIZE);
+      // Sem filtro de categoria, pode só ordenar por __name__
+      query = query.orderBy('__name__');
+      if (nextPageToken) {
+        query = query.startAfter(nextPageToken);
+      }
     }
+
+    query = query.limit(PAGE_SIZE);
 
     const snap = await query.get();
     const recipes = snap.docs.map(doc => ({
@@ -116,18 +124,23 @@ router.get('/', async (req, res) => {
       ...doc.data()
     }));
 
-    // se veio exatamente PAGE_SIZE docs, ainda há mais
-    const hasMore = snap.docs.length === PAGE_SIZE;
-    const nextPageTokenD = hasMore
-      ? snap.docs[snap.docs.length - 1].id
-      : null;
+    let nextToken = null;
+    if (snap.docs.length === PAGE_SIZE) {
+      if (category) {
+        const last = snap.docs[snap.docs.length - 1];
+        nextToken = JSON.stringify({
+          categoryValue: last.get('category'),
+          docId: last.id
+        });
+      } else {
+        nextToken = snap.docs[snap.docs.length - 1].id;
+      }
+    }
 
-    return res.json({ recipes, nextPageTokenD });
+    return res.json({ recipes, nextPageToken: nextToken });
   } catch (err) {
     console.error('GET /recipes error:', err);
-    return res
-      .status(500)
-      .json({ error: 'Internal error', details: err.message });
+    return res.status(500).json({ error: 'Internal error', details: err.message });
   }
 });
 
