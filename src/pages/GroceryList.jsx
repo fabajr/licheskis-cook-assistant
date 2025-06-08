@@ -273,7 +273,9 @@ const processIngredients = (mealPlans, servingsByRecipe) => {
           name: ing.name,
           quantity: adjustedQty,
           unit: (ing.unit || '').trim().toUpperCase(),
-          category: ing.category || 'Other'
+          category: ing.category || 'Other',
+          default_unit: ing.default_unit,
+          alternative_units: ing.alternative_units || []
         });
       });
     }
@@ -286,58 +288,91 @@ const processIngredients = (mealPlans, servingsByRecipe) => {
     return acc;
   }, {});
 
-  // 4) Sum same-unit items, convert allowed units, handle non-convertible
+  // 4) Unifica e converte
   const flattened = [];
+
   Object.entries(byName).forEach(([name, items]) => {
-    const category = items[0].category;
+    const { category, default_unit, alternative_units = [] } = items[0];
     const allowed = unitOptionsMap[category] || [];
 
-    // Sum items by unit
-    const summedByUnit = items.reduce((acc, i) => {
-      acc[i.unit] = (acc[i.unit] || 0) + i.quantity;
-      return acc;
-    }, {});
-
-    // Separate convertible vs non-convertible
-    const convertibleEntries = [];
-    const nonConvertibleEntries = [];
-    Object.entries(summedByUnit).forEach(([unit, qty]) => {
-      if (allowed.includes(unit)) {
-        convertibleEntries.push({ unit, quantity: qty });
-      } else {
-        nonConvertibleEntries.push({ unit, quantity: qty });
-      }
+    // Agrupa por unidade
+    const units = {};
+    items.forEach(i => {
+      units[i.unit] = (units[i.unit] || 0) + i.quantity;
     });
+    const unitList = Object.keys(units);
 
-    // Convert convertible entries and round up
-    if (convertibleEntries.length > 0) {
-      const counts = {};
-      convertibleEntries.forEach(e => { counts[e.unit] = (counts[e.unit] || 0) + 1; });
-      let baseUnit = allowed[0];
-      let max = 0;
-      Object.entries(counts).forEach(([u, c]) => { if (c > max) { max = c; baseUnit = u; }});
-
-      let sumConverted = 0;
-      convertibleEntries.forEach(e => {
-        try {
-          sumConverted += convert(e.quantity, e.unit, baseUnit);
-        } catch (err) {
-          console.warn(`Conversion failed ${e.quantity} ${e.unit} → ${baseUnit}`, err);
-          nonConvertibleEntries.push(e);
-        }
-      });
-
-      const rounded = Math.ceil(sumConverted);
-      if (rounded > 0) {
-        flattened.push({ name, totalQuantity: rounded, unit: baseUnit, category });
+    // 1. Se só tem UMA unidade, só soma
+    if (unitList.length === 1) {
+      const u = unitList[0];
+      const total = Math.ceil(units[u]);
+      if (total > 0) {
+        flattened.push({ name, totalQuantity: total, unit: u, category });
       }
+      return;
     }
 
-    // Add non-convertible entries and round up
-    nonConvertibleEntries.forEach(e => {
-      const rounded = Math.ceil(e.quantity);
-      if (rounded > 0) {
-        flattened.push({ name, totalQuantity: rounded, unit: e.unit, category });
+    // 2. Se todas estão no allowed, tenta converter para baseUnit
+    let baseUnit = allowed[0] || default_unit || unitList[0];
+    let allAllowed = unitList.every(u => allowed.includes(u));
+
+    if (allAllowed) {
+      let total = 0;
+      let failedUnits = [];
+      unitList.forEach(u => {
+        try {
+          total += convert(units[u], u, baseUnit);
+        } catch (e) {
+          failedUnits.push(u);
+        }
+      });
+      if (failedUnits.length === 0 && Math.ceil(total) > 0) {
+        flattened.push({ name, totalQuantity: Math.ceil(total), unit: baseUnit, category });
+        return; // tudo convertido, segue para o próximo ingrediente
+      }
+      // Os que não conseguiram, vão cair nas próximas etapas
+    }
+
+    // 3. Tenta allowed + alternative_units
+    let used = {}; // registra unidades que conseguiu converter
+    let totalAlt = 0;
+    // 3a. Allowed
+    unitList.forEach(u => {
+      if (allowed.includes(u)) {
+        try {
+          totalAlt += convert(units[u], u, baseUnit);
+          used[u] = true;
+        } catch (e) {
+          // se falhar, vai tentar nas alternativas depois
+        }
+      }
+    });
+    // 3b. Tenta alternative_units para as que faltaram
+    unitList.forEach(u => {
+      if (!used[u]) {
+        const alt = alternative_units.find(au => au.unit === u);
+        if (alt && default_unit) {
+          try {
+            totalAlt += units[u] * alt.conversion_factor;
+            used[u] = true;
+            baseUnit = default_unit; // força base para default_unit
+          } catch (e) {
+            // se falhar, fica para nonConvertibleEntries
+          }
+        }
+      }
+    });
+    if (Math.ceil(totalAlt) > 0) {
+      flattened.push({ name, totalQuantity: Math.ceil(totalAlt), unit: baseUnit, category });
+    }
+
+    // 4. O que não conseguiu converter, entra separado
+    unitList.forEach(u => {
+      if (!used[u]) {
+        const total = Math.ceil(units[u]);
+        if (total > 0) {
+          flattened.push({ name, totalQuantity: total, unit: u, category });
+        }
       }
     });
   });
@@ -348,14 +383,13 @@ const processIngredients = (mealPlans, servingsByRecipe) => {
     acc[i.category].push({ name: i.name, quantity: i.totalQuantity, unit: i.unit });
     return acc;
   }, {});
-
-  // 6) Sort each category alphabetically
   Object.keys(categories).forEach(cat => {
     categories[cat].sort((a, b) => a.name.localeCompare(b.name));
   });
 
   return categories;
 };
+
 
 
   // Format date range for display
