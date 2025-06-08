@@ -407,13 +407,15 @@ const processIngredients = (mealPlans, servingsByRecipe) => {
       </div>
 
       {/* Meal Plan Selection Section */}
+
       <div className="mb-4">
+        { selectedMealPlans.length > 0 && (
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2 className="h4 mb-3">Select Meal Plans&nbsp;</h2>
           <span className="badge bg-primary">
             Selected: {selectedMealPlans.length} Meal Plan(s)
           </span>
-        </div>
+        </div> )}
         {allMealPlans.length === 0 ? (
           <div>
             <div className="alert alert-info">
