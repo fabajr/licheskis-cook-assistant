@@ -27,7 +27,7 @@ export const unitOptionsMap = {
   Baking:                   ["CUP","TBSP","TSP","G","KG","LB","OZ"],
   Beverages:                ["FL OZ","CUP","L","ML","BOTTLE"],
   "Canned & Jarred Goods":  ["OZ","CAN","G","KG"],
-  "Condiments & Sauces":    ["TBSP","TSP","FL OZ"],
+  "Condiments & Sauces":    ["TBSP","TSP","FL OZ", "ML","CUP"],	
   Dairy:                    ["CUP","PT","QT","OZ"],
   Herbs:                    ["TSP","BUNCH","STEAMS","TBSP"],
   "Meat & Seafood":         ["LB","OZ","G","KG"],
