@@ -438,12 +438,12 @@ function handleEditIngredient(index) {
       .filter(i => i.isNew)
       .forEach(i => ingredients_db.clearSearchCache(i.name));
       
-      onSuccessRedirect(`/recipes/${recipeId}`);
+      onSuccessRedirect(recipeId);
       } else {
         // chama a API e extrai o .id do response
         const created = await saveRecipeToApi(payload);
         const newId = created.id;      // ⬅️ aqui
-        onSuccessRedirect(`/recipes/${newId}`);  // path correto
+        onSuccessRedirect(newId);
       }
     } catch (err) {
       console.error(err);
