@@ -118,11 +118,11 @@ router.get('/', async (req, res) => {
 
     // se veio exatamente PAGE_SIZE docs, ainda há mais
     const hasMore = snap.docs.length === PAGE_SIZE;
-    const nextPageToken = hasMore
+    const nextPageTokenD = hasMore
       ? snap.docs[snap.docs.length - 1].id
       : null;
 
-    return res.json({ recipes, nextPageToken });
+    return res.json({ recipes, nextPageTokenD });
   } catch (err) {
     console.error('GET /recipes error:', err);
     return res
