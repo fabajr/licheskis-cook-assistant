@@ -122,3 +122,10 @@ If any instruction is unclear or ambiguous, or a task may impact logic, leave a 
 
 ---
 
+## Tests
+
+All Jest/unit tests must run with all Firebase services (auth, storage, firestore) mocked.
+The real Firebase API should never be called during tests.
+See /src/__mocks__/firebase.js for the complete mock implementation.
+
+---
