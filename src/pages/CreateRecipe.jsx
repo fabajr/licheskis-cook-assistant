@@ -49,6 +49,12 @@ export default function CreateRecipe() {
     performSearch,
     showNewIngredientForm,
     newIngFormRef,
+    recipeNameRef,
+    servingsRef,
+    categoryRef,
+    ingredientSearchRef,
+    invalidFields,
+    clearInvalidField,
     newIngredientCategoryOptions,
     newIngredientCategory,
     setNewIngredientCategory,
@@ -113,11 +119,14 @@ export default function CreateRecipe() {
           <label htmlFor="recipeName" className="form-label">Recipe Name</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${invalidFields.recipeName ? 'is-invalid' : ''}`}
             id="recipeName"
+            ref={recipeNameRef}
             value={recipeName}
-            onChange={(e) => setRecipeName(e.target.value)}
-            //required
+            onChange={(e) => {
+              setRecipeName(e.target.value);
+              if (invalidFields.recipeName) clearInvalidField('recipeName');
+            }}
           />
         </div>
 
@@ -148,19 +157,28 @@ export default function CreateRecipe() {
             <label htmlFor="servings" className="form-label">Servings</label>
             <input
               type="number"
-              className="form-control"
+              className={`form-control ${invalidFields.servings ? 'is-invalid' : ''}`}
               id="servings"
+              ref={servingsRef}
               value={servings}
-              onChange={(e) => setServings(e.target.value)}
+              onChange={(e) => {
+                setServings(e.target.value);
+                if (invalidFields.servings) clearInvalidField('servings');
+              }}
               min="1"
             />
           </div>
           <div className="col-md-4">
             <label htmlFor="category" className="form-label">Category</label>
-            <select 
-            className="form-select" 
-            value={category} 
-            onChange={(e) => setCategory(e.target.value)}
+            <select
+            className={`form-select ${invalidFields.category ? 'is-invalid' : ''}`}
+            id="category"
+            ref={categoryRef}
+            value={category}
+            onChange={(e) => {
+              setCategory(e.target.value);
+              if (invalidFields.category) clearInvalidField('category');
+            }}
             >
           <option value="">Select Category...</option>
           {recipeCategoryOptions.map((opt) => (
@@ -348,15 +366,16 @@ export default function CreateRecipe() {
           <input
             id="ingredientSearch"
             type="text"
-            className="form-control"
+            className={`form-control ${invalidFields.ingredients ? 'is-invalid' : ''}`}
+            ref={ingredientSearchRef}
             value={ingredientSearchTerm}
             onChange={e => {
               setIngredientSearchTerm(e.target.value);
               setSelectedLocalIngredient(null); // Clear selection on new input
-              
+
               handleDuplicateIngredient(e.target.value); // Check for duplicates
-                                }
-            }
+              if (invalidFields.ingredients) clearInvalidField('ingredients');
+            }}
             placeholder="Type to search..."
             disabled={isLoadingSearch}
             autoComplete="off"
