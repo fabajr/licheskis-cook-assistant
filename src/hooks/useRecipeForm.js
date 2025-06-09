@@ -1,6 +1,6 @@
 // src/hooks/useRecipeForm.js
 
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import Fuse from 'fuse.js';
 import { useToast } from '../context/ToastContext';
 import {
@@ -22,6 +22,10 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   // 1) REFS
   const newIngFormRef = useRef(null);
   const skipResetRef  = useRef(false);
+  const recipeNameRef = useRef(null);
+  const servingsRef   = useRef(null);
+  const categoryRef   = useRef(null);
+  const ingredientSearchRef = useRef(null);
   const { show } = useToast();
 
   // 2) STATE
@@ -59,6 +63,15 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   const [newIngredientAliases, setNewIngredientAliases]     = useState('');
   const [newAltUnits, setNewAltUnits]                       = useState([]);
   const [newIngredientQuantity, setNewIngredientQuantity]   = useState('');
+
+  const [invalidFields, setInvalidFields] = useState({});
+
+  const clearInvalidField = field =>
+    setInvalidFields(prev => {
+      if (!prev[field]) return prev;
+      const { [field]: _, ...rest } = prev;
+      return rest;
+    });
 
   const [ingredientQuantity, setIngredientQuantity] = useState('');
   const [ingredientUnit, setIngredientUnit]         = useState('');
@@ -182,6 +195,34 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
       });
     }
   }, [showNewIngredientForm]); // Scroll to the new ingredient form when it opens
+
+  // Scroll to and focus the first invalid field
+  useLayoutEffect(() => {
+    if (Object.keys(invalidFields).length === 0) return;
+    const order = ['recipeName', 'servings', 'category', 'ingredients'];
+    const map = {
+      recipeName: recipeNameRef,
+      servings: servingsRef,
+      category: categoryRef,
+      ingredients: ingredientSearchRef
+    };
+    const first = order.find(f => invalidFields[f]);
+    const node = map[first]?.current;
+    if (node) {
+      node.focus();
+      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [invalidFields]);
+
+  // Remove ingredient error when at least one ingredient exists
+  useEffect(() => {
+    if (ingredients.length > 0 && invalidFields.ingredients) {
+      setInvalidFields(prev => {
+        const { ingredients, ...rest } = prev;
+        return rest;
+      });
+    }
+  }, [ingredients, invalidFields.ingredients]);
 
 
   // d) Seleção de ingrediente local
@@ -421,22 +462,18 @@ function handleEditIngredient(index) {
 
   // i) Submit (create ou update)
   const handleSubmit = async () => {
-    if (!recipeName.trim()) {
-      show('Name is required');
+    const errors = {};
+    if (!recipeName.trim()) errors.recipeName = true;
+    if (!category) errors.category = true;
+    if (!servings) errors.servings = true;
+    if (ingredients.length === 0) errors.ingredients = true;
+
+    if (Object.keys(errors).length) {
+      setInvalidFields(errors);
       return;
     }
-    if (!category) {
-      show('Category is required');
-      return;
-    }
-    if (!servings) {
-      show('Servings is required');
-      return;
-    }
-    if (ingredients.length === 0) {
-      show('Add at least 1 ingredient');
-      return;
-    }
+
+    setInvalidFields({});
 
     const payload = {
       name: recipeName,
@@ -517,6 +554,11 @@ function handleEditIngredient(index) {
     performSearch,
     showNewIngredientForm,
     newIngFormRef,
+    recipeNameRef,
+    servingsRef,
+    categoryRef,
+    ingredientSearchRef,
+    invalidFields,
     newIngredientCategoryOptions,
     newIngredientCategory,
     setNewIngredientCategory,
@@ -556,10 +598,12 @@ function handleEditIngredient(index) {
     getUnitOptions,
 
     // ações
-       
+
 
     checkSimilarNames,
-    
+
+    clearInvalidField,
+
     handleSubmit
   };
 }
