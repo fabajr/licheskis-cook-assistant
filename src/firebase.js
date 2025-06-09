@@ -9,6 +9,10 @@ import {
   getFirestore,
   connectFirestoreEmulator
 } from 'firebase/firestore';
+import {
+  getStorage,
+  connectStorageEmulator
+} from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey:             process.env.REACT_APP_FIREBASE_API_KEY,
@@ -23,16 +27,19 @@ const firebaseConfig = {
 const app  = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db   = getFirestore(app);
+export const storage = getStorage(app);
 
 // Conecta ao Auth + Firestore emulador em dev local
 if (window.location.hostname === 'localhost') {
   connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
   connectFirestoreEmulator(db, 'localhost', 8080);
+  connectStorageEmulator(storage, 'localhost', 9199);
 }
 
 // Exponha no console para debug e testes manuais
 if (typeof window !== 'undefined') {
   window._auth   = auth;
+  window._storage = storage;
   window._signIn = (email, password) =>
     signInWithEmailAndPassword(auth, email, password);
 }
