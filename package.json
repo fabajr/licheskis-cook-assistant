@@ -23,7 +23,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "react-scripts test"
+    "test": "vitest"
   },
   "overrides": {
     "nth-check": "^2.0.1",
@@ -55,6 +55,8 @@
     "@testing-library/user-event": "^14.6.1",
     "@vitejs/plugin-react": "^4.5.2",
     "eslint": "^9.28.0",
-    "vite": "^6.3.5"
+    "jsdom": "^26.1.0",
+    "vite": "^6.3.5",
+    "vitest": "^1.5.1"
   }
 }
