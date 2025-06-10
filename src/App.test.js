@@ -1,6 +1,8 @@
 // src/App.test.js
 jest.mock('axios');
 const axios = require('axios');
+jest.mock('./firebase', () => ({ auth: {}, db: {}, storage: {} }));
+jest.mock('../firebase', () => ({ auth: {}, db: {}, storage: {} }));
 
 import { render, screen } from '@testing-library/react';
 import App from './App';
