@@ -2,6 +2,7 @@
 import React from 'react';
 import { useRecipeForm } from '../hooks/useRecipeForm';
 import { useNavigate, useParams } from 'react-router-dom';
+import { parseQuantity } from '../services/utils/utils';
 
 export default function EditRecipe() {
   const navigate = useNavigate();
@@ -438,12 +439,20 @@ export default function EditRecipe() {
                       <input
                         id="ingredientQuantity"
                         type="text" // Allow fractions like 1/2
-                        className="form-control"
+                        className={`form-control ${invalidFields.ingredientQuantity ? 'is-invalid' : ''}`}
                         value={ingredientQuantity}
-                        onChange={e => setIngredientQuantity(e.target.value)}
+                        onChange={e => {
+                          const val = e.target.value;
+                          setIngredientQuantity(val);
+                          if (invalidFields.ingredientQuantity && parseQuantity(val) > 0) {
+                            clearInvalidField('ingredientQuantity');
+                          }
+                        }}
                         placeholder="e.g., 1, 1/2, 1.5"
-                        //required
                       />
+                      {invalidFields.ingredientQuantity && (
+                        <div className="invalid-feedback">{invalidFields.ingredientQuantity}</div>
+                      )}
                     </div>
                           <div className="col-md-5">
                             <label htmlFor="ingredientUnit" className="form-label">
@@ -462,15 +471,23 @@ export default function EditRecipe() {
                                             return (
                                                     <select
                                                     id="ingredientUnit"
-                                                    className="form-select"
+                                                    className={`form-select ${invalidFields.ingredientUnit ? 'is-invalid' : ''}`}
                                                     value={ingredientUnit}
-                                                    onChange={e => setIngredientUnit(e.target.value)}
+                                                    onChange={e => {
+                                                      const val = e.target.value;
+                                                      setIngredientUnit(val);
+                                                      if (invalidFields.ingredientUnit && val) {
+                                                        clearInvalidField('ingredientUnit');
+                                                      }
+                                                    }}
                                                     disabled={!category}
-                                                    //required
                                                     >
-                                                     {orderedUnits.map(u => 
-                                                     (<option key={u} value={u}>{u} </option>))}
+                                                     {orderedUnits.map(u =>
+                                                      (<option key={u} value={u}>{u} </option>))}
                                                     </select>
+                                                    {invalidFields.ingredientUnit && (
+                                                      <div className="invalid-feedback">{invalidFields.ingredientUnit}</div>
+                                                    )}
                                                     );
                                  })()}
                             </div>
@@ -501,16 +518,16 @@ export default function EditRecipe() {
                     </label>
                     <select
                       id="newIngredientCategory"
-                      className="form-select"
+                      className={`form-select ${invalidFields.newIngredientCategory ? 'is-invalid' : ''}`}
                       value={newIngredientCategory}
                       onChange={e => {
-                        setNewIngredientCategory(e.target.value);
-                        setNewIngredientDefaultUnit(""); 
+                        const val = e.target.value;
+                        setNewIngredientCategory(val);
+                        setNewIngredientDefaultUnit("");
                         setNewIngredientUnit("");  // limpa o select de unidade
-                        setNewIngredientQuantity("") // limpa a quantidade"
+                        setNewIngredientQuantity(""); // limpa a quantidade
+                        if (invalidFields.newIngredientCategory && val) clearInvalidField('newIngredientCategory');
                       }}
-                      
-                      //required
                     >
                       <option value="">Select Category...</option>
                       {newIngredientCategoryOptions.map(cat => (
@@ -519,15 +536,21 @@ export default function EditRecipe() {
                         </option>
                       ))}
                     </select>
+                    {invalidFields.newIngredientCategory && (
+                      <div className="invalid-feedback">{invalidFields.newIngredientCategory}</div>
+                    )}
                   </div>
                       <div className="col-md-6">
                         <label htmlFor="newIngredientUnit" className="form-label">Default Unit*</label>
                         <select
-                          className="form-select"
+                          className={`form-select ${invalidFields.newIngredientDefaultUnit ? 'is-invalid' : ''}`}
                           value={newIngredientDefaultUnit}
-                          onChange={e => setNewIngredientDefaultUnit(e.target.value)}
-                          //required
-                          disabled={!newIngredientCategory} // Disable until category is selected 
+                          onChange={e => {
+                            const val = e.target.value;
+                            setNewIngredientDefaultUnit(val);
+                            if (invalidFields.newIngredientDefaultUnit && val) clearInvalidField('newIngredientDefaultUnit');
+                          }}
+                          disabled={!newIngredientCategory}
                         >
                           <option value="">Select Default Unit...</option>
                           {getUnitOptions(newIngredientCategory).map(u => (
@@ -536,18 +559,29 @@ export default function EditRecipe() {
                               </option>
                           ))}
                         </select>
+                        {invalidFields.newIngredientDefaultUnit && (
+                          <div className="invalid-feedback">{invalidFields.newIngredientDefaultUnit}</div>
+                        )}
                       </div>
                     </div>
                     <div className="mb-2">
                       <label className="form-label">Kcal per Default Unit*</label>
                       <input
                         type="number"
-                        className="form-control"
+                        className={`form-control ${invalidFields.newIngredientKcalPerUnit ? 'is-invalid' : ''}`}
                         value={newIngredientKcalPerUnit}
-                        onChange={e => setNewIngredientKcalPerUnit(e.target.value)}
+                        onChange={e => {
+                          const val = e.target.value;
+                          setNewIngredientKcalPerUnit(val);
+                          if (invalidFields.newIngredientKcalPerUnit && val && parseFloat(val) >= 0) {
+                            clearInvalidField('newIngredientKcalPerUnit');
+                          }
+                        }}
                         min="0"
-                        //required
                       />
+                      {invalidFields.newIngredientKcalPerUnit && (
+                        <div className="invalid-feedback">{invalidFields.newIngredientKcalPerUnit}</div>
+                      )}
                     </div>
                     <div className="form-check form-switch mb-2">
                       <input
@@ -632,12 +666,20 @@ export default function EditRecipe() {
                 <input
                   id="newIngredientQty"
                   type="text"
-                  className="form-control"
+                  className={`form-control ${invalidFields.newIngredientQuantity ? 'is-invalid' : ''}`}
                   value={newIngredientQuantity}
-                  onChange={e => setNewIngredientQuantity(e.target.value)}
-                  disabled={!newIngredientCategory || !newIngredientDefaultUnit} // Disable until category and default unit are selected
-                  //required
+                  onChange={e => {
+                    const val = e.target.value;
+                    setNewIngredientQuantity(val);
+                    if (invalidFields.newIngredientQuantity && parseQuantity(val) > 0) {
+                      clearInvalidField('newIngredientQuantity');
+                    }
+                  }}
+                  disabled={!newIngredientCategory || !newIngredientDefaultUnit}
                 />
+                {invalidFields.newIngredientQuantity && (
+                  <div className="invalid-feedback">{invalidFields.newIngredientQuantity}</div>
+                )}
               </div>
         
               {/* Unit PARA NOVO INGREDIENTE */}
@@ -647,15 +689,15 @@ export default function EditRecipe() {
                 </label>
                 <select
                   id="newIngredientUnit"
-                  className="form-select"
-                  value={newIngredientUnit}                  // << usa o estado separado
+                  className={`form-select ${invalidFields.newIngredientUnit ? 'is-invalid' : ''}`}
+                  value={newIngredientUnit}
                   onChange={e => {
-                              setNewIngredientUnit(e.target.value);
-                              setNewIngredientQuantity("")}} // Clear quantity when unit changes
-                             
-                  disabled={!newIngredientCategory || !newIngredientDefaultUnit} // Disable until category is selected
-                  // Se não tiver categoria, não tem unidades; se não tiver default, não tem unidades
-                  //required
+                              const val = e.target.value;
+                              setNewIngredientUnit(val);
+                              setNewIngredientQuantity("");
+                              if (invalidFields.newIngredientUnit && val) clearInvalidField('newIngredientUnit');
+                            }}
+                  disabled={!newIngredientCategory || !newIngredientDefaultUnit}
                 >
                   {getUnitOptions(newIngredientCategory).map(u => (
                     <option key={u} value={u}>
@@ -663,6 +705,9 @@ export default function EditRecipe() {
                     </option>
                   ))}
                 </select>
+                {invalidFields.newIngredientUnit && (
+                  <div className="invalid-feedback">{invalidFields.newIngredientUnit}</div>
+                )}
               </div>
         
               {/* Botão Add New */}

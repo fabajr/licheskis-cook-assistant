@@ -67,7 +67,6 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   const [invalidFields, setInvalidFields] = useState({});
   const [shouldFocusError, setShouldFocusError] = useState(false);
 
-
   const clearInvalidField = field =>
     setInvalidFields(prev => {
       if (!prev[field]) return prev;
@@ -199,7 +198,6 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   }, [showNewIngredientForm]); // Scroll to the new ingredient form when it opens
 
   // Scroll to and focus the first invalid field
-
 useLayoutEffect(() => {
     if (!shouldFocusError || Object.keys(invalidFields).length === 0) return;
 
@@ -216,7 +214,6 @@ useLayoutEffect(() => {
       node.focus();
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-
     setShouldFocusError(false);
   }, [invalidFields, shouldFocusError]);
 
@@ -289,8 +286,29 @@ useLayoutEffect(() => {
     const isNew = showNewIngredientForm;
     const qtyStr = isNew ? newIngredientQuantity : ingredientQuantity;
     const qty = parseQuantity(qtyStr);
+
+    const errors = {};
     if (isNaN(qty) || qty <= 0) {
-      show('Invalid Quantity');
+      errors[isNew ? 'newIngredientQuantity' : 'ingredientQuantity'] =
+        'Enter a valid quantity';
+    }
+
+    if (isNew) {
+      const kcal = parseFloat(newIngredientKcalPerUnit);
+      if (isNaN(kcal) || kcal < 0)
+        errors.newIngredientKcalPerUnit = 'Enter a valid kcal value';
+      if (!newIngredientCategory)
+        errors.newIngredientCategory = 'Category is required';
+      if (!newIngredientDefaultUnit)
+        errors.newIngredientDefaultUnit = 'Default unit is required';
+      if (!newIngredientUnit)
+        errors.newIngredientUnit = 'Unit is required';
+    } else {
+      if (!ingredientUnit) errors.ingredientUnit = 'Unit is required';
+    }
+
+    if (Object.keys(errors).length) {
+      setInvalidFields(prev => ({ ...prev, ...errors }));
       return;
     }
       
@@ -323,19 +341,6 @@ useLayoutEffect(() => {
       // Creating a new ingredient (data captured in state)
       const kcal = parseFloat(newIngredientKcalPerUnit);
       const unitToUse = newIngredientUnit || newIngredientDefaultUnit || '';
-
-      if (isNaN(kcal) || kcal < 0) {
-        show('Invalid Kcal for new ingredient');
-        return;
-      }
-      if (!newIngredientCategory) {
-        show('Category is required for new ingredient');
-        return;
-      }
-      if (!newIngredientDefaultUnit) {
-        show('Default unit is required for new ingredient');
-        return;
-      }
 
       ingToAdd = {
         ingredient_id: null,
