@@ -1,73 +1,150 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function Navbar() {
+  const { user, isAdmin, hasHormonalCycle, logout } = useAuth();
   const location = useLocation();
-  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  const avatar = user?.photoURL || '/logo192.png';
 
-  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
-  
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div className="container">
-        <Link className="navbar-brand" to="/">Licheskis Cook Assistant</Link>
-        <button 
-          className="navbar-toggler" 
-          type="button" 
-          onClick={handleNavCollapse}
-          aria-expanded={!isNavCollapsed}
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className={`${isNavCollapsed ? 'collapse' : ''} navbar-collapse`} id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link 
-                className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} 
-                to="/"
-                onClick={() => setIsNavCollapsed(true)}
-              >
-                Home
+    <nav
+      className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top"
+      style={{ height: '60px' }}
+    >
+      <div className="container d-flex align-items-center">
+        <Link className="navbar-brand me-auto" to="/">
+          Cook Assistant
+        </Link>
+        <ul className="navbar-nav mx-auto d-flex flex-row">
+          <li className="nav-item px-3">
+            <Link
+              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+              to="/"
+            >
+              Home
+            </Link>
+          </li>
+          <li className="nav-item px-3">
+            <Link
+              className={`nav-link ${
+                location.pathname === '/recipes' ? 'active' : ''
+              }`}
+              to="/recipes"
+            >
+              Recipes
+            </Link>
+          </li>
+        </ul>
+        <div className="ms-auto">
+          {!user ? (
+            <>
+              <Link to="/login" className="btn btn-link">
+                Login
               </Link>
-            </li>
-            <li className="nav-item">
-              <Link 
-                className={`nav-link ${location.pathname === '/recipes' ? 'active' : ''}`} 
-                to="/recipes"
-                onClick={() => setIsNavCollapsed(true)}
-              >
-                Recipes
+              <Link to="/signup" className="btn btn-primary ms-2">
+                Sign Up
               </Link>
-            </li>
-            <li className="nav-item">
-              <Link 
-                className={`nav-link ${location.pathname === '/meal-planner' ? 'active' : ''}`} 
-                to="/meal-planner"
-                onClick={() => setIsNavCollapsed(true)}
+            </>
+          ) : (
+            <div className="dropdown">
+              <img
+                id="userDropdown"
+                src={avatar}
+                className="nav-avatar"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul
+                className="dropdown-menu dropdown-menu-end shadow mt-2"
+                aria-labelledby="userDropdown"
               >
-                Meal Planner
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link 
-                className={`nav-link ${location.pathname === '/grocery-list' ? 'active' : ''}`} 
-                to="/grocery-list"
-                onClick={() => setIsNavCollapsed(true)}
-              >
-                Grocery List
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link 
-                className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`} 
-                to="/profile"
-                onClick={() => setIsNavCollapsed(true)}
-              >
-                Profile
-              </Link>
-            </li>
-          </ul>
+                <li className="px-3 py-2">
+                  <img
+                    src={avatar}
+                    className="rounded-circle me-2"
+                    style={{ width: 32, height: 32 }}
+                  />
+                  <Link to="/profile">{user.displayName || 'Profile'}</Link>
+                </li>
+                <li className="d-md-none">
+                  <Link className="dropdown-item" to="/recipes">
+                    Recipes
+                  </Link>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item"
+                    to="/profile#hormonal-cycle"
+                  >
+                    Hormonal Cycle{' '}
+                    {hasHormonalCycle && <span>✅</span>}
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/profile#meal-plans">
+                    My Meal Plans
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/profile#grocery-lists">
+                    My Grocery Lists
+                  </Link>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/meal-planner/new">
+                    + New Meal Plan
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/grocery-list/new">
+                    + New Grocery List
+                  </Link>
+                </li>
+                {isAdmin && (
+                  <>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/create-recipe">
+                        + New Recipe
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/admin/ingredients">
+                        Edit Ingredients
+                      </Link>
+                    </li>
+                  </>
+                )}
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/feedback">
+                    Feedback
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    className="dropdown-item text-danger"
+                    onClick={logout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </nav>

@@ -165,3 +165,35 @@ main {
   margin-bottom: 20px;
   color: #007bff;
 }
+
+.nav-link.active {
+  color: #1877f2;
+  border-bottom: 2px solid #1877f2;
+}
+.dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.dropdown-menu {
+  transform: translateY(5px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+.dropdown.show .dropdown-menu {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+.nav-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+@media (max-width: 767.98px) {
+  .navbar-nav.mx-auto {
+    display: none;
+  }
+}
