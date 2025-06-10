@@ -27,8 +27,9 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <main className="container mt-4">
-        <Routes>
+      <div style={{ paddingTop: '60px' }}>
+        <main className="container mt-4">
+          <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<AuthPage />} />
@@ -117,7 +118,8 @@ function App() {
         />
 
         </Routes>
-      </main>
+        </main>
+      </div>
     </BrowserRouter>
   );
 }
