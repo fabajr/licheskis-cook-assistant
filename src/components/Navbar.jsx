@@ -1,7 +1,9 @@
 import React from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import './Navbar.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 
 function Navbar() {
   const { user, isAdmin, hasHormonalCycle, logout } = useAuth();
@@ -9,93 +11,143 @@ function Navbar() {
   const avatar = user?.photoURL || '/logo192.png';
 
   return (
-    <nav className="navbar navbar-expand-md navbar-fb fixed-top border-bottom">
-      <div className="container-fluid">
-        <Link className="navbar-brand fw-bold" to="/">Cook Assistant</Link>
-        <ul className="navbar-nav mx-auto d-none d-md-flex">
-          <li className="nav-item">
-            <NavLink end to="/" className="nav-link">
+    <nav
+      className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top"
+      style={{ height: '60px' }}
+    >
+      <div className="container d-flex align-items-center">
+        <Link className="navbar-brand me-auto" to="/">
+          Cook Assistant
+        </Link>
+        <ul className="navbar-nav mx-auto d-flex flex-row">
+          <li className="nav-item px-3">
+            <Link
+              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+              to="/"
+            >
               Home
-            </NavLink>
+            </Link>
           </li>
-          <li className="nav-item">
-            <NavLink to="/recipes" className="nav-link">
+          <li className="nav-item px-3">
+            <Link
+              className={`nav-link ${
+                location.pathname === '/recipes' ? 'active' : ''
+              }`}
+              to="/recipes"
+            >
               Recipes
-            </NavLink>
+            </Link>
           </li>
         </ul>
-        {!user && (
-          <div className="ms-auto d-flex">
-            <Link className="btn btn-link me-2" to="/login">Login</Link>
-            <Link className="btn btn-primary" to="/signup">Sign Up</Link>
-          </div>
-        )}
-        {user && (
-          <div className="dropdown ms-auto">
-            <button
-              className="btn p-0 border-0 bg-transparent"
-              type="button"
-              id="userDropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img src={avatar} alt="avatar" className="nav-avatar" />
-            </button>
-            <ul className="dropdown-menu dropdown-menu-end shadow dropdown-menu-animate" aria-labelledby="userDropdown">
-              <li>
-                <Link to="/profile" className="dropdown-item d-flex align-items-center">
-                  <img src={avatar} alt="avatar" className="me-2 rounded-circle" style={{ width: 24, height: 24 }} />
-                  {user.displayName || 'Profile'}
-                </Link>
-              </li>
-              <li className="d-md-none">
-                <NavLink to="/recipes" className="dropdown-item">Recipes</NavLink>
-              </li>
-              <li><hr className="dropdown-divider" /></li>
-              <li><h6 className="dropdown-header">My Data</h6></li>
-              <li>
-                <NavLink to="/profile#hormonal-cycle" className="dropdown-item d-flex justify-content-between align-items-center">
-                  <span>Hormonal Cycle</span>
-                  {hasHormonalCycle && <i className="bi bi-check2"></i>}
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/profile#meal-plans" className="dropdown-item">My Meal Plans</NavLink>
-              </li>
-              <li>
-                <NavLink to="/profile#grocery-lists" className="dropdown-item">My Grocery Lists</NavLink>
-              </li>
-              <li><hr className="dropdown-divider" /></li>
-              <li><h6 className="dropdown-header">Quick Actions</h6></li>
-              <li>
-                <NavLink to="/meal-planner/new" className="dropdown-item">+ New Meal Plan</NavLink>
-              </li>
-              <li>
-                <NavLink to="/grocery-list/new" className="dropdown-item">+ New Grocery List</NavLink>
-              </li>
-              {isAdmin && (
-                <>
-                  <li><hr className="dropdown-divider" /></li>
-                  <li><h6 className="dropdown-header">Admin</h6></li>
-                  <li>
-                    <NavLink to="/create-recipe" className="dropdown-item">+ New Recipe</NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/admin/ingredients" className="dropdown-item">Edit Ingredients</NavLink>
-                  </li>
-                </>
-              )}
-              <li><hr className="dropdown-divider" /></li>
-              <li><h6 className="dropdown-header">Misc</h6></li>
-              <li>
-                <NavLink to="/feedback" className="dropdown-item">Feedback</NavLink>
-              </li>
-              <li>
-                <button className="dropdown-item" onClick={logout}>Logout</button>
-              </li>
-            </ul>
-          </div>
-        )}
+        <div className="ms-auto">
+          {!user ? (
+            <>
+              <Link to="/login" className="btn btn-link">
+                Login
+              </Link>
+              <Link to="/signup" className="btn btn-primary ms-2">
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <div className="dropdown">
+              <img
+                id="userDropdown"
+                src={avatar}
+                className="nav-avatar"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />
+              <ul
+                className="dropdown-menu dropdown-menu-end shadow mt-2"
+                aria-labelledby="userDropdown"
+              >
+                <li className="px-3 py-2">
+                  <img
+                    src={avatar}
+                    className="rounded-circle me-2"
+                    style={{ width: 32, height: 32 }}
+                  />
+                  <Link to="/profile">{user.displayName || 'Profile'}</Link>
+                </li>
+                <li className="d-md-none">
+                  <Link className="dropdown-item" to="/recipes">
+                    Recipes
+                  </Link>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item"
+                    to="/profile#hormonal-cycle"
+                  >
+                    Hormonal Cycle{' '}
+                    {hasHormonalCycle && <span>✅</span>}
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/profile#meal-plans">
+                    My Meal Plans
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/profile#grocery-lists">
+                    My Grocery Lists
+                  </Link>
+                </li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/meal-planner/new">
+                    + New Meal Plan
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/grocery-list/new">
+                    + New Grocery List
+                  </Link>
+                </li>
+                {isAdmin && (
+                  <>
+                    <li>
+                      <hr className="dropdown-divider" />
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/create-recipe">
+                        + New Recipe
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/admin/ingredients">
+                        Edit Ingredients
+                      </Link>
+                    </li>
+                  </>
+                )}
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/feedback">
+                    Feedback
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    className="dropdown-item text-danger"
+                    onClick={logout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+
       </div>
     </nav>
   );
