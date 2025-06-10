@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -25,7 +25,7 @@ import CreateRecipe from './pages/CreateRecipe';
 import EditRecipe from './pages/EditRecipe';
 function App() {
   return (
-    <BrowserRouter>
+    <>
       <Navbar />
       <div style={{ paddingTop: '60px' }}>
         <main className="container mt-4">
@@ -120,7 +120,7 @@ function App() {
         </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </>
   );
 }
 export default App;
