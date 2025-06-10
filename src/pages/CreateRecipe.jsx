@@ -49,6 +49,12 @@ export default function CreateRecipe() {
     performSearch,
     showNewIngredientForm,
     newIngFormRef,
+    recipeNameRef,
+    servingsRef,
+    categoryRef,
+    ingredientSearchRef,
+    invalidFields,
+    clearInvalidField,
     newIngredientCategoryOptions,
     newIngredientCategory,
     setNewIngredientCategory,
@@ -113,12 +119,19 @@ export default function CreateRecipe() {
           <label htmlFor="recipeName" className="form-label">Recipe Name</label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${invalidFields.recipeName ? 'is-invalid' : ''}`}
             id="recipeName"
+            ref={recipeNameRef}
             value={recipeName}
-            onChange={(e) => setRecipeName(e.target.value)}
-            //required
+            onChange={(e) => {
+              const val = e.target.value;
+              setRecipeName(val);
+              if (invalidFields.recipeName && val.trim()) clearInvalidField('recipeName');
+            }}
           />
+          {invalidFields.recipeName && (
+            <div className="invalid-feedback">{invalidFields.recipeName}</div>
+          )}
         </div>
 
         <div className="mb-3">
@@ -148,19 +161,33 @@ export default function CreateRecipe() {
             <label htmlFor="servings" className="form-label">Servings</label>
             <input
               type="number"
-              className="form-control"
+              className={`form-control ${invalidFields.servings ? 'is-invalid' : ''}`}
               id="servings"
+              ref={servingsRef}
               value={servings}
-              onChange={(e) => setServings(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                setServings(val);
+                if (invalidFields.servings && val) clearInvalidField('servings');
+              }}
               min="1"
             />
+            {invalidFields.servings && (
+              <div className="invalid-feedback">{invalidFields.servings}</div>
+            )}
           </div>
           <div className="col-md-4">
             <label htmlFor="category" className="form-label">Category</label>
-            <select 
-            className="form-select" 
-            value={category} 
-            onChange={(e) => setCategory(e.target.value)}
+            <select
+            className={`form-select ${invalidFields.category ? 'is-invalid' : ''}`}
+            id="category"
+            ref={categoryRef}
+            value={category}
+            onChange={(e) => {
+              const val = e.target.value;
+              setCategory(val);
+              if (invalidFields.category && val) clearInvalidField('category');
+            }}
             >
           <option value="">Select Category...</option>
           {recipeCategoryOptions.map((opt) => (
@@ -169,6 +196,9 @@ export default function CreateRecipe() {
             </option>
           ))}
         </select>
+        {invalidFields.category && (
+          <div className="invalid-feedback">{invalidFields.category}</div>
+        )}
           </div>
         </div>
 
@@ -348,19 +378,22 @@ export default function CreateRecipe() {
           <input
             id="ingredientSearch"
             type="text"
-            className="form-control"
+            className={`form-control ${invalidFields.ingredients ? 'is-invalid' : ''}`}
+            ref={ingredientSearchRef}
             value={ingredientSearchTerm}
             onChange={e => {
               setIngredientSearchTerm(e.target.value);
               setSelectedLocalIngredient(null); // Clear selection on new input
-              
+
               handleDuplicateIngredient(e.target.value); // Check for duplicates
-                                }
-            }
+            }}
             placeholder="Type to search..."
             disabled={isLoadingSearch}
             autoComplete="off"
           />
+          {invalidFields.ingredients && (
+            <div className="invalid-feedback">{invalidFields.ingredients}</div>
+          )}
           {isLoadingSearch && (
             <div className="spinner-border spinner-border-sm position-absolute end-0 top-50 translate-middle-y me-2" role="status">
               <span className="visually-hidden">Loading...</span>
