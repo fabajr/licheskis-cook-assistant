@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 
 function Navbar() {
@@ -51,13 +50,15 @@ function Navbar() {
             </>
           ) : (
             <div className="dropdown">
-              <img
+              <button
                 id="userDropdown"
-                src={avatar}
-                className="nav-avatar"
+                className="nav-link dropdown-toggle p-0"
+                type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-              />
+              >
+                <img src={avatar} className="rounded-circle" style={{ width: 36, height: 36 }} />
+              </button>
               <ul
                 className="dropdown-menu dropdown-menu-end shadow mt-2"
                 aria-labelledby="userDropdown"
