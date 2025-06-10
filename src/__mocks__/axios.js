@@ -1,18 +1,20 @@
 // src/__mocks__/axios.js
+import { vi } from 'vitest'
+
 const axiosInstance = {
-  get: jest.fn(),
-  post: jest.fn(),
-  put: jest.fn(),
-  delete: jest.fn(),
+  get: vi.fn(),
+  post: vi.fn(),
+  put: vi.fn(),
+  delete: vi.fn(),
   interceptors: {
-    request: { use: jest.fn() },
-    response: { use: jest.fn() },
+    request: { use: vi.fn() },
+    response: { use: vi.fn() },
   },
 };
 
 const axiosMock = {
-  create: jest.fn(() => axiosInstance),
+  create: vi.fn(() => axiosInstance),
   ...axiosInstance,
 };
+export default axiosMock;
 
-module.exports = axiosMock;
