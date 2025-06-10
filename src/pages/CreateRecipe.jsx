@@ -460,28 +460,28 @@ export default function CreateRecipe() {
                                     ? [defaultUnit, ...unitOptions.filter(u => u !== defaultUnit)]
                                     : unitOptions;
 
-                                    return (
-                                            <select
-                                            id="ingredientUnit"
-                                            className={`form-select ${invalidFields.ingredientUnit ? 'is-invalid' : ''}`}
-                                            value={ingredientUnit}
-                                            onChange={e => {
-                                              const val = e.target.value;
-                                              setIngredientUnit(val);
-                                              if (invalidFields.ingredientUnit && val) {
-                                                clearInvalidField('ingredientUnit');
-                                              }
-                                            }}
-                                            disabled={!category}
-                                            >
-                                            {orderedUnits.map(u =>
-                                             (<option key={u} value={u}>{u} </option>))}
-                                            </select>
-                                            {invalidFields.ingredientUnit && (
-                                              <div className="invalid-feedback">{invalidFields.ingredientUnit}</div>
-                                            )}
-                                            );
-                         })()}
+                                  return (
+                                          <select
+                                          id="ingredientUnit"
+                                          className={`form-select ${invalidFields.ingredientUnit ? 'is-invalid' : ''}`}
+                                          value={ingredientUnit}
+                                          onChange={e => {
+                                            const val = e.target.value;
+                                            setIngredientUnit(val);
+                                            if (invalidFields.ingredientUnit && val) {
+                                              clearInvalidField('ingredientUnit');
+                                            }
+                                          }}
+                                          disabled={!category}
+                                          >
+                                          {orderedUnits.map(u =>
+                                           (<option key={u} value={u}>{u} </option>))}
+                                          </select>
+                                  );
+                                  })()}
+                                  {invalidFields.ingredientUnit && (
+                                    <div className="invalid-feedback">{invalidFields.ingredientUnit}</div>
+                                  )}
                     </div>
 
             <div className="col-md-2">

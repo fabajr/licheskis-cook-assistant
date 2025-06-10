@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
+
 function Navbar() {
   const { user, isAdmin, hasHormonalCycle, logout } = useAuth();
   const location = useLocation();
@@ -146,6 +147,7 @@ function Navbar() {
             </div>
           )}
         </div>
+
       </div>
     </nav>
   );

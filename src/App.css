@@ -195,5 +195,6 @@ main {
 @media (max-width: 767.98px) {
   .navbar-nav.mx-auto {
     display: none;
+
   }
 }
