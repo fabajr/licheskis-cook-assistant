@@ -126,8 +126,10 @@ export default function EditRecipe() {
                     ref={recipeNameRef}
                     value={recipeName}
                     onChange={(e) => {
-                      setRecipeName(e.target.value);
-                      if (invalidFields.recipeName) clearInvalidField('recipeName');
+                      const val = e.target.value;
+                      setRecipeName(val);
+                      if (invalidFields.recipeName && val.trim()) clearInvalidField('recipeName');
+
                     }}
                     onBlur={checkSimilarNames} // Check for similar names on blur
                     placeholder="Enter recipe name"
@@ -135,6 +137,9 @@ export default function EditRecipe() {
 
                     //required
                   />
+                  {invalidFields.recipeName && (
+                    <div className="invalid-feedback">{invalidFields.recipeName}</div>
+                  )}
                 </div>
         
                 <div className="mb-3">
@@ -169,11 +174,16 @@ export default function EditRecipe() {
                       ref={servingsRef}
                       value={servings}
                       onChange={(e) => {
-                        setServings(e.target.value);
-                        if (invalidFields.servings) clearInvalidField('servings');
+                        const val = e.target.value;
+                        setServings(val);
+                        if (invalidFields.servings && val) clearInvalidField('servings');
+
                       }}
                       min="1"
                     />
+                    {invalidFields.servings && (
+                      <div className="invalid-feedback">{invalidFields.servings}</div>
+                    )}
                   </div>
                   <div className="col-md-4">
                     <label htmlFor="category" className="form-label">Category</label>
@@ -183,8 +193,10 @@ export default function EditRecipe() {
                     ref={categoryRef}
                     value={category}
                     onChange={(e) => {
-                      setCategory(e.target.value);
-                      if (invalidFields.category) clearInvalidField('category');
+                      const val = e.target.value;
+                      setCategory(val);
+                      if (invalidFields.category && val) clearInvalidField('category');
+
                     }}
                     >
                   <option value="">Select Category...</option>
@@ -194,6 +206,9 @@ export default function EditRecipe() {
                     </option>
                   ))}
                 </select>
+                {invalidFields.category && (
+                  <div className="invalid-feedback">{invalidFields.category}</div>
+                )}
                   </div>
                 </div>
         
@@ -381,12 +396,15 @@ export default function EditRecipe() {
                       setSelectedLocalIngredient(null); // Clear selection on new input
 
                       handleDuplicateIngredient(e.target.value); // Check for duplicates
-                      if (invalidFields.ingredients) clearInvalidField('ingredients');
+
                     }}
                     placeholder="Type to search..."
                     disabled={isLoadingSearch}
                     autoComplete="off"
                   />
+                  {invalidFields.ingredients && (
+                    <div className="invalid-feedback">{invalidFields.ingredients}</div>
+                  )}
                   {isLoadingSearch && (
                     <div className="spinner-border spinner-border-sm position-absolute end-0 top-50 translate-middle-y me-2" role="status">
                       <span className="visually-hidden">Loading...</span>

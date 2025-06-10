@@ -65,6 +65,8 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   const [newIngredientQuantity, setNewIngredientQuantity]   = useState('');
 
   const [invalidFields, setInvalidFields] = useState({});
+  const [shouldFocusError, setShouldFocusError] = useState(false);
+
 
   const clearInvalidField = field =>
     setInvalidFields(prev => {
@@ -197,8 +199,10 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   }, [showNewIngredientForm]); // Scroll to the new ingredient form when it opens
 
   // Scroll to and focus the first invalid field
-  useLayoutEffect(() => {
-    if (Object.keys(invalidFields).length === 0) return;
+
+useLayoutEffect(() => {
+    if (!shouldFocusError || Object.keys(invalidFields).length === 0) return;
+
     const order = ['recipeName', 'servings', 'category', 'ingredients'];
     const map = {
       recipeName: recipeNameRef,
@@ -212,7 +216,10 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
       node.focus();
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [invalidFields]);
+
+    setShouldFocusError(false);
+  }, [invalidFields, shouldFocusError]);
+
 
   // Remove ingredient error when at least one ingredient exists
   useEffect(() => {
@@ -463,13 +470,15 @@ function handleEditIngredient(index) {
   // i) Submit (create ou update)
   const handleSubmit = async () => {
     const errors = {};
-    if (!recipeName.trim()) errors.recipeName = true;
-    if (!category) errors.category = true;
-    if (!servings) errors.servings = true;
-    if (ingredients.length === 0) errors.ingredients = true;
+    if (!recipeName.trim()) errors.recipeName = 'Recipe name is required';
+    if (!category) errors.category = 'Select a category';
+    if (!servings) errors.servings = 'Servings is required';
+    if (ingredients.length === 0) errors.ingredients = 'Add at least one ingredient';
 
     if (Object.keys(errors).length) {
       setInvalidFields(errors);
+      setShouldFocusError(true);
+
       return;
     }
 
