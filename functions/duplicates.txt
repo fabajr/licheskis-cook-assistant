@@ -1,0 +1,132 @@
+Firestore conectado em: undefined  SSL: false
+
+   🔎 Ingrediente duplicado "Mint" encontrado, IDs: 12efc127-451a-445c-ab5d-db47933e9a2f, 58b49a84-53e0-479b-b486-2a55f8841a00
+   ↳ Mantendo ID mestre: 12efc127-451a-445c-ab5d-db47933e9a2f
+
+   ➡️ Procesando exclusão do ingrediente duplicado: 58b49a84-53e0-479b-b486-2a55f8841a00 ("Mint")
+      ↳ Receita afetada: c8d30665-915d-4690-9047-a656704278ab — Watermelon Salad : ingrediente removido
+      ↳ Receita afetada: e79d1649-a0a2-4fc1-be1f-4e7bf73bf5cb — Naked Salad Tunisienne : ingrediente removido
+   ✔ Ingrediente 58b49a84-53e0-479b-b486-2a55f8841a00 e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Yellow Bell Peppers" encontrado, IDs: 1528cbc1-e344-4af8-b697-d24722ea18fd, 9fdeb292-cee1-4b49-9ec2-52d9f47a74bf
+↳ Mantendo ID mestre: 1528cbc1-e344-4af8-b697-d24722ea18fd
+
+➡️ Procesando exclusão do ingrediente duplicado: 9fdeb292-cee1-4b49-9ec2-52d9f47a74bf ("Yellow Bell Peppers")
+   ↳ Receita afetada: 6d556deb-2395-45f7-8861-3fe9dd4d3364 — Mommy's Vinaigrette Baked Salmon : ingrediente removido
+   ↳ Receita afetada: 60a76617-32e3-4ebe-9236-4e40dfdce25b — Salmon Bowl : ingrediente removido
+✔ Ingrediente 9fdeb292-cee1-4b49-9ec2-52d9f47a74bf e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Black Pepper" encontrado, IDs: 21cdaa17-539a-4412-896c-cb428472cc8b, 32f37a60-0d6c-46f5-98b5-3c0bfeadf33a, a2c6b4cd-791d-4d2c-8a13-f2a9c315d599
+↳ Mantendo ID mestre: 21cdaa17-539a-4412-896c-cb428472cc8b
+
+➡️ Procesando exclusão do ingrediente duplicado: 32f37a60-0d6c-46f5-98b5-3c0bfeadf33a ("Black Pepper")
+   ↳ Receita afetada: 54744b7a-5c10-4f6a-84d1-f5553525c453 — Guacamole : ingrediente removido
+✔ Ingrediente 32f37a60-0d6c-46f5-98b5-3c0bfeadf33a e suas relações foram deletados.
+
+➡️ Procesando exclusão do ingrediente duplicado: a2c6b4cd-791d-4d2c-8a13-f2a9c315d599 ("Black Pepper")
+   ↳ Receita afetada: 06c0f746-52e7-4ea5-b9ee-b537b34ba0a1 — Balsamic Chicken Sweet Potato & Veggies Cassarole : ingrediente removido
+   ↳ Receita afetada: bd1df342-8bb2-4752-9b42-846fc5f9998a — Brazil Nut Crusted Seabass : ingrediente removido
+   ↳ Receita afetada: 55562864-0070-44e2-8fb0-b89c711046a3 — Chicken thigh with pesto whole wheat pasta : ingrediente removido
+   ↳ Receita afetada: 18043c05-06b2-4d0d-b0b1-50bead0cf3b5 — Citrus Chicken and Sweet Potatoes : ingrediente removido
+   ↳ Receita afetada: af6c55bb-d764-47e8-9e1e-512daa195cc2 — Greek Chicken Gyro : ingrediente removido
+   ↳ Receita afetada: a9948c15-7d60-4f18-933b-e06287e79db7 — Mediterranean Spaghetti Squash : ingrediente removido
+   ↳ Receita afetada: 6d556deb-2395-45f7-8861-3fe9dd4d3364 — Mommy's Vinaigrette Baked Salmon : ingrediente removido
+   ↳ Receita afetada: 5dce0faf-591c-4b80-a068-82a4991aa0d2 — Mustard Chicken : ingrediente removido
+   ↳ Receita afetada: 33c127b9-429f-4377-90a5-9e92f41fee35 — Pan Seared Sworfish Steak : ingrediente removido
+   ↳ Receita afetada: 9331e852-8c42-485b-a1b0-957d7206ae81 — Quinoua Kibbeh : ingrediente removido
+   ↳ Receita afetada: 658684b5-d9df-4dcc-a6b9-382ec0c680fd — Sheppard's pie : ingrediente removido
+   ↳ Receita afetada: 43c7ba61-cbcc-45d1-aba7-9db843dfa88a — Strogonoff : ingrediente removido
+   ↳ Receita afetada: 406f969e-8ca2-4380-9681-076b1720b7dc — Sumac-Rubbed Lamb with Minty Artichokes : ingrediente removido
+   ↳ Receita afetada: 3c568d99-e97d-4cda-8c53-64e47c72c042 — Roasted Ham & Pineapple Chutney : ingrediente removido
+✔ Ingrediente a2c6b4cd-791d-4d2c-8a13-f2a9c315d599 e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Carrots" encontrado, IDs: 3d5ccdc6-ff2d-45d2-9524-b7f95e900be4, 8bb7e13f-707b-4a77-a0c3-f79266c67d09
+↳ Mantendo ID mestre: 3d5ccdc6-ff2d-45d2-9524-b7f95e900be4
+
+➡️ Procesando exclusão do ingrediente duplicado: 8bb7e13f-707b-4a77-a0c3-f79266c67d09 ("Carrots")
+   ↳ Receita afetada: e8e04ce1-e283-44ff-8523-bbb7888db7f1 — Hummus & Veggie Sticks : ingrediente removido
+✔ Ingrediente 8bb7e13f-707b-4a77-a0c3-f79266c67d09 e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Salt" encontrado, IDs: 43ea8e1c-4651-4509-95e0-de05199e411d, 5c54d5bc-2968-4e3f-8b14-fffc8d6ddb36, 7875c2f6-ef57-4555-8ba1-8e4d412d2657
+↳ Mantendo ID mestre: 43ea8e1c-4651-4509-95e0-de05199e411d
+
+➡️ Procesando exclusão do ingrediente duplicado: 5c54d5bc-2968-4e3f-8b14-fffc8d6ddb36 ("Salt")
+   ↳ Receita afetada: 06c0f746-52e7-4ea5-b9ee-b537b34ba0a1 — Balsamic Chicken Sweet Potato & Veggies Cassarole : ingrediente removido
+   ↳ Receita afetada: bd1df342-8bb2-4752-9b42-846fc5f9998a — Brazil Nut Crusted Seabass : ingrediente removido
+   ↳ Receita afetada: 55562864-0070-44e2-8fb0-b89c711046a3 — Chicken thigh with pesto whole wheat pasta : ingrediente removido
+   ↳ Receita afetada: 18043c05-06b2-4d0d-b0b1-50bead0cf3b5 — Citrus Chicken and Sweet Potatoes : ingrediente removido
+   ↳ Receita afetada: af6c55bb-d764-47e8-9e1e-512daa195cc2 — Greek Chicken Gyro : ingrediente removido
+   ↳ Receita afetada: a9948c15-7d60-4f18-933b-e06287e79db7 — Mediterranean Spaghetti Squash : ingrediente removido
+   ↳ Receita afetada: 6d556deb-2395-45f7-8861-3fe9dd4d3364 — Mommy's Vinaigrette Baked Salmon : ingrediente removido
+   ↳ Receita afetada: 5dce0faf-591c-4b80-a068-82a4991aa0d2 — Mustard Chicken : ingrediente removido
+   ↳ Receita afetada: 33c127b9-429f-4377-90a5-9e92f41fee35 — Pan Seared Sworfish Steak : ingrediente removido
+   ↳ Receita afetada: 9331e852-8c42-485b-a1b0-957d7206ae81 — Quinoua Kibbeh : ingrediente removido
+   ↳ Receita afetada: 658684b5-d9df-4dcc-a6b9-382ec0c680fd — Sheppard's pie : ingrediente removido
+   ↳ Receita afetada: 9527b79a-52f4-4364-ac5b-b14d02cb0b0b — Steak dinner with baked potatoes and steamed broccoli : ingrediente removido
+   ↳ Receita afetada: 43c7ba61-cbcc-45d1-aba7-9db843dfa88a — Strogonoff : ingrediente removido
+   ↳ Receita afetada: 406f969e-8ca2-4380-9681-076b1720b7dc — Sumac-Rubbed Lamb with Minty Artichokes : ingrediente removido
+   ↳ Receita afetada: 3c568d99-e97d-4cda-8c53-64e47c72c042 — Roasted Ham & Pineapple Chutney : ingrediente removido
+✔ Ingrediente 5c54d5bc-2968-4e3f-8b14-fffc8d6ddb36 e suas relações foram deletados.
+
+➡️ Procesando exclusão do ingrediente duplicado: 7875c2f6-ef57-4555-8ba1-8e4d412d2657 ("Salt")
+   ↳ Receita afetada: 54744b7a-5c10-4f6a-84d1-f5553525c453 — Guacamole : ingrediente removido
+✔ Ingrediente 7875c2f6-ef57-4555-8ba1-8e4d412d2657 e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Lemons" encontrado, IDs: 54cbc93b-2a39-421e-a2bc-579698295a5a, c7240577-62a4-4668-881f-c8bfa7f78b1f
+↳ Mantendo ID mestre: 54cbc93b-2a39-421e-a2bc-579698295a5a
+
+➡️ Procesando exclusão do ingrediente duplicado: c7240577-62a4-4668-881f-c8bfa7f78b1f ("Lemons")
+   ↳ Receita afetada: 74385648-294e-4c03-90d0-d08c3c7b5030 — Mozzarella Salad : ingrediente removido
+   ↳ Receita afetada: 7a489c1e-b580-443c-8c5c-292cb38dac4e — Green Godess Salad : ingrediente removido
+✔ Ingrediente c7240577-62a4-4668-881f-c8bfa7f78b1f e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Greek Yogurt" encontrado, IDs: 58b603ae-7c57-4344-a62e-4b3a2408c711, d0ad4bd3-ccf6-4ae9-ac6a-fe343948158c
+↳ Mantendo ID mestre: 58b603ae-7c57-4344-a62e-4b3a2408c711
+
+➡️ Procesando exclusão do ingrediente duplicado: d0ad4bd3-ccf6-4ae9-ac6a-fe343948158c ("Greek Yogurt")
+   ↳ Receita afetada: 17ea9720-36b3-4ccc-9184-6a27ff571646 — Greek Yogurt Popsicles : ingrediente removido
+✔ Ingrediente d0ad4bd3-ccf6-4ae9-ac6a-fe343948158c e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Red Bell Peppers" encontrado, IDs: 767ddf3f-7108-49a5-9572-ff5f793c371d, b4d1eadc-f83d-4ba6-9d99-c0fadfff7ada
+↳ Mantendo ID mestre: 767ddf3f-7108-49a5-9572-ff5f793c371d
+
+➡️ Procesando exclusão do ingrediente duplicado: b4d1eadc-f83d-4ba6-9d99-c0fadfff7ada ("Red Bell Peppers")
+   ↳ Receita afetada: 54744b7a-5c10-4f6a-84d1-f5553525c453 — Guacamole : ingrediente removido
+✔ Ingrediente b4d1eadc-f83d-4ba6-9d99-c0fadfff7ada e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Red Onions" encontrado, IDs: 815d5ffa-9c93-4608-87f3-5d0ef7b924a6, 94630f99-1ca1-4956-8eda-b8b875f012c0
+↳ Mantendo ID mestre: 815d5ffa-9c93-4608-87f3-5d0ef7b924a6
+
+➡️ Procesando exclusão do ingrediente duplicado: 94630f99-1ca1-4956-8eda-b8b875f012c0 ("Red Onions")
+   ↳ Receita afetada: 06c0f746-52e7-4ea5-b9ee-b537b34ba0a1 — Balsamic Chicken Sweet Potato & Veggies Cassarole : ingrediente removido
+   ↳ Receita afetada: 9331e852-8c42-485b-a1b0-957d7206ae81 — Quinoua Kibbeh : ingrediente removido
+   ↳ Receita afetada: 3c568d99-e97d-4cda-8c53-64e47c72c042 — Roasted Ham & Pineapple Chutney : ingrediente removido
+   ↳ Receita afetada: 38f9ed8a-03b2-418a-845c-ead894c5d446 — Aloha Chicken Casserole : ingrediente removido
+✔ Ingrediente 94630f99-1ca1-4956-8eda-b8b875f012c0 e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Balsamic Glaze" encontrado, IDs: 9412b9e1-9fd6-47b7-b08b-ecddc83c5fbd, abf9f4ca-8128-459c-868e-7cdd88bd4660
+↳ Mantendo ID mestre: 9412b9e1-9fd6-47b7-b08b-ecddc83c5fbd
+
+➡️ Procesando exclusão do ingrediente duplicado: abf9f4ca-8128-459c-868e-7cdd88bd4660 ("Balsamic Glaze")
+   ↳ Receita afetada: 06c0f746-52e7-4ea5-b9ee-b537b34ba0a1 — Balsamic Chicken Sweet Potato & Veggies Cassarole : ingrediente removido
+✔ Ingrediente abf9f4ca-8128-459c-868e-7cdd88bd4660 e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Limes" encontrado, IDs: b6eb50d6-4360-4f2d-9363-51ae435ebada, ec2eb028-1ac0-4019-9c87-1127b779e8c8
+↳ Mantendo ID mestre: b6eb50d6-4360-4f2d-9363-51ae435ebada
+
+➡️ Procesando exclusão do ingrediente duplicado: ec2eb028-1ac0-4019-9c87-1127b779e8c8 ("Limes")
+   ↳ Receita afetada: 54744b7a-5c10-4f6a-84d1-f5553525c453 — Guacamole : ingrediente removido
+✔ Ingrediente ec2eb028-1ac0-4019-9c87-1127b779e8c8 e suas relações foram deletados.
+
+🔎 Ingrediente duplicado "Olive Oil" encontrado, IDs: c45a3e98-cf10-40b6-8f0e-026f26adc2b6, e30eba73-3cc2-4f3c-9228-b5f5501bf1e0
+↳ Mantendo ID mestre: c45a3e98-cf10-40b6-8f0e-026f26adc2b6
+
+➡️ Procesando exclusão do ingrediente duplicado: e30eba73-3cc2-4f3c-9228-b5f5501bf1e0 ("Olive Oil")
+   ↳ Receita afetada: 69d42739-8e8b-42cb-b215-d81cf5a4093a — Coq Au Vin : ingrediente removido
+   ↳ Receita afetada: af6c55bb-d764-47e8-9e1e-512daa195cc2 — Greek Chicken Gyro : ingrediente removido
+   ↳ Receita afetada: a9948c15-7d60-4f18-933b-e06287e79db7 — Mediterranean Spaghetti Squash : ingrediente removido
+   ↳ Receita afetada: 9331e852-8c42-485b-a1b0-957d7206ae81 — Quinoua Kibbeh : ingrediente removido
+   ↳ Receita afetada: 43c7ba61-cbcc-45d1-aba7-9db843dfa88a — Strogonoff : ingrediente removido
+   ↳ Receita afetada: 406f969e-8ca2-4380-9681-076b1720b7dc — Sumac-Rubbed Lamb with Minty Artichokes : ingrediente removido
+   ↳ Receita afetada: 06c0f746-52e7-4ea5-b9ee-b537b34ba0a1 — Balsamic Chicken Sweet Potato & Veggies Cassarole : ingrediente removido
+✔ Ingrediente e30eba73-3cc2-4f3c-9228-b5f5501bf1e0 e suas relações foram deletados.

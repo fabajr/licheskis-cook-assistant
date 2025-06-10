@@ -67,6 +67,7 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   const [invalidFields, setInvalidFields] = useState({});
   const [shouldFocusError, setShouldFocusError] = useState(false);
 
+
   const clearInvalidField = field =>
     setInvalidFields(prev => {
       if (!prev[field]) return prev;
@@ -198,8 +199,10 @@ export function useRecipeForm({ recipeId = null, onSuccessRedirect }) {
   }, [showNewIngredientForm]); // Scroll to the new ingredient form when it opens
 
   // Scroll to and focus the first invalid field
+
 useLayoutEffect(() => {
     if (!shouldFocusError || Object.keys(invalidFields).length === 0) return;
+
     const order = ['recipeName', 'servings', 'category', 'ingredients'];
     const map = {
       recipeName: recipeNameRef,
@@ -213,8 +216,10 @@ useLayoutEffect(() => {
       node.focus();
       node.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
+
     setShouldFocusError(false);
   }, [invalidFields, shouldFocusError]);
+
 
   // Remove ingredient error when at least one ingredient exists
   useEffect(() => {
@@ -473,6 +478,7 @@ function handleEditIngredient(index) {
     if (Object.keys(errors).length) {
       setInvalidFields(errors);
       setShouldFocusError(true);
+
       return;
     }
 

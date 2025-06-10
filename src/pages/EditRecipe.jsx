@@ -129,6 +129,7 @@ export default function EditRecipe() {
                       const val = e.target.value;
                       setRecipeName(val);
                       if (invalidFields.recipeName && val.trim()) clearInvalidField('recipeName');
+
                     }}
                     onBlur={checkSimilarNames} // Check for similar names on blur
                     placeholder="Enter recipe name"
@@ -176,6 +177,7 @@ export default function EditRecipe() {
                         const val = e.target.value;
                         setServings(val);
                         if (invalidFields.servings && val) clearInvalidField('servings');
+
                       }}
                       min="1"
                     />
@@ -194,6 +196,7 @@ export default function EditRecipe() {
                       const val = e.target.value;
                       setCategory(val);
                       if (invalidFields.category && val) clearInvalidField('category');
+
                     }}
                     >
                   <option value="">Select Category...</option>
@@ -393,6 +396,7 @@ export default function EditRecipe() {
                       setSelectedLocalIngredient(null); // Clear selection on new input
 
                       handleDuplicateIngredient(e.target.value); // Check for duplicates
+
                     }}
                     placeholder="Type to search..."
                     disabled={isLoadingSearch}

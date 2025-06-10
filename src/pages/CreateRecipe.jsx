@@ -124,9 +124,11 @@ export default function CreateRecipe() {
             ref={recipeNameRef}
             value={recipeName}
             onChange={(e) => {
+
               const val = e.target.value;
               setRecipeName(val);
               if (invalidFields.recipeName && val.trim()) clearInvalidField('recipeName');
+
             }}
           />
           {invalidFields.recipeName && (
@@ -169,6 +171,7 @@ export default function CreateRecipe() {
                 const val = e.target.value;
                 setServings(val);
                 if (invalidFields.servings && val) clearInvalidField('servings');
+
               }}
               min="1"
             />
@@ -187,6 +190,7 @@ export default function CreateRecipe() {
               const val = e.target.value;
               setCategory(val);
               if (invalidFields.category && val) clearInvalidField('category');
+
             }}
             >
           <option value="">Select Category...</option>
@@ -386,6 +390,7 @@ export default function CreateRecipe() {
               setSelectedLocalIngredient(null); // Clear selection on new input
 
               handleDuplicateIngredient(e.target.value); // Check for duplicates
+
             }}
             placeholder="Type to search..."
             disabled={isLoadingSearch}
