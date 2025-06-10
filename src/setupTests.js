@@ -3,5 +3,6 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
-jest.mock('./firebase'); // mock Firebase for all tests
+vi.mock('./firebase'); // mock Firebase for all tests

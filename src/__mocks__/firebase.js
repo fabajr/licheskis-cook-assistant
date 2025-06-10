@@ -1,37 +1,38 @@
 // src/__mocks__/firebase.js
+import { vi } from 'vitest'
 
 // Funções de auth mockadas
 export const auth = {
   currentUser: { uid: 'test-user-id', email: 'test@example.com' },
-  signInWithEmailAndPassword: jest.fn(),
-  signOut: jest.fn(),
-  createUserWithEmailAndPassword: jest.fn(),
-  onAuthStateChanged: jest.fn(),
-  sendPasswordResetEmail: jest.fn(),
+  signInWithEmailAndPassword: vi.fn(),
+  signOut: vi.fn(),
+  createUserWithEmailAndPassword: vi.fn(),
+  onAuthStateChanged: vi.fn(),
+  sendPasswordResetEmail: vi.fn(),
 };
 
 // Firestore mockado
 export const db = {
-  collection: jest.fn(() => ({
-    doc: jest.fn(() => ({
-      set: jest.fn(),
-      get: jest.fn(() => Promise.resolve({ exists: true, data: () => ({}) })),
-      update: jest.fn(),
-      delete: jest.fn(),
+  collection: vi.fn(() => ({
+    doc: vi.fn(() => ({
+      set: vi.fn(),
+      get: vi.fn(() => Promise.resolve({ exists: true, data: () => ({}) })),
+      update: vi.fn(),
+      delete: vi.fn(),
     })),
-    add: jest.fn(),
-    get: jest.fn(),
-    where: jest.fn(() => ({
-      get: jest.fn(() => Promise.resolve({ docs: [] })),
+    add: vi.fn(),
+    get: vi.fn(),
+    where: vi.fn(() => ({
+      get: vi.fn(() => Promise.resolve({ docs: [] })),
     })),
   })),
 };
 
 // Storage mockado
 export const storage = {
-  ref: jest.fn(() => ({
-    put: jest.fn(() => Promise.resolve({})),
-    getDownloadURL: jest.fn(() => Promise.resolve('https://mock.storage/url')),
+  ref: vi.fn(() => ({
+    put: vi.fn(() => Promise.resolve({})),
+    getDownloadURL: vi.fn(() => Promise.resolve('https://mock.storage/url')),
   })),
 };
 
@@ -39,10 +40,10 @@ export const storage = {
 export const app = {};
 
 // Funções de inicialização mockadas
-export const initializeApp = jest.fn();
-export const getAuth = jest.fn(() => auth);
-export const getFirestore = jest.fn(() => db);
-export const getStorage = jest.fn(() => storage);
+export const initializeApp = vi.fn();
+export const getAuth = vi.fn(() => auth);
+export const getFirestore = vi.fn(() => db);
+export const getStorage = vi.fn(() => storage);
 
 // Para imports do SDK modular
 export default {
