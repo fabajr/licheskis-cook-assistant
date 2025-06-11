@@ -2,8 +2,6 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './Navbar.css';
 
 
@@ -57,10 +55,17 @@ function Navbar() {
                 id="userDropdown"
                 className="nav-link dropdown-toggle p-0"
                 type="button"
+                role="button"
                 data-bs-toggle="dropdown"
+                aria-haspopup="true"
                 aria-expanded="false"
               >
-                <img src={avatar} className="rounded-circle" style={{ width: 36, height: 36 }} />
+                <img
+                  src={avatar}
+                  className="rounded-circle"
+                  style={{ width: 36, height: 36 }}
+                  alt="User avatar"
+                />
               </button>
               <ul
    className="dropdown-menu dropdown-menu-end shadow mt-2 dropdown-menu-animate"
