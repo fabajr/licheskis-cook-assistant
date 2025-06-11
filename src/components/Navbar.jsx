@@ -3,6 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './Navbar.css';
+
 
 function Navbar() {
   const { user, isAdmin, hasHormonalCycle, logout } = useAuth();
@@ -60,9 +63,9 @@ function Navbar() {
                 <img src={avatar} className="rounded-circle" style={{ width: 36, height: 36 }} />
               </button>
               <ul
-                className="dropdown-menu dropdown-menu-end shadow mt-2"
-                aria-labelledby="userDropdown"
-              >
+   className="dropdown-menu dropdown-menu-end shadow mt-2 dropdown-menu-animate"
+   aria-labelledby="userDropdown"
+ >
                 <li className="px-3 py-2">
                   <img
                     src={avatar}
