@@ -1,165 +1,115 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './Navbar.css';
+import React, { useState, useRef, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './Navbar.css'
 
+export default function Navbar() {
+  const { user, isAdmin, hasHormonalCycle, logout } = useAuth()
+  const location = useLocation()
+  const [open, setOpen] = useState(false)
+  const dropdownRef = useRef(null)
 
-function Navbar() {
-  const { user, isAdmin, hasHormonalCycle, logout } = useAuth();
-  const location = useLocation();
-  const avatar = user?.photoURL || '/logo192.png';
+  // Fecha o dropdown ao clicar fora
+  useEffect(() => {
+    function onClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [])
+
+  const avatar = user?.photoURL || '/logo192.png'
 
   return (
-    <nav
-      className="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top"
-      style={{ height: '60px' }}
-    >
-      <div className="container d-flex align-items-center">
-        <Link className="navbar-brand me-auto" to="/">
-          Cook Assistant
-        </Link>
-        <ul className="navbar-nav mx-auto d-flex flex-row">
-          <li className="nav-item px-3">
-            <Link
-              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
-              to="/"
-            >
-              Home
-            </Link>
+    <nav className="navbar-custom">
+      <div className="navbar-inner">
+        {/* Logo */}
+        <Link to="/" className="navbar-brand">Cook Assistant</Link>
+
+        {/* Links centrais */}
+        <ul className="navbar-nav-center">
+          <li className={location.pathname === '/' ? 'active' : ''}>
+            <Link to="/">Home</Link>
           </li>
-          <li className="nav-item px-3">
-            <Link
-              className={`nav-link ${
-                location.pathname === '/recipes' ? 'active' : ''
-              }`}
-              to="/recipes"
-            >
-              Recipes
-            </Link>
+          <li className={location.pathname === '/recipes' ? 'active' : ''}>
+            <Link to="/recipes">Recipes</Link>
           </li>
         </ul>
-        <div className="ms-auto">
+
+        {/* Ações à direita */}
+        <div className="navbar-actions">
           {!user ? (
             <>
-              <Link to="/login" className="btn btn-link">
-                Login
-              </Link>
-              <Link to="/signup" className="btn btn-primary ms-2">
-                Sign Up
-              </Link>
+              <Link to="/login" className="btn-link">Login</Link>
+              <Link to="/signup" className="btn btn-primary ms-2">Sign Up</Link>
             </>
           ) : (
-            <div className="dropdown">
-              <button
-                id="userDropdown"
-                className="nav-link dropdown-toggle p-0"
-                type="button"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <img
-                  src={avatar}
-                  className="rounded-circle"
-                  style={{ width: 36, height: 36 }}
-                  alt="User avatar"
-                />
-              </button>
-              <ul
-   className="dropdown-menu dropdown-menu-end shadow mt-2 dropdown-menu-animate"
-   aria-labelledby="userDropdown"
- >
-                <li className="px-3 py-2">
-                  <img
-                    src={avatar}
-                    className="rounded-circle me-2"
-                    style={{ width: 32, height: 32 }}
-                  />
-                  <Link to="/profile">{user.displayName || 'Profile'}</Link>
-                </li>
-                <li className="d-md-none">
-                  <Link className="dropdown-item" to="/recipes">
-                    Recipes
-                  </Link>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <Link
-                    className="dropdown-item"
-                    to="/profile#hormonal-cycle"
-                  >
-                    Hormonal Cycle{' '}
-                    {hasHormonalCycle && <span>✅</span>}
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/profile#meal-plans">
-                    My Meal Plans
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/profile#grocery-lists">
-                    My Grocery Lists
-                  </Link>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/meal-planner/new">
-                    + New Meal Plan
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/grocery-list/new">
-                    + New Grocery List
-                  </Link>
-                </li>
-                {isAdmin && (
-                  <>
-                    <li>
-                      <hr className="dropdown-divider" />
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/create-recipe">
-                        + New Recipe
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="/admin/ingredients">
-                        Edit Ingredients
-                      </Link>
-                    </li>
-                  </>
-                )}
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/feedback">
-                    Feedback
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    className="dropdown-item text-danger"
-                    onClick={logout}
-                  >
+            <div className="avatar-dropdown" ref={dropdownRef}>
+              <img
+                src={avatar}
+                alt="avatar"
+                className="avatar-toggle"
+                onClick={() => setOpen(o => !o)}
+              />
+
+              {open && (
+                <ul className="avatar-menu">
+                  {/* Header */}
+                  <li className="menu-header">
+                    <img src={avatar} alt="" className="avatar-sm" />
+                    <Link to="/profile">{user.displayName || 'Profile'}</Link>
+                  </li>
+                  <li><hr className="dropdown-divider" /></li>
+                  {/* My Data */}
+                  <li>
+                    <Link to="/profile#hormonal-cycle">
+                      Hormonal Cycle {hasHormonalCycle && '✅'}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/profile#meal-plans">My Meal Plans</Link>
+                  </li>
+                  <li>
+                    <Link to="/profile#grocery-lists">My Grocery Lists</Link>
+                  </li>
+                  <li><hr className="dropdown-divider" /></li>
+                  {/* Quick Actions */}
+                  <li>
+                    <Link to="/meal-planner/new">New Meal Plan</Link>
+                  </li>
+                  <li>
+                    <Link to="/grocery-list/new">New Grocery List</Link>
+                  </li>
+                  {isAdmin && (
+                    <>
+                      <li><hr className="dropdown-divider" /></li>
+                      <li>
+                        <Link to="/create-recipe">New Recipe</Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/ingredients">Edit Ingredients</Link>
+                      </li>
+                    </>
+                  )}
+                  <li><hr className="dropdown-divider" /></li>
+                  {/* Misc */}
+                  <li>
+                    <Link to="/feedback">Feedback</Link>
+                  </li>
+                  <li>
+                    <button className="text-danger btn-link w-100 text-start" onClick={logout}>
                     Logout
-                  </button>
-                </li>
-              </ul>
+                    </button>
+                  </li>
+                </ul>
+              )}
             </div>
           )}
         </div>
-
       </div>
     </nav>
-  );
+  )
 }
-
-export default Navbar;
